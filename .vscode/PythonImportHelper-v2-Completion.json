@@ -1,0 +1,290 @@
+[
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "reviews_collection",
+        "importPath": "models.review",
+        "description": "models.review",
+        "isExtraImport": true,
+        "detail": "models.review",
+        "documentation": {}
+    },
+    {
+        "label": "PyMongo",
+        "importPath": "flask_pymongo",
+        "description": "flask_pymongo",
+        "isExtraImport": true,
+        "detail": "flask_pymongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoClient",
+        "importPath": "pymongo",
+        "description": "pymongo",
+        "isExtraImport": true,
+        "detail": "pymongo",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "RevenueController",
+        "importPath": "controllers.revenue_controller",
+        "description": "controllers.revenue_controller",
+        "isExtraImport": true,
+        "detail": "controllers.revenue_controller",
+        "documentation": {}
+    },
+    {
+        "label": "RevenueDB",
+        "importPath": "models.revenue",
+        "description": "models.revenue",
+        "isExtraImport": true,
+        "detail": "models.revenue",
+        "documentation": {}
+    },
+    {
+        "label": "subprocess",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "subprocess",
+        "description": "subprocess",
+        "detail": "subprocess",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "save_reviews",
+        "importPath": "controllers.review_controller",
+        "description": "controllers.review_controller",
+        "isExtraImport": true,
+        "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "get_all_reviews",
+        "importPath": "controllers.review_controller",
+        "description": "controllers.review_controller",
+        "isExtraImport": true,
+        "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "create_revenue_blueprint",
+        "importPath": "routes.revenue_routes",
+        "description": "routes.revenue_routes",
+        "isExtraImport": true,
+        "detail": "routes.revenue_routes",
+        "documentation": {}
+    },
+    {
+        "label": "create_review_blueprint",
+        "importPath": "routes.review_routes",
+        "description": "routes.review_routes",
+        "isExtraImport": true,
+        "detail": "routes.review_routes",
+        "documentation": {}
+    },
+    {
+        "label": "RevenueController",
+        "kind": 6,
+        "importPath": "controllers.revenue_controller",
+        "description": "controllers.revenue_controller",
+        "peekOfCode": "class RevenueController:\n    def __init__(self, db):\n        self.db = db\n    def get_revenues(self):\n        try:\n            revenues = self.db.get_all_revenues()\n            return jsonify({\"success\": True, \"data\": revenues}), 200\n        except Exception as e:\n            return jsonify({\"success\": False, \"error\": str(e)}), 500\n    def get_revenue(self, revenue_id):",
+        "detail": "controllers.revenue_controller",
+        "documentation": {}
+    },
+    {
+        "label": "save_reviews",
+        "kind": 2,
+        "importPath": "controllers.review_controller",
+        "description": "controllers.review_controller",
+        "peekOfCode": "def save_reviews(reviews):\n    \"\"\"Insert multiple reviews into MongoDB\"\"\"\n    if not reviews:\n        return {\"message\": \"No reviews to save\", \"status\": 400}\n    reviews_collection.insert_many(reviews)\n    return {\"message\": \"Reviews saved successfully\", \"count\": len(reviews), \"status\": 201}\ndef get_all_reviews():\n    \"\"\"Retrieve all reviews from MongoDB\"\"\"\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
+        "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "get_all_reviews",
+        "kind": 2,
+        "importPath": "controllers.review_controller",
+        "description": "controllers.review_controller",
+        "peekOfCode": "def get_all_reviews():\n    \"\"\"Retrieve all reviews from MongoDB\"\"\"\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
+        "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "RevenueDB",
+        "kind": 6,
+        "importPath": "models.revenue",
+        "description": "models.revenue",
+        "peekOfCode": "class RevenueDB:\n    def __init__(self, app):\n        self.mongo = PyMongo(app)\n    def get_all_revenues(self):\n        return list(self.mongo.db.revenues.find({}, {\"_id\": 0}))\n    def get_revenue_by_id(self, revenue_id):\n        return self.mongo.db.revenues.find_one({\"revenue_id\": revenue_id}, {\"_id\": 0})\n    def calculate_revenue(self, revenue_data):\n        rooms_sold = revenue_data.get(\"rooms_sold\", 0)\n        total_rooms = revenue_data.get(\"total_rooms\", 0) ",
+        "detail": "models.revenue",
+        "documentation": {}
+    },
+    {
+        "label": "client",
+        "kind": 5,
+        "importPath": "models.review",
+        "description": "models.review",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance  \nreviews_collection = db.reviews",
+        "detail": "models.review",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "kind": 5,
+        "importPath": "models.review",
+        "description": "models.review",
+        "peekOfCode": "db = client.hotelPerformance  \nreviews_collection = db.reviews",
+        "detail": "models.review",
+        "documentation": {}
+    },
+    {
+        "label": "reviews_collection",
+        "kind": 5,
+        "importPath": "models.review",
+        "description": "models.review",
+        "peekOfCode": "reviews_collection = db.reviews",
+        "detail": "models.review",
+        "documentation": {}
+    },
+    {
+        "label": "create_revenue_blueprint",
+        "kind": 2,
+        "importPath": "routes.revenue_routes",
+        "description": "routes.revenue_routes",
+        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = RevenueDB(app)\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", controller.get_revenues, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"get_revenue\", controller.get_revenue, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", controller.create_revenue, methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", controller.edit_revenue, methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", controller.remove_revenue, methods=[\"DELETE\"])\n    return revenue_bp",
+        "detail": "routes.revenue_routes",
+        "documentation": {}
+    },
+    {
+        "label": "create_review_blueprint",
+        "kind": 2,
+        "importPath": "routes.review_routes",
+        "description": "routes.review_routes",
+        "peekOfCode": "def create_review_blueprint(app):\n    review_bp = Blueprint(\"reviews\", __name__)\n    @review_bp.route(\"/traveloka_scrape\", methods=[\"POST\"])\n    def scrape_traveloka_reviews():\n        data = request.json\n        hotel_url = data.get(\"url\")\n        if not hotel_url:\n            return jsonify({\"error\": \"Hotel URL is required\"}), 400\n        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n        SCRIPT_PATH = os.path.join(backend_dir, \"scraper\", \"scrape_reviews.js\")",
+        "detail": "routes.review_routes",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = Flask(__name__)\napp.config[\"MONGO_URI\"] = MONGO_URI\n# Register blueprints correctly\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  # ✅ Use the existing variable\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.config[\"MONGO_URI\"]",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.config[\"MONGO_URI\"] = MONGO_URI\n# Register blueprints correctly\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  # ✅ Use the existing variable\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "revenue_bp",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "revenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  # ✅ Use the existing variable\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "reviews_bp",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "reviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  # ✅ Use the existing variable\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "MONGO_URI = \"mongodb+srv://williamongkywow:williamongkywow@clusterta.poz3g.mongodb.net/hotelPerformance\"",
+        "detail": "config",
+        "documentation": {}
+    }
+]
