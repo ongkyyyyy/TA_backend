@@ -5,3 +5,4 @@ client = MongoClient(MONGO_URI)
 db = client.hotelPerformance  
 
 reviews_collection = db.reviews
+sentiment_collection = db.sentiment_analysis

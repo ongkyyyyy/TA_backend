@@ -1,7 +1,9 @@
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 import subprocess
 import os
 from controllers.review_controller import save_reviews, get_all_reviews
+from sentiment_analysis.sentiment_analysis import analyze_sentiment
 
 def create_review_blueprint(app):
     review_bp = Blueprint("reviews", __name__)
@@ -62,10 +64,35 @@ def create_review_blueprint(app):
 
     @review_bp.route("/reviews", methods=["POST"])
     def receive_reviews():
-        data = request.json.get("reviews", [])
-        response = save_reviews(data)
-        return jsonify(response), response["status"]
+            data = request.json.get("reviews", [])
+            saved_reviews = save_reviews(data)
 
+            if not saved_reviews.get("inserted_ids"):
+                return jsonify({"error": "Failed to save reviews"}), 500
+
+            inserted_ids = saved_reviews["inserted_ids"]
+            sentiment_results = []
+
+            # 2️⃣ Perform sentiment analysis
+            for review, review_id in zip(data, inserted_ids):
+                text = review.get("comment", "")
+                sentiment, pos_count, neg_count = analyze_sentiment(text)
+
+                sentiment_results.append({
+                    "review_id": str(review_id), 
+                    "comment": text,
+                    "sentiment": sentiment,
+                    "positive_score": pos_count,
+                    "negative_score": neg_count,
+                    "created_at": datetime.utcnow()
+                })
+
+            return jsonify({
+                "message": "Reviews and sentiment analysis processed successfully",
+                "sentiment_results": sentiment_results,
+                "status": 201
+            }), 201
+            
     @review_bp.route("/reviews", methods=["GET"])
     def fetch_reviews():
         reviews = get_all_reviews()

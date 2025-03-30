@@ -64,6 +64,46 @@
         "documentation": {}
     },
     {
+        "label": "sentiment_collection",
+        "importPath": "models.review",
+        "description": "models.review",
+        "isExtraImport": true,
+        "detail": "models.review",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_sentiment",
+        "importPath": "sentiment_analysis.sentiment_analysis",
+        "description": "sentiment_analysis.sentiment_analysis",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_sentiment",
+        "importPath": "sentiment_analysis.sentiment_analysis",
+        "description": "sentiment_analysis.sentiment_analysis",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "PyMongo",
         "importPath": "flask_pymongo",
         "description": "flask_pymongo",
@@ -146,6 +186,39 @@
         "documentation": {}
     },
     {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "Counter",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
+        "documentation": {}
+    },
+    {
+        "label": "POSITIVE_WORDS",
+        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "documentation": {}
+    },
+    {
+        "label": "NEGATIVE_WORDS",
+        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "documentation": {}
+    },
+    {
         "label": "create_revenue_blueprint",
         "importPath": "routes.revenue_routes",
         "description": "routes.revenue_routes",
@@ -175,7 +248,16 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def save_reviews(reviews):\n    \"\"\"Insert multiple reviews into MongoDB\"\"\"\n    if not reviews:\n        return {\"message\": \"No reviews to save\", \"status\": 400}\n    reviews_collection.insert_many(reviews)\n    return {\"message\": \"Reviews saved successfully\", \"count\": len(reviews), \"status\": 201}\ndef get_all_reviews():\n    \"\"\"Retrieve all reviews from MongoDB\"\"\"\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
+        "peekOfCode": "def save_reviews(reviews):\n    if not reviews:\n        return {\"message\": \"No reviews to save\", \"status\": 400}\n    result = reviews_collection.insert_many(reviews)\n    # Analyze sentiment for each inserted review\n    sentiment_data = []\n    for review, inserted_id in zip(reviews, result.inserted_ids):\n        comment = review.get(\"comment\", \"\")\n        sentiment, pos_count, neg_count = analyze_sentiment(comment)\n        sentiment_data.append({",
+        "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "save_sentiment_analysis",
+        "kind": 2,
+        "importPath": "controllers.review_controller",
+        "description": "controllers.review_controller",
+        "peekOfCode": "def save_sentiment_analysis(sentiments):\n    if not sentiments:\n        return {\"message\": \"No sentiment data to save\", \"status\": 400}\n    sentiment_collection.insert_many(sentiments)\n    return {\"message\": \"Sentiment analysis saved successfully\", \"status\": 201}\ndef get_all_reviews():\n    \"\"\"Retrieve all reviews from MongoDB\"\"\"\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
@@ -202,7 +284,7 @@
         "kind": 5,
         "importPath": "models.review",
         "description": "models.review",
-        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance  \nreviews_collection = db.reviews",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance  \nreviews_collection = db.reviews\nsentiment_collection = db.sentiment_analysis",
         "detail": "models.review",
         "documentation": {}
     },
@@ -211,7 +293,7 @@
         "kind": 5,
         "importPath": "models.review",
         "description": "models.review",
-        "peekOfCode": "db = client.hotelPerformance  \nreviews_collection = db.reviews",
+        "peekOfCode": "db = client.hotelPerformance  \nreviews_collection = db.reviews\nsentiment_collection = db.sentiment_analysis",
         "detail": "models.review",
         "documentation": {}
     },
@@ -220,7 +302,16 @@
         "kind": 5,
         "importPath": "models.review",
         "description": "models.review",
-        "peekOfCode": "reviews_collection = db.reviews",
+        "peekOfCode": "reviews_collection = db.reviews\nsentiment_collection = db.sentiment_analysis",
+        "detail": "models.review",
+        "documentation": {}
+    },
+    {
+        "label": "sentiment_collection",
+        "kind": 5,
+        "importPath": "models.review",
+        "description": "models.review",
+        "peekOfCode": "sentiment_collection = db.sentiment_analysis",
         "detail": "models.review",
         "documentation": {}
     },
@@ -240,6 +331,33 @@
         "description": "routes.review_routes",
         "peekOfCode": "def create_review_blueprint(app):\n    review_bp = Blueprint(\"reviews\", __name__)\n    @review_bp.route(\"/traveloka_scrape\", methods=[\"POST\"])\n    def scrape_traveloka_reviews():\n        data = request.json\n        hotel_url = data.get(\"url\")\n        if not hotel_url:\n            return jsonify({\"error\": \"Hotel URL is required\"}), 400\n        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n        SCRIPT_PATH = os.path.join(backend_dir, \"scraper\", \"scrape_reviews.js\")",
         "detail": "routes.review_routes",
+        "documentation": {}
+    },
+    {
+        "label": "POSITIVE_WORDS",
+        "kind": 5,
+        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "peekOfCode": "POSITIVE_WORDS = {\n    \"bagus\",  \n    \"luar biasa\",  \n    \"nyaman\",  \n    \"ramah\",  \n    \"bersih\",  \n    \"puas\",  \n    \"mantap\",  \n    \"menyenangkan\",  \n    \"memuaskan\",  ",
+        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "documentation": {}
+    },
+    {
+        "label": "NEGATIVE_WORDS",
+        "kind": 5,
+        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "peekOfCode": "NEGATIVE_WORDS = {\n    \"buruk\",  \n    \"kecewa\",  \n    \"kotor\",  \n    \"parah\",  \n    \"tidak puas\",  \n    \"jelek\",  \n    \"mengecewakan\",  \n    \"menyebalkan\",  \n    \"bising\",  ",
+        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_sentiment",
+        "kind": 2,
+        "importPath": "sentiment_analysis.sentiment_analysis",
+        "description": "sentiment_analysis.sentiment_analysis",
+        "peekOfCode": "def analyze_sentiment(text):\n    \"\"\"Lexicon-based sentiment analysis for Indonesian hotel reviews.\"\"\"\n    text = text.lower()  \n    words = re.findall(r'\\b\\w+\\b', text)  \n    word_counts = Counter(words)\n    pos_count = sum(word_counts[word] for word in word_counts if word in POSITIVE_WORDS)\n    neg_count = sum(word_counts[word] for word in word_counts if word in NEGATIVE_WORDS)\n    if pos_count > neg_count:\n        sentiment = \"positive\"\n    elif neg_count > pos_count:",
+        "detail": "sentiment_analysis.sentiment_analysis",
         "documentation": {}
     },
     {

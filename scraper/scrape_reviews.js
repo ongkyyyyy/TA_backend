@@ -43,7 +43,6 @@ async function scrapeReviews(hotelUrl) {
                 const ratingElem = review.querySelector('[data-testid="tvat-ratingScore"]');
                 const commentElem = review.querySelector('.css-901oao.css-cens5h');
 
-                // Extract timestamp dynamically
                 const timestampElem = Array.from(review.querySelectorAll("div.css-901oao"))
                     .find(div => div.innerText.match(/\d{1,2} \w{3,} \d{4}/));
                 const timestampText = timestampElem ? timestampElem.innerText.trim() : 'Unknown Date';
