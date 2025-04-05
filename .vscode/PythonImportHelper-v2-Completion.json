@@ -219,6 +219,22 @@
         "documentation": {}
     },
     {
+        "label": "NEGATION_WORDS",
+        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "documentation": {}
+    },
+    {
+        "label": "CONTRAST_WORDS",
+        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "documentation": {}
+    },
+    {
         "label": "create_revenue_blueprint",
         "importPath": "routes.revenue_routes",
         "description": "routes.revenue_routes",
@@ -352,11 +368,29 @@
         "documentation": {}
     },
     {
+        "label": "CONTRAST_WORDS",
+        "kind": 5,
+        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "peekOfCode": "CONTRAST_WORDS = {\"cuma\", \"sayangnya\", \"tetapi\", \"namun\", \"tapi\", \"padahal\"}\nNEGATION_WORDS = {\"tidak\", \"bukan\", \"tak\", \"jangan\"}",
+        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "documentation": {}
+    },
+    {
+        "label": "NEGATION_WORDS",
+        "kind": 5,
+        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "peekOfCode": "NEGATION_WORDS = {\"tidak\", \"bukan\", \"tak\", \"jangan\"}",
+        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
+        "documentation": {}
+    },
+    {
         "label": "analyze_sentiment",
         "kind": 2,
         "importPath": "sentiment_analysis.sentiment_analysis",
         "description": "sentiment_analysis.sentiment_analysis",
-        "peekOfCode": "def analyze_sentiment(text):\n    \"\"\"Lexicon-based sentiment analysis for Indonesian hotel reviews.\"\"\"\n    text = text.lower()  \n    words = re.findall(r'\\b\\w+\\b', text)  \n    word_counts = Counter(words)\n    pos_count = sum(word_counts[word] for word in word_counts if word in POSITIVE_WORDS)\n    neg_count = sum(word_counts[word] for word in word_counts if word in NEGATIVE_WORDS)\n    if pos_count > neg_count:\n        sentiment = \"positive\"\n    elif neg_count > pos_count:",
+        "peekOfCode": "def analyze_sentiment(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    word_counts = Counter(words)\n    pos_count, neg_count = 0, 0\n    negate = False \n    for i, word in enumerate(words):\n        if word in NEGATION_WORDS:\n            negate = True\n            continue",
         "detail": "sentiment_analysis.sentiment_analysis",
         "documentation": {}
     },

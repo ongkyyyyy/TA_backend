@@ -108,3 +108,6 @@ NEGATIVE_WORDS = {
     "tidak sesuai foto",  
     "zonk"  
 }
+
+CONTRAST_WORDS = {"cuma", "sayangnya", "tetapi", "namun", "tapi", "padahal"}
+NEGATION_WORDS = {"tidak", "bukan", "tak", "jangan"}

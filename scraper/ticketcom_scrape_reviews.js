@@ -121,33 +121,60 @@ async function scrapeReviews(hotelUrl) {
 
     let allReviews = [];
     let pageCounter = 1;
+    let lastReviewText = "";
+    let retryAttempt = 0;
 
     while (true) {
         console.log(`Scraping page ${pageCounter}...`);
         await new Promise(resolve => setTimeout(resolve, 3000)); 
-    
-        const reviews = await page.evaluate((hotelName) => {
-            return Array.from(document.querySelectorAll('[data-testid="review-card"]')).map(review => {
-                const usernameElem = review.querySelector('[class*="ReviewCard_customer_name"]');
-                const ratingElem = review.querySelector('.ReviewCard_user_review__HvsOH');
-                const commentElem = review.querySelector('.ReadMoreComments_review_card_comment__R_W2B');
-    
-                const timestampElem = Array.from(review.querySelectorAll("span"))
-                    .find(span => span.innerText.match(/\d{1,2} \w{3,} \d{4}/));
-    
-                return {
-                    username: usernameElem ? usernameElem.innerText.trim() : 'Anonymous',
-                    rating: ratingElem ? parseFloat(ratingElem.innerText.trim().replace(',', '.')) * 2 : null,
-                    comment: commentElem && commentElem.innerText.trim() ? commentElem.innerText.trim() : '-',
-                    timestamp: timestampElem ? timestampElem.innerText.trim() : 'Unknown Date',
-                    hotel_name: hotelName,
-                    OTA: 'Ticket.com'
-                };
-            }).filter(review => review.comment && review.rating !== null && review.rating > 0);
-        }, hotelName);
-    
+
+        let reviews = [];
+
+        try {
+            reviews = await page.evaluate((hotelName) => {
+                return Array.from(document.querySelectorAll('[data-testid="review-card"]')).map(review => {
+                    const usernameElem = review.querySelector('[class*="ReviewCard_customer_name"]');
+                    const ratingElem = review.querySelector('.ReviewCard_user_review__HvsOH');
+                    const commentElem = review.querySelector('.ReadMoreComments_review_card_comment__R_W2B');
+
+                    const timestampElem = Array.from(review.querySelectorAll("span"))
+                        .find(span => span.innerText.match(/\d{1,2} \w{3,} \d{4}/));
+
+                    return {
+                        username: usernameElem ? usernameElem.innerText.trim() : 'Anonymous',
+                        rating: ratingElem ? parseFloat(ratingElem.innerText.trim().replace(',', '.')) * 2 : null,
+                        comment: commentElem && commentElem.innerText.trim() ? commentElem.innerText.trim() : '-',
+                        timestamp: timestampElem ? timestampElem.innerText.trim() : 'Unknown Date',
+                        hotel_name: hotelName,
+                        OTA: 'Ticket.com'
+                    };
+                }).filter(review => review.comment && review.rating !== null && review.rating > 0);
+            }, hotelName);
+        } catch (err) {
+            console.log("❌ Error during review extraction. Retrying...");
+            retryAttempt++;
+            if (retryAttempt >= 3) {
+                console.log("❌ Maximum retry attempts reached. Stopping.");
+                break;
+            }
+            continue;
+        }
+
+        if (reviews.length > 0 && reviews[0].comment === lastReviewText) {
+            console.log("⚠️ Detected repeated review page. Retrying...");
+            retryAttempt++;
+            if (retryAttempt >= 3) {
+                console.log("❌ Maximum retry attempts due to repetition reached. Stopping.");
+                break;
+            }
+            continue;
+        } else {
+            retryAttempt = 0;
+            lastReviewText = reviews.length > 0 ? reviews[0].comment : lastReviewText;
+        }
+
         let foundOldReview = false;
-    
+
         for (const review of reviews) {
             const yearMatch = review.timestamp.match(/\d{4}/);
             if (yearMatch) {
@@ -160,9 +187,9 @@ async function scrapeReviews(hotelUrl) {
             }
             allReviews.push(review);
         }
-    
+
         console.log(`Collected ${reviews.length} reviews from page ${pageCounter}.`);
-    
+
         if (foundOldReview) {
             console.log("Total Reviews Scraped:", allReviews.length);
             await sendReviews(allReviews);
@@ -170,9 +197,9 @@ async function scrapeReviews(hotelUrl) {
             await browser.close();
             return;
         }
-    
+
         const nextPageButton = await page.$('div[data-testid="chevron-right-pagination"]');
-    
+
         if (!nextPageButton) {
             console.log("❌ No 'Next Page' button found. Ending scraping.");
             break;
@@ -181,15 +208,15 @@ async function scrapeReviews(hotelUrl) {
         const isDisabled = await page.evaluate(button => {
             return button.getAttribute('aria-disabled') === "true";
         }, nextPageButton);
-    
+
         if (isDisabled) {
             console.log("❌ 'Next Page' button is disabled. Stopping pagination.");
             break;
         }
-    
+
         console.log("Navigating to the next page...");
         await nextPageButton.click();
-    
+
         await new Promise(resolve => setTimeout(resolve, 3000));
         pageCounter++;
     }     

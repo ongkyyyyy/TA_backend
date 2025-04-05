@@ -31,7 +31,7 @@ def create_review_blueprint(app):
             if result.returncode != 0:
                 return jsonify({"error": result.stderr}), 500
 
-            return jsonify({"message": "Scraping triggered successfully", "output": result.stdout})
+            return jsonify({"message": "Traveloka scraping triggered successfully", "output": result.stdout})
         except Exception as e:
             return jsonify({"error": str(e)}), 500
         
@@ -58,7 +58,34 @@ def create_review_blueprint(app):
             if result.returncode != 0:
                 return jsonify({"error": result.stderr}), 500
 
-            return jsonify({"message": "Scraping triggered successfully", "output": result.stdout})
+            return jsonify({"message": "Ticket.com scraping triggered successfully", "output": result.stdout})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        
+    @review_bp.route("/agoda_scrape", methods=["POST"])
+    def scrape_agoda_reviews():
+        data = request.json
+        hotel_url = data.get("url")
+
+        if not hotel_url:
+            return jsonify({"error": "Hotel URL is required"}), 400
+        
+        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        SCRIPT_PATH = os.path.join(backend_dir, "scraper", "agoda_scrape_reviews.js")
+
+        if not os.path.exists(SCRIPT_PATH):
+            return jsonify({"error": f"Script not found at {SCRIPT_PATH}"}), 500
+
+        try:
+            result = subprocess.run(
+                ["node", SCRIPT_PATH, hotel_url],
+                text=True,
+                capture_output=True
+            )
+            if result.returncode != 0:
+                return jsonify({"error": result.stderr}), 500
+
+            return jsonify({"message": "Agoda scraping triggered successfully", "output": result.stdout})
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
@@ -72,8 +99,7 @@ def create_review_blueprint(app):
 
             inserted_ids = saved_reviews["inserted_ids"]
             sentiment_results = []
-
-            # 2️⃣ Perform sentiment analysis
+            
             for review, review_id in zip(data, inserted_ids):
                 text = review.get("comment", "")
                 sentiment, pos_count, neg_count = analyze_sentiment(text)
