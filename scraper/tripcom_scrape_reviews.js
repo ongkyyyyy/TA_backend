@@ -12,7 +12,7 @@ async function scrapeReviews(hotelUrl) {
 
     console.log("Launching Puppeteer with Stealth Plugin...");
     const browser = await puppeteer.launch({ 
-        headless: false,  
+        headless: "new",  
         defaultViewport: null, 
         args: [
             "--start-maximized",
@@ -117,33 +117,6 @@ async function scrapeReviews(hotelUrl) {
         let reviews = [];
 
         try {
-            await page.waitForSelector('div.drawer_drawerContainer__6G_8M', { timeout: 10000 });
-            console.log("✅ Review drawer detected");
-        
-            // Optional: take screenshot for debugging
-            await page.screenshot({ path: `debug_drawer_${pageCounter}.png`, fullPage: true });
-        
-            // Scroll drawer to load content
-            await page.evaluate(async () => {
-                const drawer = document.querySelector('div.drawer_drawerContainer__6G_8M');
-                if (drawer) {
-                    drawer.scrollTop = drawer.scrollHeight;
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                }
-            });
-        
-            // Log how many reviews are found inside the drawer
-            const reviewCount = await page.evaluate(() => {
-                const container = document.querySelector('div.drawer_drawerContainer__6G_8M');
-                return container ? container.querySelectorAll('div.yRvZgc0SICPUbmdb2L2a').length : 0;
-            });
-            console.log(`Found ${reviewCount} review elements on page ${pageCounter}`);
-        
-            if (reviewCount === 0) {
-                throw new Error("No reviews loaded in drawer");
-            }
-        
-            // Now extract
             reviews = await page.evaluate((hotelName) => {
                 const container = document.querySelector('div.drawer_drawerContainer__6G_8M');
                 if (!container) return [];
@@ -158,12 +131,61 @@ async function scrapeReviews(hotelUrl) {
                         username: usernameElem ? usernameElem.innerText.trim() : 'Anonymous',
                         rating: ratingElem ? parseFloat(ratingElem.innerText.trim().replace(',', '.')) : null,
                         comment: commentElem && commentElem.innerText.trim() ? commentElem.innerText.trim() : '-',
-                        timestamp: timestampElem ? timestampElem.innerText.trim() : 'Unknown Date',
+                        timestamp: (() => {
+                            if (!timestampElem) return 'Unknown Date';
+                            const raw = timestampElem.innerText.trim();
+
+                            const months = {
+                                jan: 0, januari: 0,
+                                feb: 1, februari: 1,
+                                mar: 2, maret: 2,
+                                apr: 3, april: 3,
+                                may: 4, mei: 4,
+                                jun: 5, juni: 5,
+                                jul: 6, juli: 6,
+                                aug: 7, agustus: 7,
+                                sep: 8, september: 8,
+                                oct: 9, oktober: 9,
+                                nov: 10, november: 10,
+                                dec: 11, desember: 11
+                            };
+
+                            // Handle English: 'Posted May 26, 2024' or 'May 26, 2024'
+                            let match = raw.match(/(?:Posted\s*)?(\w+)\s+(\d{1,2}),?\s+(\d{4})/i);
+                            if (match) {
+                                const [, monthName, day, year] = match;
+                                const monthIndex = months[monthName.toLowerCase()];
+                                if (monthIndex !== undefined) {
+                                    const dateObj = new Date(year, monthIndex, day);
+                                    const dd = String(dateObj.getDate()).padStart(2, '0');
+                                    const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                                    const yyyy = String(dateObj.getFullYear());
+                                    return `${dd}-${mm}-${yyyy}`;
+                                }
+                            }
+
+                            // Handle Indonesian: '3 Juni 2024'
+                            match = raw.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/i);
+                            if (match) {
+                                const [, day, monthName, year] = match;
+                                const monthIndex = months[monthName.toLowerCase()];
+                                if (monthIndex !== undefined) {
+                                    const dateObj = new Date(year, monthIndex, day);
+                                    const dd = String(dateObj.getDate()).padStart(2, '0');
+                                    const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                                    const yyyy = String(dateObj.getFullYear());
+                                    return `${dd}-${mm}-${yyyy}`;
+                                }
+                            }
+
+                            console.log('❌ Could not parse timestamp:', raw);
+                            return 'Unknown Date';
+                        })(),
                         hotel_name: hotelName,
                         OTA: 'Trip.com'
                     };
                 }).filter(review => review.comment && review.rating !== null && review.rating > 0);
-            }, hotelName); // ← don't forget to pass it here
+            }, hotelName); 
             
         } catch (err) {
             console.log("❌ Error during review extraction:", err.message);
@@ -191,15 +213,16 @@ async function scrapeReviews(hotelUrl) {
         let foundOldReview = false;
 
         for (const review of reviews) {
-            const [day, month, year] = review.timestamp.split('-').map(val => parseInt(val, 10));
-            if (year < 24) {
-                console.log("Encountered 2023 or earlier review. Stopping scraping.");
-                await sendReviews(allReviews);
-                await browser.close();
-                return;
+            const year = parseInt(review.timestamp.split("-")[2], 10);
+        
+            if (year && year < 2024) {
+                console.log("Encountered review before 2024. Stopping.");
+                foundOldReview = true;
+                break;
             }
+        
             allReviews.push(review);
-        }
+        }        
 
         console.log(`Collected ${reviews.length} reviews from page ${pageCounter}.`);
 

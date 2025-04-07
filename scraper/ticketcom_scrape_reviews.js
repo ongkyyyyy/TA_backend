@@ -136,20 +136,34 @@ async function scrapeReviews(hotelUrl) {
                     const usernameElem = review.querySelector('[class*="ReviewCard_customer_name"]');
                     const ratingElem = review.querySelector('.ReviewCard_user_review__HvsOH');
                     const commentElem = review.querySelector('.ReadMoreComments_review_card_comment__R_W2B');
-
+            
                     const timestampElem = Array.from(review.querySelectorAll("span"))
                         .find(span => span.innerText.match(/\d{1,2} \w{3,} \d{4}/));
-
+            
                     return {
                         username: usernameElem ? usernameElem.innerText.trim() : 'Anonymous',
                         rating: ratingElem ? parseFloat(ratingElem.innerText.trim().replace(',', '.')) * 2 : null,
                         comment: commentElem && commentElem.innerText.trim() ? commentElem.innerText.trim() : '-',
-                        timestamp: timestampElem ? timestampElem.innerText.trim() : 'Unknown Date',
+                        timestamp: (() => {
+                            if (!timestampElem) return 'Unknown Date';
+                            const months = {
+                                Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                                Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+                            };
+                            const match = timestampElem.innerText.trim().match(/(\d{1,2}) (\w{3}) (\d{4})/);
+                            if (!match) return 'Unknown Date';
+                            const [_, day, monthAbbrev, year] = match;
+                            const dateObj = new Date(year, months[monthAbbrev], day);
+                            const dd = String(dateObj.getDate()).padStart(2, '0');
+                            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            const yyyy = String(dateObj.getFullYear());
+                            return `${dd}-${mm}-${yyyy}`;
+                        })(),
                         hotel_name: hotelName,
                         OTA: 'Ticket.com'
                     };
                 }).filter(review => review.comment && review.rating !== null && review.rating > 0);
-            }, hotelName);
+            }, hotelName);            
         } catch (err) {
             console.log("❌ Error during review extraction. Retrying...");
             retryAttempt++;
@@ -176,14 +190,11 @@ async function scrapeReviews(hotelUrl) {
         let foundOldReview = false;
 
         for (const review of reviews) {
-            const yearMatch = review.timestamp.match(/\d{4}/);
-            if (yearMatch) {
-                const year = parseInt(yearMatch[0], 10);
-                if (year < 2024) {
-                    console.log("Encountered 2023 or earlier review. Stopping scraping.");
-                    foundOldReview = true;
-                    break;
-                }
+            const year = parseInt(review.timestamp.split("-")[2], 10);
+            if (!year || year < 2024) {
+                console.log("Encountered review before 2024. Stopping.");
+                foundOldReview = true;
+                break;
             }
             allReviews.push(review);
         }

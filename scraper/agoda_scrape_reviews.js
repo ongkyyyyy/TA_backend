@@ -134,10 +134,10 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
                                 if (parts.length === 3) {
                                     const day = parts[0].padStart(2, '0');
                                     const month = months[parts[1]] || '01';
-                                    const year = parts[2].slice(-2);
+                                    const year = parts[2];
                                     return `${day}-${month}-${year}`;
                                 }
-                                return '01-01-70';
+                                return '01-01-1970';
                             })(),
                             hotel_name: hotelName,
                             OTA: 'Agoda'
@@ -164,16 +164,16 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
 
             for (const review of reviews) {
                 const [day, month, year] = review.timestamp.split('-').map(val => parseInt(val, 10));
-                if (year < 24) {
-                    console.log("Encountered 2023 or earlier review. Stopping scraping.");
+                if (!year || year < 2024) {
+                    console.log("Encountered 2023 or earlier review or invalid date. Stopping scraping.");
                     await sendReviews(allReviews);
                     await browser.close();
                     return;
                 }
-                allReviews.push(review);
             }
 
             console.log(`✅ Collected ${reviews.length} reviews from page ${pageCounter}.`);
+            allReviews.push(...reviews);
 
             const nextPageButtons = await page.$$('button[data-element-name="review-paginator-next"]');
             const nextPageButton = nextPageButtons[nextPageButtons.length - 1];
@@ -207,7 +207,6 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
             console.error("❌ Max retry attempts reached. Giving up.");
         }
     }
-
     await browser.close();
 }
 

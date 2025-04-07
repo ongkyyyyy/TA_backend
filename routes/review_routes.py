@@ -26,7 +26,9 @@ def create_review_blueprint(app):
             result = subprocess.run(
                 ["node", SCRIPT_PATH, hotel_url],
                 text=True,
-                capture_output=True
+                capture_output=True,
+                encoding='utf-8',
+                errors='replace'  
             )
             if result.returncode != 0:
                 return jsonify({"error": result.stderr}), 500
@@ -53,7 +55,9 @@ def create_review_blueprint(app):
             result = subprocess.run(
                 ["node", SCRIPT_PATH, hotel_url],
                 text=True,
-                capture_output=True
+                capture_output=True,
+                encoding='utf-8',
+                errors='replace'  
             )
             if result.returncode != 0:
                 return jsonify({"error": result.stderr}), 500
@@ -80,12 +84,43 @@ def create_review_blueprint(app):
             result = subprocess.run(
                 ["node", SCRIPT_PATH, hotel_url],
                 text=True,
-                capture_output=True
+                capture_output=True,
+                encoding='utf-8',
+                errors='replace'  
             )
             if result.returncode != 0:
                 return jsonify({"error": result.stderr}), 500
 
             return jsonify({"message": "Agoda scraping triggered successfully", "output": result.stdout})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        
+    @review_bp.route("/tripcom_scrape", methods=["POST"])
+    def scrape_tripcom_reviews():
+        data = request.json
+        hotel_url = data.get("url")
+
+        if not hotel_url:
+            return jsonify({"error": "Hotel URL is required"}), 400
+        
+        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        SCRIPT_PATH = os.path.join(backend_dir, "scraper", "tripcom_scrape_reviews.js")
+
+        if not os.path.exists(SCRIPT_PATH):
+            return jsonify({"error": f"Script not found at {SCRIPT_PATH}"}), 500
+
+        try:
+            result = subprocess.run(
+                ["node", SCRIPT_PATH, hotel_url],
+                text=True,
+                capture_output=True,
+                encoding='utf-8',
+                errors='replace'  
+            )
+            if result.returncode != 0:
+                return jsonify({"error": result.stderr}), 500
+
+            return jsonify({"message": "Trip.com scraping triggered successfully", "output": result.stdout})
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 

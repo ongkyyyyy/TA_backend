@@ -13,10 +13,10 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
     }
 
     console.log(`Launching Puppeteer (Attempt ${retryAttempt + 1})...`);
-    const browser = await puppeteer.launch({ 
-        headless: "new",  
-        defaultViewport: null, 
-        args: ["--start-maximized"] 
+    const browser = await puppeteer.launch({
+        headless: "new",
+        defaultViewport: null,
+        args: ["--start-maximized"]
     });
 
     try {
@@ -45,16 +45,28 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
                     const usernameElem = review.querySelector('[data-testid="reviewer-name"]');
                     const ratingElem = review.querySelector('[data-testid="tvat-ratingScore"]');
                     const commentElem = review.querySelector('.css-901oao.css-cens5h');
-
                     const timestampElem = Array.from(review.querySelectorAll("div.css-901oao"))
                         .find(div => div.innerText.match(/\d{1,2} \w{3,} \d{4}/));
-                    const timestampText = timestampElem ? timestampElem.innerText.trim() : 'Unknown Date';
 
                     return {
                         username: usernameElem ? usernameElem.innerText.trim() : 'Anonymous',
                         rating: ratingElem ? parseFloat(ratingElem.innerText.trim().replace(',', '.')) : null,
                         comment: commentElem && commentElem.innerText.trim() ? commentElem.innerText.trim() : '-',
-                        timestamp: timestampText,
+                        timestamp: (() => {
+                            if (!timestampElem) return 'Unknown Date';
+                            const months = {
+                                Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+                                Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+                            };
+                            const match = timestampElem.innerText.trim().match(/(\d{1,2}) (\w{3}) (\d{4})/);
+                            if (!match) return 'Unknown Date';
+                            const [_, day, monthAbbrev, year] = match;
+                            const dateObj = new Date(year, months[monthAbbrev], day);
+                            const dd = String(dateObj.getDate()).padStart(2, '0');
+                            const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            const yyyy = String(dateObj.getFullYear());
+                            return `${dd}-${mm}-${yyyy}`;
+                        })(),
                         hotel_name: hotelName,
                         OTA: 'Traveloka'
                     };
@@ -62,17 +74,13 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
             }, hotelName);
 
             for (const review of reviews) {
-                const yearMatch = review.timestamp.match(/\d{4}/);
-                if (yearMatch) {
-                    const year = parseInt(yearMatch[0], 10);
-                    if (year < 2024) {
-                        console.log("Encountered 2023 or earlier review. Stopping scraping.");
-                        console.log("Total Reviews Scraped:", allReviews.length);
-                        await sendReviews(allReviews);
-                        console.log("Closing browser...");
-                        await browser.close();
-                        return;
-                    }
+                const [day, month, year] = review.timestamp.split('-').map(val => parseInt(val, 10));
+                if (!year || year < 2024) {
+                    console.log("Encountered 2023 or earlier review or invalid date. Stopping scraping.");
+                    console.log("Total Reviews Scraped:", allReviews.length);
+                    await sendReviews(allReviews);
+                    await browser.close();
+                    return;
                 }
                 allReviews.push(review);
             }
@@ -132,5 +140,5 @@ async function sendReviews(reviews) {
     }
 }
 
-const hotelUrl = process.argv[2]; 
+const hotelUrl = process.argv[2];
 scrapeReviews(hotelUrl);
