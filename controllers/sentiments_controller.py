@@ -8,6 +8,5 @@ def save_sentiment_analysis(sentiments):
     return {"message": "Sentiment analysis saved successfully", "status": 201}
 
 def get_all_sentiments():
-    """Retrieve all sentiments from MongoDB"""
     sentiments = list(sentiment_collection.find({}, {"_id": 0}))  
     return sentiments

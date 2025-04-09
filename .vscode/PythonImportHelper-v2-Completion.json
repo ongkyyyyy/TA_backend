@@ -48,6 +48,30 @@
         "documentation": {}
     },
     {
+        "label": "Blueprint",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "Flask",
         "importPath": "flask",
         "description": "flask",
@@ -65,6 +89,14 @@
     },
     {
         "label": "save_sentiment_analysis",
+        "importPath": "controllers.sentiments_controller",
+        "description": "controllers.sentiments_controller",
+        "isExtraImport": true,
+        "detail": "controllers.sentiments_controller",
+        "documentation": {}
+    },
+    {
+        "label": "get_all_sentiments",
         "importPath": "controllers.sentiments_controller",
         "description": "controllers.sentiments_controller",
         "isExtraImport": true,
@@ -259,6 +291,14 @@
         "documentation": {}
     },
     {
+        "label": "create_sentiment_blueprint",
+        "importPath": "routes.sentiment_routes",
+        "description": "routes.sentiment_routes",
+        "isExtraImport": true,
+        "detail": "routes.sentiment_routes",
+        "documentation": {}
+    },
+    {
         "label": "RevenueController",
         "kind": 6,
         "importPath": "controllers.revenue_controller",
@@ -281,7 +321,7 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def get_all_reviews():\n    \"\"\"Retrieve all reviews from MongoDB\"\"\"\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
+        "peekOfCode": "def get_all_reviews():\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
@@ -290,7 +330,7 @@
         "kind": 2,
         "importPath": "controllers.sentiments_controller",
         "description": "controllers.sentiments_controller",
-        "peekOfCode": "def save_sentiment_analysis(sentiments):\n    if not sentiments:\n        return {\"message\": \"No sentiment data to save\", \"status\": 400}\n    sentiment_collection.insert_many(sentiments)\n    return {\"message\": \"Sentiment analysis saved successfully\", \"status\": 201}\ndef get_all_sentiments():\n    \"\"\"Retrieve all sentiments from MongoDB\"\"\"\n    sentiments = list(sentiment_collection.find({}, {\"_id\": 0}))  \n    return sentiments",
+        "peekOfCode": "def save_sentiment_analysis(sentiments):\n    if not sentiments:\n        return {\"message\": \"No sentiment data to save\", \"status\": 400}\n    sentiment_collection.insert_many(sentiments)\n    return {\"message\": \"Sentiment analysis saved successfully\", \"status\": 201}\ndef get_all_sentiments():\n    sentiments = list(sentiment_collection.find({}, {\"_id\": 0}))  \n    return sentiments",
         "detail": "controllers.sentiments_controller",
         "documentation": {}
     },
@@ -299,7 +339,7 @@
         "kind": 2,
         "importPath": "controllers.sentiments_controller",
         "description": "controllers.sentiments_controller",
-        "peekOfCode": "def get_all_sentiments():\n    \"\"\"Retrieve all sentiments from MongoDB\"\"\"\n    sentiments = list(sentiment_collection.find({}, {\"_id\": 0}))  \n    return sentiments",
+        "peekOfCode": "def get_all_sentiments():\n    sentiments = list(sentiment_collection.find({}, {\"_id\": 0}))  \n    return sentiments",
         "detail": "controllers.sentiments_controller",
         "documentation": {}
     },
@@ -385,6 +425,15 @@
         "documentation": {}
     },
     {
+        "label": "create_sentiment_blueprint",
+        "kind": 2,
+        "importPath": "routes.sentiment_routes",
+        "description": "routes.sentiment_routes",
+        "peekOfCode": "def create_sentiment_blueprint(app):\n    sentiments_bp = Blueprint(\"sentiments\", __name__)\n    @sentiments_bp.route(\"/sentiments\", methods=[\"GET\"])\n    def get_sentiments():\n        sentiments = get_all_sentiments()\n        jsonify({\"reviews\": sentiments})\n    return sentiments_bp",
+        "detail": "routes.sentiment_routes",
+        "documentation": {}
+    },
+    {
         "label": "POSITIVE_WORDS",
         "kind": 5,
         "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
@@ -461,7 +510,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\napp.config[\"MONGO_URI\"] = MONGO_URI\n# Register blueprints correctly\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  # ✅ Use the existing variable\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "app = Flask(__name__)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
@@ -470,7 +519,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app.config[\"MONGO_URI\"] = MONGO_URI\n# Register blueprints correctly\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  # ✅ Use the existing variable\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "app.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
@@ -479,7 +528,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "revenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  # ✅ Use the existing variable\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "revenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
@@ -488,7 +537,16 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "reviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  # ✅ Use the existing variable\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "reviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "sentiments_bp",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },

@@ -34,6 +34,5 @@ def save_reviews(reviews):
     }
 
 def get_all_reviews():
-    """Retrieve all reviews from MongoDB"""
     reviews = list(reviews_collection.find({}, {"_id": 0}))  
     return reviews
