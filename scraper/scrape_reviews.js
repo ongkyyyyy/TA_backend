@@ -127,16 +127,28 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
     await browser.close();
 }
 
-async function sendReviews(reviews) {
+// async function sendReviews(reviews) {
+//     try {
+//         if (reviews.length > 0) {
+//             await axios.post('http://127.0.0.1:5000/reviews', { reviews });
+//             console.log('✅ Data sent to backend successfully');
+//         } else {
+//             console.log('ℹ️ No valid reviews found.');
+//         }
+//     } catch (error) {
+//         console.error('❌ Error sending data:', error.message);
+//     }
+// }
+
+async function sendReviews(reviews, batchSize = 10) {
     try {
-        if (reviews.length > 0) {
-            await axios.post('http://127.0.0.1:5000/reviews', { reviews });
-            console.log('✅ Data sent to backend successfully');
-        } else {
-            console.log('ℹ️ No valid reviews found.');
+        for (let i = 0; i < reviews.length; i += batchSize) {
+            const batch = reviews.slice(i, i + batchSize);
+            await axios.post('http://127.0.0.1:5000/reviews', { reviews: batch });
+            console.log(`Batch ${i / batchSize + 1} sent successfully`);
         }
     } catch (error) {
-        console.error('❌ Error sending data:', error.message);
+        console.error('Error sending data:', error.message);
     }
 }
 

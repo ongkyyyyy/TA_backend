@@ -8,7 +8,6 @@ def save_reviews(reviews):
 
     result = reviews_collection.insert_many(reviews)
 
-    # Analyze sentiment for each inserted review
     sentiment_data = []
     for review, inserted_id in zip(reviews, result.inserted_ids):
         comment = review.get("comment", "")

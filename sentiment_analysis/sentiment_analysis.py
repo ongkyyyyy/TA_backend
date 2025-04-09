@@ -1,31 +1,20 @@
 import re
 from collections import Counter
-from sentiment_analysis.indonesian_sentiment_lexicon import POSITIVE_WORDS, NEGATIVE_WORDS, NEGATION_WORDS, CONTRAST_WORDS
+from sentiment_analysis.indonesian_sentiment_lexicon import NEGATION_WORDS, CONTRAST_WORDS
+
+def load_words_from_txt(path):
+    with open(path, 'r', encoding='utf-8') as file:
+        return set(line.strip().lower() for line in file if line.strip())
+
+POSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')
+NEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')
 
 def analyze_sentiment(text):
     text = text.lower()
     words = re.findall(r'\b\w+\b', text)
-    word_counts = Counter(words)
 
-    pos_count, neg_count = 0, 0
-    negate = False 
-
-    for i, word in enumerate(words):
-        if word in NEGATION_WORDS:
-            negate = True
-            continue
-        
-        if word in POSITIVE_WORDS:
-            pos_count += -1 if negate else 1
-            negate = False  
-        
-        elif word in NEGATIVE_WORDS:
-            neg_count += -1 if negate else 1
-            negate = False  
-            
-    for word in words:
-        if word in CONTRAST_WORDS:
-            pos_count, neg_count = neg_count, pos_count 
+    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)
+    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)
 
     if pos_count > neg_count:
         sentiment = "positive"
