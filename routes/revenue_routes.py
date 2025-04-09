@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint # type: ignore
 from controllers.revenue_controller import RevenueController
 from models.revenue import RevenueDB
 

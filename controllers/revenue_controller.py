@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request # type: ignore
 
 class RevenueController:
     def __init__(self, db):

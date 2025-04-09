@@ -1,4 +1,5 @@
-from models.review import reviews_collection, sentiment_collection
+from models.review import reviews_collection
+from controllers.sentiments_controller import save_sentiment_analysis
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
 from datetime import datetime
 
@@ -31,13 +32,6 @@ def save_reviews(reviews):
         "count": len(result.inserted_ids),
         "status": 201
     }
-
-def save_sentiment_analysis(sentiments):
-    if not sentiments:
-        return {"message": "No sentiment data to save", "status": 400}
-
-    sentiment_collection.insert_many(sentiments)
-    return {"message": "Sentiment analysis saved successfully", "status": 201}
 
 def get_all_reviews():
     """Retrieve all reviews from MongoDB"""

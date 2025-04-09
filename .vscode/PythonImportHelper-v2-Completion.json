@@ -64,75 +64,51 @@
         "documentation": {}
     },
     {
+        "label": "save_sentiment_analysis",
+        "importPath": "controllers.sentiments_controller",
+        "description": "controllers.sentiments_controller",
+        "isExtraImport": true,
+        "detail": "controllers.sentiments_controller",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_sentiment",
+        "importPath": "sentiment_analysis.sentiment_analysis",
+        "description": "sentiment_analysis.sentiment_analysis",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_sentiment",
+        "importPath": "sentiment_analysis.sentiment_analysis",
+        "description": "sentiment_analysis.sentiment_analysis",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "sentiment_collection",
-        "importPath": "models.review",
-        "description": "models.review",
+        "importPath": "models.sentiment",
+        "description": "models.sentiment",
         "isExtraImport": true,
-        "detail": "models.review",
-        "documentation": {}
-    },
-    {
-        "label": "reviews_collection",
-        "importPath": "models.review",
-        "description": "models.review",
-        "isExtraImport": true,
-        "detail": "models.review",
-        "documentation": {}
-    },
-    {
-        "label": "sentiment_collection",
-        "importPath": "models.review",
-        "description": "models.review",
-        "isExtraImport": true,
-        "detail": "models.review",
-        "documentation": {}
-    },
-    {
-        "label": "analyze_sentiment",
-        "importPath": "sentiment_analysis.sentiment_analysis",
-        "description": "sentiment_analysis.sentiment_analysis",
-        "isExtraImport": true,
-        "detail": "sentiment_analysis.sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "analyze_sentiment",
-        "importPath": "sentiment_analysis.sentiment_analysis",
-        "description": "sentiment_analysis.sentiment_analysis",
-        "isExtraImport": true,
-        "detail": "sentiment_analysis.sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "analyze_sentiment",
-        "importPath": "sentiment_analysis.sentiment_analysis",
-        "description": "sentiment_analysis.sentiment_analysis",
-        "isExtraImport": true,
-        "detail": "sentiment_analysis.sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
+        "detail": "models.sentiment",
         "documentation": {}
     },
     {
@@ -149,6 +125,22 @@
         "description": "pymongo",
         "isExtraImport": true,
         "detail": "pymongo",
+        "documentation": {}
+    },
+    {
+        "label": "MongoClient",
+        "importPath": "pymongo",
+        "description": "pymongo",
+        "isExtraImport": true,
+        "detail": "pymongo",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
         "documentation": {}
     },
     {
@@ -285,21 +277,30 @@
         "documentation": {}
     },
     {
-        "label": "save_sentiment_analysis",
-        "kind": 2,
-        "importPath": "controllers.review_controller",
-        "description": "controllers.review_controller",
-        "peekOfCode": "def save_sentiment_analysis(sentiments):\n    if not sentiments:\n        return {\"message\": \"No sentiment data to save\", \"status\": 400}\n    sentiment_collection.insert_many(sentiments)\n    return {\"message\": \"Sentiment analysis saved successfully\", \"status\": 201}\ndef get_all_reviews():\n    \"\"\"Retrieve all reviews from MongoDB\"\"\"\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
-        "detail": "controllers.review_controller",
-        "documentation": {}
-    },
-    {
         "label": "get_all_reviews",
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
         "peekOfCode": "def get_all_reviews():\n    \"\"\"Retrieve all reviews from MongoDB\"\"\"\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
         "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "save_sentiment_analysis",
+        "kind": 2,
+        "importPath": "controllers.sentiments_controller",
+        "description": "controllers.sentiments_controller",
+        "peekOfCode": "def save_sentiment_analysis(sentiments):\n    if not sentiments:\n        return {\"message\": \"No sentiment data to save\", \"status\": 400}\n    sentiment_collection.insert_many(sentiments)\n    return {\"message\": \"Sentiment analysis saved successfully\", \"status\": 201}\ndef get_all_sentiments():\n    \"\"\"Retrieve all sentiments from MongoDB\"\"\"\n    sentiments = list(sentiment_collection.find({}, {\"_id\": 0}))  \n    return sentiments",
+        "detail": "controllers.sentiments_controller",
+        "documentation": {}
+    },
+    {
+        "label": "get_all_sentiments",
+        "kind": 2,
+        "importPath": "controllers.sentiments_controller",
+        "description": "controllers.sentiments_controller",
+        "peekOfCode": "def get_all_sentiments():\n    \"\"\"Retrieve all sentiments from MongoDB\"\"\"\n    sentiments = list(sentiment_collection.find({}, {\"_id\": 0}))  \n    return sentiments",
+        "detail": "controllers.sentiments_controller",
         "documentation": {}
     },
     {
@@ -316,7 +317,7 @@
         "kind": 5,
         "importPath": "models.review",
         "description": "models.review",
-        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance  \nreviews_collection = db.reviews\nsentiment_collection = db.sentiments",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance  \nreviews_collection = db.reviews",
         "detail": "models.review",
         "documentation": {}
     },
@@ -325,7 +326,7 @@
         "kind": 5,
         "importPath": "models.review",
         "description": "models.review",
-        "peekOfCode": "db = client.hotelPerformance  \nreviews_collection = db.reviews\nsentiment_collection = db.sentiments",
+        "peekOfCode": "db = client.hotelPerformance  \nreviews_collection = db.reviews",
         "detail": "models.review",
         "documentation": {}
     },
@@ -334,17 +335,35 @@
         "kind": 5,
         "importPath": "models.review",
         "description": "models.review",
-        "peekOfCode": "reviews_collection = db.reviews\nsentiment_collection = db.sentiments",
+        "peekOfCode": "reviews_collection = db.reviews",
         "detail": "models.review",
+        "documentation": {}
+    },
+    {
+        "label": "client",
+        "kind": 5,
+        "importPath": "models.sentiment",
+        "description": "models.sentiment",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance  \nsentiment_collection = db.sentiments",
+        "detail": "models.sentiment",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "kind": 5,
+        "importPath": "models.sentiment",
+        "description": "models.sentiment",
+        "peekOfCode": "db = client.hotelPerformance  \nsentiment_collection = db.sentiments",
+        "detail": "models.sentiment",
         "documentation": {}
     },
     {
         "label": "sentiment_collection",
         "kind": 5,
-        "importPath": "models.review",
-        "description": "models.review",
+        "importPath": "models.sentiment",
+        "description": "models.sentiment",
         "peekOfCode": "sentiment_collection = db.sentiments",
-        "detail": "models.review",
+        "detail": "models.sentiment",
         "documentation": {}
     },
     {

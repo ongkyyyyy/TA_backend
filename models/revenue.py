@@ -1,4 +1,4 @@
-from flask_pymongo import PyMongo
+from flask_pymongo import PyMongo # type: ignore
 
 class RevenueDB:
     def __init__(self, app):
