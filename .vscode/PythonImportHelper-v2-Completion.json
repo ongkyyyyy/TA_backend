@@ -72,6 +72,22 @@
         "documentation": {}
     },
     {
+        "label": "reviews_collection",
+        "importPath": "models.review",
+        "description": "models.review",
+        "isExtraImport": true,
+        "detail": "models.review",
+        "documentation": {}
+    },
+    {
+        "label": "sentiment_collection",
+        "importPath": "models.review",
+        "description": "models.review",
+        "isExtraImport": true,
+        "detail": "models.review",
+        "documentation": {}
+    },
+    {
         "label": "analyze_sentiment",
         "importPath": "sentiment_analysis.sentiment_analysis",
         "description": "sentiment_analysis.sentiment_analysis",
@@ -85,6 +101,22 @@
         "description": "sentiment_analysis.sentiment_analysis",
         "isExtraImport": true,
         "detail": "sentiment_analysis.sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_sentiment",
+        "importPath": "sentiment_analysis.sentiment_analysis",
+        "description": "sentiment_analysis.sentiment_analysis",
+        "isExtraImport": true,
+        "detail": "sentiment_analysis.sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
         "documentation": {}
     },
     {
