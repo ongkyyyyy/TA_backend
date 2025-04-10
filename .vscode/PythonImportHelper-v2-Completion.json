@@ -312,7 +312,7 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def save_reviews(reviews):\n    if not reviews:\n        return {\"message\": \"No reviews to save\", \"status\": 400}\n    result = reviews_collection.insert_many(reviews)\n    sentiment_data = []\n    for review, inserted_id in zip(reviews, result.inserted_ids):\n        comment = review.get(\"comment\", \"\")\n        sentiment, pos_count, neg_count = analyze_sentiment(comment)\n        sentiment_data.append({\n            \"review_id\": inserted_id,",
+        "peekOfCode": "def save_reviews(reviews):\n    if not reviews:\n        return {\"message\": \"No reviews to save\", \"status\": 400}\n    filters = [{\n        \"username\": r[\"username\"],\n        \"comment\": r[\"comment\"],\n        \"timestamp\": r[\"timestamp\"],\n        \"hotel_name\": r[\"hotel_name\"],\n        \"OTA\": r[\"OTA\"]\n    } for r in reviews]",
         "detail": "controllers.review_controller",
         "documentation": {}
     },

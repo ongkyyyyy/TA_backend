@@ -86,10 +86,20 @@ def create_review_blueprint(app):
                 text=True,
                 capture_output=True,
                 encoding='utf-8',
-                errors='replace'  
+                errors='replace',
+                check=True
             )
             if result.returncode != 0:
                 return jsonify({"error": result.stderr}), 500
+            
+            with open("agoda_scrape_stdout.log", "w", encoding="utf-8") as f_out:
+                f_out.write(result.stdout)
+            with open("agoda_scrape_stderr.log", "w", encoding="utf-8") as f_err:
+                f_err.write(result.stderr)
+
+            print("🟢 STDOUT:\n", result.stdout)
+            print("🔴 STDERR:\n", result.stderr)
+
 
             return jsonify({"message": "Agoda scraping triggered successfully", "output": result.stdout})
         except Exception as e:
@@ -126,33 +136,17 @@ def create_review_blueprint(app):
 
     @review_bp.route("/reviews", methods=["POST"])
     def receive_reviews():
-            data = request.json.get("reviews", [])
-            saved_reviews = save_reviews(data)
+        data = request.json.get("reviews", [])
+        result = save_reviews(data)
 
-            if not saved_reviews.get("inserted_ids"):
-                return jsonify({"error": "Failed to save reviews"}), 500
+        if not result.get("inserted_ids"):
+            return jsonify({"message": result["message"]}), result["status"]
 
-            inserted_ids = saved_reviews["inserted_ids"]
-            sentiment_results = []
-            
-            for review, review_id in zip(data, inserted_ids):
-                text = review.get("comment", "")
-                sentiment, pos_count, neg_count = analyze_sentiment(text)
-
-                sentiment_results.append({
-                    "review_id": str(review_id), 
-                    "comment": text,
-                    "sentiment": sentiment,
-                    "positive_score": pos_count,
-                    "negative_score": neg_count,
-                    "created_at": datetime.utcnow()
-                })
-
-            return jsonify({
-                "message": "Reviews and sentiment analysis processed successfully",
-                "sentiment_results": sentiment_results,
-                "status": 201
-            }), 201
+        return jsonify({
+            "message": result["message"],
+            "inserted_ids": [str(_id) for _id in result["inserted_ids"]],
+            "status": result["status"]
+        }), result["status"]
             
     @review_bp.route("/reviews", methods=["GET"])
     def fetch_reviews():
