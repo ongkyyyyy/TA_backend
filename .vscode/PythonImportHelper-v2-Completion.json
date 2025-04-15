@@ -112,6 +112,22 @@
         "documentation": {}
     },
     {
+        "label": "ObjectId",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
+        "documentation": {}
+    },
+    {
+        "label": "ObjectId",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
+        "documentation": {}
+    },
+    {
         "label": "reviews_collection",
         "importPath": "models.review",
         "description": "models.review",
@@ -249,6 +265,14 @@
     },
     {
         "label": "HotelsDB",
+        "importPath": "models.hotels",
+        "description": "models.hotels",
+        "isExtraImport": true,
+        "detail": "models.hotels",
+        "documentation": {}
+    },
+    {
+        "label": "hotels_collection",
         "importPath": "models.hotels",
         "description": "models.hotels",
         "isExtraImport": true,
@@ -401,7 +425,7 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def save_reviews(reviews):\n    if not reviews:\n        return {\"message\": \"No reviews to save\", \"status\": 400}\n    filters = [{\n        \"username\": r[\"username\"],\n        \"comment\": r[\"comment\"],\n        \"timestamp\": r[\"timestamp\"],\n        \"hotel_name\": r[\"hotel_name\"],\n        \"OTA\": r[\"OTA\"]\n    } for r in reviews]",
+        "peekOfCode": "def save_reviews(reviews, hotel_id=None):  \n    if not reviews:\n        return {\"message\": \"No reviews to save\", \"status\": 400}\n    filters = [{\n        \"username\": r[\"username\"],\n        \"comment\": r[\"comment\"],\n        \"timestamp\": r[\"timestamp\"],\n        \"hotel_name\": r.get(\"hotel_name\", \"\"),\n        \"OTA\": r[\"OTA\"]\n    } for r in reviews]",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
@@ -410,7 +434,7 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def get_all_reviews():\n    reviews = list(reviews_collection.find({}, {\"_id\": 0}))  \n    return reviews",
+        "peekOfCode": "def get_all_reviews():\n    pipeline = [\n        {\n            \"$lookup\": {\n                \"from\": \"hotels\",\n                \"localField\": \"hotel_id\",\n                \"foreignField\": \"_id\",\n                \"as\": \"hotel_info\"\n            }\n        },",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
@@ -437,7 +461,16 @@
         "kind": 6,
         "importPath": "models.hotels",
         "description": "models.hotels",
-        "peekOfCode": "class HotelsDB:\n    def __init__(self, app=None):\n        self.client = MongoClient(MONGO_URI)\n        self.db = self.client.hotelPerformance\n        self.collection = self.db.hotels",
+        "peekOfCode": "class HotelsDB:\n    def __init__(self, app=None):\n        self.client = MongoClient(MONGO_URI)\n        self.db = self.client.hotelPerformance\n        self.collection = self.db.hotels\nhotels_collection = HotelsDB().collection",
+        "detail": "models.hotels",
+        "documentation": {}
+    },
+    {
+        "label": "hotels_collection",
+        "kind": 5,
+        "importPath": "models.hotels",
+        "description": "models.hotels",
+        "peekOfCode": "hotels_collection = HotelsDB().collection",
         "detail": "models.hotels",
         "documentation": {}
     },
@@ -527,7 +560,7 @@
         "kind": 2,
         "importPath": "routes.review_routes",
         "description": "routes.review_routes",
-        "peekOfCode": "def create_review_blueprint(app):\n    review_bp = Blueprint(\"reviews\", __name__)\n    @review_bp.route(\"/traveloka_scrape\", methods=[\"POST\"])\n    def scrape_traveloka_reviews():\n        data = request.json\n        hotel_url = data.get(\"url\")\n        if not hotel_url:\n            return jsonify({\"error\": \"Hotel URL is required\"}), 400\n        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n        SCRIPT_PATH = os.path.join(backend_dir, \"scraper\", \"scrape_reviews.js\")",
+        "peekOfCode": "def create_review_blueprint(app):\n    review_bp = Blueprint(\"reviews\", __name__)\n    @review_bp.route(\"/scrape/<source>\", methods=[\"POST\"])\n    def scrape_reviews(source):\n        data = request.json\n        hotel_id = data.get(\"hotel_id\")\n        if not hotel_id:\n            return jsonify({\"error\": \"hotel_id is required\"}), 400\n        try:\n            hotel_id_obj = ObjectId(hotel_id)",
         "detail": "routes.review_routes",
         "documentation": {}
     },

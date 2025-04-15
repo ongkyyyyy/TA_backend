@@ -4,12 +4,15 @@ const axios = require('axios');
 
 puppeteer.use(StealthPlugin());
 
-async function scrapeReviews(hotelUrl, retryAttempt = 0) {
+async function scrapeReviews(retryAttempt = 0) {
     const MAX_RETRIES = 3;
 
-    if (!hotelUrl) {
-        console.error("Error: No hotel URL provided.");
-        return;
+    const hotelUrl = process.argv[2];
+    const hotelId = process.argv[3];  
+
+    if (!hotelUrl || !hotelId) {
+        console.error("❌ Usage: node script.js <hotelUrl> <hotelId>");
+        process.exit(1);
     }
 
     console.log(`Launching Puppeteer (Attempt ${retryAttempt + 1})...`);
@@ -78,7 +81,7 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
                 if (!year || year < 2024) {
                     console.log("Encountered 2023 or earlier review or invalid date. Stopping scraping.");
                     console.log("Total Reviews Scraped:", allReviews.length);
-                    await sendReviews(allReviews);
+                    await sendReviews(allReviews, hotelId);
                     await browser.close();
                     return;
                 }
@@ -109,14 +112,14 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
         }
 
         console.log("Total Reviews Scraped:", allReviews.length);
-        await sendReviews(allReviews);
+        await sendReviews(allReviews, hotelId);
     } catch (err) {
         console.error(`❌ Error during scraping: ${err.message}`);
         await browser.close();
         if (retryAttempt + 1 < MAX_RETRIES) {
             console.log("🔁 Retrying scrape...");
             await new Promise(resolve => setTimeout(resolve, 5000));
-            return scrapeReviews(hotelUrl, retryAttempt + 1);
+            return scrapeReviews(retryAttempt + 1);
         } else {
             console.error("❌ Max retry attempts reached. Giving up.");
         }
@@ -127,30 +130,23 @@ async function scrapeReviews(hotelUrl, retryAttempt = 0) {
     await browser.close();
 }
 
-// async function sendReviews(reviews) {
-//     try {
-//         if (reviews.length > 0) {
-//             await axios.post('http://127.0.0.1:5000/reviews', { reviews });
-//             console.log('✅ Data sent to backend successfully');
-//         } else {
-//             console.log('ℹ️ No valid reviews found.');
-//         }
-//     } catch (error) {
-//         console.error('❌ Error sending data:', error.message);
-//     }
-// }
-
-async function sendReviews(reviews, batchSize = 10) {
+async function sendReviews(reviews, hotelId) {
     try {
-        for (let i = 0; i < reviews.length; i += batchSize) {
-            const batch = reviews.slice(i, i + batchSize);
-            await axios.post('http://127.0.0.1:5000/reviews', { reviews: batch });
-            console.log(`Batch ${i / batchSize + 1} sent successfully`);
+        if (reviews.length > 0) {
+            await axios.post('http://127.0.0.1:5000/reviews', {
+                reviews,
+                hotel_id: hotelId
+            });
+            console.log('✅ Data sent to backend successfully');
+            console.log('Total Reviews Sent:', reviews.length);
+            console.log('Hotel ID:', hotelId);
+        } else {
+            console.log('ℹ️ No valid reviews found.');
         }
     } catch (error) {
-        console.error('Error sending data:', error.message);
+        console.error('❌ Error sending data:', error.message);
     }
 }
 
-const hotelUrl = process.argv[2];
-scrapeReviews(hotelUrl);
+scrapeReviews();
+

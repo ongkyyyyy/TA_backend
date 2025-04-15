@@ -2,8 +2,9 @@ from models.review import reviews_collection
 from controllers.sentiments_controller import save_sentiment_analysis
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
 from datetime import datetime
+from bson import ObjectId
 
-def save_reviews(reviews):
+def save_reviews(reviews, hotel_id=None):  
     if not reviews:
         return {"message": "No reviews to save", "status": 400}
 
@@ -11,7 +12,7 @@ def save_reviews(reviews):
         "username": r["username"],
         "comment": r["comment"],
         "timestamp": r["timestamp"],
-        "hotel_name": r["hotel_name"],
+        "hotel_name": r.get("hotel_name", ""),
         "OTA": r["OTA"]
     } for r in reviews]
 
@@ -28,6 +29,8 @@ def save_reviews(reviews):
     for r in reviews:
         key = f"{r['username']}-{r['comment']}-{r['timestamp']}-{r['hotel_name']}-{r['OTA']}"
         if key not in existing_keys:
+            if hotel_id:
+                r["hotel_id"] = ObjectId(hotel_id)
             new_reviews.append(r)
 
     if not new_reviews:
@@ -52,7 +55,35 @@ def save_reviews(reviews):
 
     return {"message": "Reviews saved", "inserted_ids": result.inserted_ids, "status": 201}
 
-
 def get_all_reviews():
-    reviews = list(reviews_collection.find({}, {"_id": 0}))  
+    pipeline = [
+        {
+            "$lookup": {
+                "from": "hotels",
+                "localField": "hotel_id",
+                "foreignField": "_id",
+                "as": "hotel_info"
+            }
+        },
+        {
+            "$unwind": {
+                "path": "$hotel_info",
+                "preserveNullAndEmptyArrays": True
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "username": 1,
+                "comment": 1,
+                "rating": 1,
+                "timestamp": 1,
+                "hotel_name": "$hotel_info.hotel_name",
+                "hotel_id": 1,
+                "OTA": 1
+            }
+        }
+    ]
+
+    reviews = list(reviews_collection.aggregate(pipeline))
     return reviews
