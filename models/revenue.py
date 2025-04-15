@@ -12,62 +12,107 @@ class RevenueDB:
     def get_revenue_by_id(self, revenue_id):
         return self.mongo.db.revenues.find_one({"revenue_id": revenue_id}, {"_id": 0})
 
-    def calculate_revenue(self, revenue_data):
-        rooms_sold = revenue_data.get("rooms_sold", 0)
-        total_rooms = revenue_data.get("total_rooms", 0) 
-        room_revenue = revenue_data.get("room_revenue", 0)
+    def calculate_revenue(self, data):
+        # Room revenue components
+        room_lodging = data.get("room_lodging", 0)
+        rebate_discount = data.get("rebate_discount", 0)
+        total_room_revenue = room_lodging - rebate_discount
 
-        occupancy_rate = (rooms_sold / total_rooms) * 100 if total_rooms > 0 else 0
-        average_daily_rate = room_revenue / rooms_sold if rooms_sold > 0 else 0
-        revPAR = room_revenue / total_rooms if total_rooms > 0 else 0
+        # Restaurant revenue
+        breakfast = data.get("breakfast", 0)
+        restaurant_food = data.get("restaurant_food", 0)
+        restaurant_beverage = data.get("restaurant_beverage", 0)
+        total_restaurant_revenue = breakfast + restaurant_food + restaurant_beverage
 
-        restaurant_revenue = revenue_data.get("restaurant_revenue", 0)
-        bar_revenue = revenue_data.get("bar_revenue", 0)
-        total_fnb_revenue = restaurant_revenue + bar_revenue
+        # Other revenue
+        other_room_revenue = data.get("other_room_revenue", 0)
+        telephone = data.get("telephone", 0)
+        business_center = data.get("business_center", 0)
+        other_income = data.get("other_income", 0)
+        spa_therapy = data.get("spa_therapy", 0)
+        misc = data.get("misc", 0)
+        allowance_other = data.get("allowance_other", 0)
+        total_other_revenue = (
+            other_room_revenue + telephone + business_center +
+            other_income + spa_therapy + misc - allowance_other
+        )
 
-        spa_revenue = revenue_data.get("spa_revenue", 0)
-        laundry_revenue = revenue_data.get("laundry_revenue", 0)
-        event_revenue = revenue_data.get("event_revenue", 0)
-        parking_revenue = revenue_data.get("parking_revenue", 0)
-        total_other_revenue = spa_revenue + laundry_revenue + event_revenue + parking_revenue
+        # Total revenues
+        nett_revenue = total_room_revenue + total_restaurant_revenue + total_other_revenue
+        service_charge = nett_revenue * 0.10  # Assuming 10%
+        government_tax = nett_revenue * 0.11  # Assuming 11%
+        gross_revenue = nett_revenue + service_charge + government_tax
+        ap_restaurant = data.get("ap_restaurant", 0)
+        tips = data.get("tips", 0)
+        grand_total_revenue = gross_revenue + ap_restaurant + tips
 
-        total_revenue = room_revenue + total_fnb_revenue + total_other_revenue
+        # Room stats
+        active_rooms = data.get("active_rooms", 0)
+        room_available = data.get("room_available", 0)
+        house_use = data.get("house_use", 0)
+        complimentary = data.get("complimentary", 0)
+        rooms_occupied = data.get("rooms_occupied", 0)
+        rooms_sold = data.get("rooms_sold", 0)
+        guests_in_house = data.get("guests_in_house", 0)
+        vacant_rooms = room_available - rooms_occupied if room_available > 0 else 0
+        occupancy = (rooms_occupied / room_available) * 100 if room_available > 0 else 0
+        average_room_rate = total_room_revenue / rooms_sold if rooms_sold > 0 else 0
 
         return {
-            "revenue_id": revenue_data["revenue_id"],
-            "hotel_id": revenue_data.get("hotel_id"),
-            "date": revenue_data.get("date", ""),
-            "room_sales": {
-                "rooms_sold": rooms_sold,
-                "total_rooms": total_rooms,
-                "room_revenue": room_revenue,
-                "occupancy_rate": round(occupancy_rate, 2),
-                "average_daily_rate": round(average_daily_rate, 2),
-                "revPAR": round(revPAR, 2)
+            "revenue_id": data["revenue_id"],
+            "hotel_id": data.get("hotel_id"),
+            "date": data.get("date", ""),
+            "room_details": {
+                "room_lodging": room_lodging,
+                "rebate_discount": rebate_discount,
+                "total_room_revenue": total_room_revenue
             },
-            "food_beverage": {
-                "restaurant_revenue": restaurant_revenue,
-                "bar_revenue": bar_revenue,
-                "total_fnb_revenue": total_fnb_revenue
+            "restaurant": {
+                "breakfast": breakfast,
+                "restaurant_food": restaurant_food,
+                "restaurant_beverage": restaurant_beverage,
+                "total_restaurant_revenue": total_restaurant_revenue
             },
-            "additional_services": {
-                "spa_revenue": spa_revenue,
-                "laundry_revenue": laundry_revenue,
-                "event_revenue": event_revenue,
-                "parking_revenue": parking_revenue,
+            "other_revenue": {
+                "other_room_revenue": other_room_revenue,
+                "telephone": telephone,
+                "business_center": business_center,
+                "other_income": other_income,
+                "spa_therapy": spa_therapy,
+                "misc": misc,
+                "allowance_other": allowance_other,
                 "total_other_revenue": total_other_revenue
             },
-            "total_revenue": total_revenue
+            "nett_revenue": round(nett_revenue, 2),
+            "service_charge": round(service_charge, 2),
+            "government_tax": round(government_tax, 2),
+            "gross_revenue": round(gross_revenue, 2),
+            "ap_restaurant": ap_restaurant,
+            "tips": tips,
+            "grand_total_revenue": round(grand_total_revenue, 2),
+            "room_stats": {
+                "active_rooms": active_rooms,
+                "room_available": room_available,
+                "house_use": house_use,
+                "complimentary": complimentary,
+                "rooms_occupied": rooms_occupied,
+                "rooms_sold": rooms_sold,
+                "vacant_rooms": vacant_rooms,
+                "occupancy": round(occupancy, 2),
+                "guests_in_house": guests_in_house,
+                "average_room_rate": round(average_room_rate, 2)
+            }
         }
+
 
     def add_revenue(self, revenue_data):
         if "hotel_id" not in revenue_data:
             raise ValueError("Missing hotel_id in revenue_data")
-        
+
         revenue_data["hotel_id"] = ObjectId(revenue_data["hotel_id"])
 
         processed_data = self.calculate_revenue(revenue_data)
-        processed_data["hotel_id"] = revenue_data["hotel_id"] 
+        processed_data["hotel_id"] = revenue_data["hotel_id"]
         self.mongo.db.revenues.insert_one(processed_data)
         return processed_data
     
@@ -76,61 +121,21 @@ class RevenueDB:
         if not existing_doc:
             return -1
 
-        # Get the updated hotel_id if provided, otherwise use the existing one
         hotel_id = updated_data.get("hotel_id", existing_doc.get("hotel_id"))
 
         if not self.hotel_exists(hotel_id):
             return jsonify({"success": False, "message": "Hotel ID not found"}), 404
 
-        room_sales_data = updated_data.get("room_sales", {})
-        rooms_sold = room_sales_data.get("rooms_sold", existing_doc["room_sales"]["rooms_sold"])
-        total_rooms = room_sales_data.get("total_rooms", existing_doc["room_sales"]["total_rooms"])
-        room_revenue = room_sales_data.get("room_revenue", existing_doc["room_sales"]["room_revenue"])
+        updated_data["revenue_id"] = revenue_id
+        updated_data["hotel_id"] = hotel_id
 
-        food_beverage_data = updated_data.get("food_beverage", {})
-        restaurant_revenue = food_beverage_data.get("restaurant_revenue", existing_doc["food_beverage"]["restaurant_revenue"])
-        bar_revenue = food_beverage_data.get("bar_revenue", existing_doc["food_beverage"]["bar_revenue"])
+        processed_data = self.calculate_revenue(updated_data)
+        processed_data["hotel_id"] = hotel_id  
 
-        additional_services_data = updated_data.get("additional_services", {})
-        spa_revenue = additional_services_data.get("spa_revenue", existing_doc["additional_services"]["spa_revenue"])
-        laundry_revenue = additional_services_data.get("laundry_revenue", existing_doc["additional_services"]["laundry_revenue"])
-        event_revenue = additional_services_data.get("event_revenue", existing_doc["additional_services"]["event_revenue"])
-        parking_revenue = additional_services_data.get("parking_revenue", existing_doc["additional_services"]["parking_revenue"])
-
-        occupancy_rate = (rooms_sold / total_rooms) * 100 if total_rooms > 0 else 0
-        average_daily_rate = room_revenue / rooms_sold if rooms_sold > 0 else 0
-        revPAR = room_revenue / total_rooms if total_rooms > 0 else 0
-
-        total_fnb_revenue = restaurant_revenue + bar_revenue
-        total_other_revenue = spa_revenue + laundry_revenue + event_revenue + parking_revenue
-        total_revenue = room_revenue + total_fnb_revenue + total_other_revenue
-
-        updated_doc = {
-            "hotel_id": hotel_id,
-            "room_sales": {
-                "rooms_sold": rooms_sold,
-                "total_rooms": total_rooms,
-                "room_revenue": room_revenue,
-                "occupancy_rate": round(occupancy_rate, 2),
-                "average_daily_rate": round(average_daily_rate, 2),
-                "revPAR": round(revPAR, 2)
-            },
-            "food_beverage": {
-                "restaurant_revenue": restaurant_revenue,
-                "bar_revenue": bar_revenue,
-                "total_fnb_revenue": total_fnb_revenue
-            },
-            "additional_services": {
-                "spa_revenue": spa_revenue,
-                "laundry_revenue": laundry_revenue,
-                "event_revenue": event_revenue,
-                "parking_revenue": parking_revenue,
-                "total_other_revenue": total_other_revenue
-            },
-            "total_revenue": total_revenue
-        }
-
-        result = self.mongo.db.revenues.update_one({"revenue_id": revenue_id}, {"$set": updated_doc})
+        result = self.mongo.db.revenues.update_one(
+            {"revenue_id": revenue_id},
+            {"$set": processed_data}
+        )
 
         return result.modified_count
 
