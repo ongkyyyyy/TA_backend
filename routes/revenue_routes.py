@@ -9,6 +9,7 @@ def create_revenue_blueprint(app):
 
     revenue_bp.add_url_rule("/revenues", "get_revenues", controller.get_revenues, methods=["GET"])
     revenue_bp.add_url_rule("/revenues/<revenue_id>", "get_revenue", controller.get_revenue, methods=["GET"])
+    revenue_bp.add_url_rule("/revenues/by-hotel/<hotel_id>", "get_revenues_by_hotel", controller.get_revenues_by_hotel, methods=["GET"])
     revenue_bp.add_url_rule("/revenues", "create_revenue", controller.create_revenue, methods=["POST"])
     revenue_bp.add_url_rule("/revenues/<revenue_id>", "edit_revenue", controller.edit_revenue, methods=["PUT"])
     revenue_bp.add_url_rule("/revenues/<revenue_id>", "remove_revenue", controller.remove_revenue, methods=["DELETE"])

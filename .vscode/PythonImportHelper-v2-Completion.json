@@ -32,6 +32,14 @@
         "documentation": {}
     },
     {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
@@ -101,6 +109,14 @@
         "description": "flask",
         "isExtraImport": true,
         "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "ObjectId",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
         "documentation": {}
     },
     {
@@ -551,7 +567,7 @@
         "kind": 2,
         "importPath": "routes.revenue_routes",
         "description": "routes.revenue_routes",
-        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = RevenueDB(app)\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", controller.get_revenues, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"get_revenue\", controller.get_revenue, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", controller.create_revenue, methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", controller.edit_revenue, methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", controller.remove_revenue, methods=[\"DELETE\"])\n    return revenue_bp",
+        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = RevenueDB(app)\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", controller.get_revenues, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"get_revenue\", controller.get_revenue, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/by-hotel/<hotel_id>\", \"get_revenues_by_hotel\", controller.get_revenues_by_hotel, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", controller.create_revenue, methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", controller.edit_revenue, methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", controller.remove_revenue, methods=[\"DELETE\"])",
         "detail": "routes.revenue_routes",
         "documentation": {}
     },
