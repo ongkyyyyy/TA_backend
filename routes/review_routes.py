@@ -163,7 +163,6 @@ def create_review_blueprint(app):
             print("🟢 STDOUT:\n", result.stdout)
             print("🔴 STDERR:\n", result.stderr)
 
-
             return jsonify({"message": "Agoda scraping triggered successfully", "output": result.stdout})
         except Exception as e:
             return jsonify({"error": str(e)}), 500

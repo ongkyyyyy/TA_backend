@@ -4,10 +4,13 @@ const axios = require('axios');
 
 puppeteer.use(StealthPlugin());
 
-async function scrapeReviews(hotelUrl) {
-    if (!hotelUrl) {
-        console.error("Error: No hotel URL provided.");
-        return;
+async function scrapeReviews() {
+    const hotelUrl = process.argv[2];
+    const hotelId = process.argv[3];  
+
+    if (!hotelUrl || !hotelId) {
+        console.error("❌ Usage: node script.js <hotelUrl> <hotelId>");
+        process.exit(1);
     }
 
     console.log("Launching Puppeteer with Stealth Plugin...");
@@ -228,7 +231,7 @@ async function scrapeReviews(hotelUrl) {
 
         if (foundOldReview) {
             console.log("Total Reviews Scraped:", allReviews.length);
-            await sendReviews(allReviews);
+            await sendReviews(allReviews, hotelId);
             console.log("Closing browser...");
             await browser.close();
             return;
@@ -259,23 +262,27 @@ async function scrapeReviews(hotelUrl) {
     }     
 
     console.log("Total Reviews Scraped:", allReviews.length);
-    await sendReviews(allReviews);
+    await sendReviews(allReviews, hotelId);
     console.log("Closing browser...");
     await browser.close();
 }
 
-async function sendReviews(reviews) {
+async function sendReviews(reviews, hotelId) {
     try {
         if (reviews.length > 0) {
-            await axios.post('http://127.0.0.1:5000/reviews', { reviews });
-            console.log('Data sent to backend successfully');
+            await axios.post('http://127.0.0.1:5000/reviews', {
+                reviews,
+                hotel_id: hotelId
+            });
+            console.log('✅ Data sent to backend successfully');
+            console.log('Total Reviews Sent:', reviews.length);
+            console.log('Hotel ID:', hotelId);
         } else {
-            console.log('No valid reviews found.');
+            console.log('ℹ️ No valid reviews found.');
         }
     } catch (error) {
-        console.error('Error sending data:', error.message);
+        console.error('❌ Error sending data:', error.message);
     }
 }
 
-const hotelUrl = process.argv[2]; 
-scrapeReviews(hotelUrl);
+scrapeReviews();

@@ -13,18 +13,15 @@ class RevenueDB:
         return self.mongo.db.revenues.find_one({"revenue_id": revenue_id}, {"_id": 0})
 
     def calculate_revenue(self, data):
-        # Room revenue components
         room_lodging = data.get("room_lodging", 0)
         rebate_discount = data.get("rebate_discount", 0)
         total_room_revenue = room_lodging - rebate_discount
-
-        # Restaurant revenue
+        
         breakfast = data.get("breakfast", 0)
         restaurant_food = data.get("restaurant_food", 0)
         restaurant_beverage = data.get("restaurant_beverage", 0)
         total_restaurant_revenue = breakfast + restaurant_food + restaurant_beverage
 
-        # Other revenue
         other_room_revenue = data.get("other_room_revenue", 0)
         telephone = data.get("telephone", 0)
         business_center = data.get("business_center", 0)
@@ -37,16 +34,14 @@ class RevenueDB:
             other_income + spa_therapy + misc - allowance_other
         )
 
-        # Total revenues
         nett_revenue = total_room_revenue + total_restaurant_revenue + total_other_revenue
-        service_charge = nett_revenue * 0.10  # Assuming 10%
-        government_tax = nett_revenue * 0.11  # Assuming 11%
+        service_charge = nett_revenue * 0.10 
+        government_tax = nett_revenue * 0.11 
         gross_revenue = nett_revenue + service_charge + government_tax
         ap_restaurant = data.get("ap_restaurant", 0)
         tips = data.get("tips", 0)
         grand_total_revenue = gross_revenue + ap_restaurant + tips
 
-        # Room stats
         active_rooms = data.get("active_rooms", 0)
         room_available = data.get("room_available", 0)
         house_use = data.get("house_use", 0)

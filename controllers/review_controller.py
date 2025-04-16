@@ -2,6 +2,7 @@ from models.review import reviews_collection
 from controllers.sentiments_controller import save_sentiment_analysis
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
 from datetime import datetime
+from langdetect import detect, LangDetectException
 from bson import ObjectId
 
 def save_reviews(reviews, hotel_id=None):  
@@ -26,15 +27,31 @@ def save_reviews(reviews, hotel_id=None):
     }
 
     new_reviews = []
+    non_id_count = 0
+
     for r in reviews:
         key = f"{r['username']}-{r['comment']}-{r['timestamp']}-{r['hotel_name']}-{r['OTA']}"
         if key not in existing_keys:
+            comment = r.get("comment", "")
+            try:
+                if detect(comment) != 'id':
+                    non_id_count += 1
+                    continue  
+            except LangDetectException:
+                non_id_count += 1
+                continue 
+
             if hotel_id:
                 r["hotel_id"] = ObjectId(hotel_id)
             new_reviews.append(r)
 
     if not new_reviews:
-        return {"message": "No new reviews to save", "status": 200, "inserted_ids": []}
+        return {
+            "message": f"No new Indonesian reviews to save. Skipped {non_id_count} non-Indonesian reviews.",
+            "status": 200,
+            "inserted_ids": [],
+            "skipped_non_id": non_id_count
+        }
 
     result = reviews_collection.insert_many(new_reviews)
     sentiment_data = []
@@ -53,7 +70,12 @@ def save_reviews(reviews, hotel_id=None):
 
     save_sentiment_analysis(sentiment_data)
 
-    return {"message": "Reviews saved", "inserted_ids": result.inserted_ids, "status": 201}
+    return {
+        "message": f"Reviews saved. Skipped {non_id_count} non-Indonesian reviews.",
+        "inserted_ids": result.inserted_ids,
+        "status": 201,
+        "skipped_non_id": non_id_count
+    }
 
 def get_all_reviews():
     pipeline = [

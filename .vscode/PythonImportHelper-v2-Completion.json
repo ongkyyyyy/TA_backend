@@ -200,6 +200,22 @@
         "documentation": {}
     },
     {
+        "label": "detect",
+        "importPath": "langdetect",
+        "description": "langdetect",
+        "isExtraImport": true,
+        "detail": "langdetect",
+        "documentation": {}
+    },
+    {
+        "label": "LangDetectException",
+        "importPath": "langdetect",
+        "description": "langdetect",
+        "isExtraImport": true,
+        "detail": "langdetect",
+        "documentation": {}
+    },
+    {
         "label": "sentiment_collection",
         "importPath": "models.sentiment",
         "description": "models.sentiment",
