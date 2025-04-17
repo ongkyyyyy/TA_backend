@@ -7,10 +7,10 @@ class RevenueDB:
         self.mongo = PyMongo(app)
 
     def get_all_revenues(self):
-        return list(self.mongo.db.revenues.find({}, {"_id": 0}))
+        return list(self.mongo.db.revenues.find({}))
 
-    def get_revenue_by_id(self, revenue_id):
-        return self.mongo.db.revenues.find_one({"revenue_id": revenue_id}, {"_id": 0})
+    def get_revenue_by_id(self, object_id):
+        return self.mongo.db.revenues.find_one({"_id": object_id})
 
     def calculate_revenue(self, data):
         room_lodging = data.get("room_lodging", 0)
@@ -54,7 +54,6 @@ class RevenueDB:
         average_room_rate = total_room_revenue / rooms_sold if rooms_sold > 0 else 0
 
         return {
-            "revenue_id": data["revenue_id"],
             "hotel_id": data.get("hotel_id"),
             "date": data.get("date", ""),
             "room_details": {
@@ -99,7 +98,6 @@ class RevenueDB:
             }
         }
 
-
     def add_revenue(self, revenue_data):
         if "hotel_id" not in revenue_data:
             raise ValueError("Missing hotel_id in revenue_data")
@@ -108,36 +106,35 @@ class RevenueDB:
 
         processed_data = self.calculate_revenue(revenue_data)
         processed_data["hotel_id"] = revenue_data["hotel_id"]
-        self.mongo.db.revenues.insert_one(processed_data)
+        inserted = self.mongo.db.revenues.insert_one(processed_data)
+        processed_data["_id"] = inserted.inserted_id
         return processed_data
-    
-    def update_revenue(self, revenue_id, updated_data):
-        existing_doc = self.mongo.db.revenues.find_one({"revenue_id": revenue_id})
+
+    def update_revenue(self, revenue_oid, updated_data):
+        existing_doc = self.mongo.db.revenues.find_one({"_id": revenue_oid})
         if not existing_doc:
             return -1
 
         hotel_id = updated_data.get("hotel_id", existing_doc.get("hotel_id"))
 
         if not self.hotel_exists(hotel_id):
-            return jsonify({"success": False, "message": "Hotel ID not found"}), 404
+            return 0
 
-        updated_data["revenue_id"] = revenue_id
         updated_data["hotel_id"] = hotel_id
-
         processed_data = self.calculate_revenue(updated_data)
-        processed_data["hotel_id"] = hotel_id  
+        processed_data["hotel_id"] = hotel_id
 
         result = self.mongo.db.revenues.update_one(
-            {"revenue_id": revenue_id},
+            {"_id": revenue_oid},
             {"$set": processed_data}
         )
 
         return result.modified_count
 
-    def delete_revenue(self, revenue_id):
-        result = self.mongo.db.revenues.delete_one({"revenue_id": revenue_id})
+    def delete_revenue(self, revenue_oid):
+        result = self.mongo.db.revenues.delete_one({"_id": revenue_oid})
         return result.deleted_count
-    
+
     def hotel_exists(self, hotel_id):
         try:
             return self.mongo.db.hotels.find_one({"_id": ObjectId(hotel_id)}) is not None
@@ -145,5 +142,4 @@ class RevenueDB:
             return False
 
     def get_revenues_by_hotel(self, hotel_id):
-        return list(self.mongo.db.revenues.find({"hotel_id": hotel_id}, {"_id": 0}))
-
+        return list(self.mongo.db.revenues.find({"hotel_id": ObjectId(hotel_id)}))

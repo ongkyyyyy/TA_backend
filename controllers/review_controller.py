@@ -2,8 +2,8 @@ from models.review import reviews_collection
 from controllers.sentiments_controller import save_sentiment_analysis
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
 from datetime import datetime
-from langdetect import detect, LangDetectException
-from bson import ObjectId
+from langdetect import detect, LangDetectException # type: ignore
+from bson import ObjectId # type: ignore
 
 def save_reviews(reviews, hotel_id=None):  
     if not reviews:

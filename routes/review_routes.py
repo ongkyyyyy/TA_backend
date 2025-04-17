@@ -5,7 +5,7 @@ import os
 from controllers.review_controller import save_reviews, get_all_reviews
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
 from models.hotels import hotels_collection
-from bson import ObjectId 
+from bson import ObjectId  # type: ignore
 
 def create_review_blueprint(app):
     review_bp = Blueprint("reviews", __name__)
