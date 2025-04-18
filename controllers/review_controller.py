@@ -1,6 +1,7 @@
 from models.review import reviews_collection
 from controllers.sentiments_controller import save_sentiment_analysis
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
+from models.sentiment import sentiment_collection
 from datetime import datetime
 from langdetect import detect, LangDetectException # type: ignore
 from bson import ObjectId # type: ignore
@@ -81,6 +82,20 @@ def get_all_reviews():
     pipeline = [
         {
             "$lookup": {
+                "from": "sentiments", 
+                "localField": "_id",
+                "foreignField": "review_id",
+                "as": "sentiment_info"
+            }
+        },
+        {
+            "$unwind": {
+                "path": "$sentiment_info",
+                "preserveNullAndEmptyArrays": True
+            }
+        },
+        {
+            "$lookup": {
                 "from": "hotels",
                 "localField": "hotel_id",
                 "foreignField": "_id",
@@ -102,7 +117,10 @@ def get_all_reviews():
                 "timestamp": 1,
                 "hotel_name": "$hotel_info.hotel_name",
                 "hotel_id": 1,
-                "OTA": 1
+                "OTA": 1,
+                "sentiment": "$sentiment_info.sentiment",
+                "positive_score": "$sentiment_info.positive_score",
+                "negative_score": "$sentiment_info.negative_score"
             }
         }
     ]

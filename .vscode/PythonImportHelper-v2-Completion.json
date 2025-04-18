@@ -192,6 +192,22 @@
         "documentation": {}
     },
     {
+        "label": "sentiment_collection",
+        "importPath": "models.sentiment",
+        "description": "models.sentiment",
+        "isExtraImport": true,
+        "detail": "models.sentiment",
+        "documentation": {}
+    },
+    {
+        "label": "sentiment_collection",
+        "importPath": "models.sentiment",
+        "description": "models.sentiment",
+        "isExtraImport": true,
+        "detail": "models.sentiment",
+        "documentation": {}
+    },
+    {
         "label": "datetime",
         "importPath": "datetime",
         "description": "datetime",
@@ -221,14 +237,6 @@
         "description": "langdetect",
         "isExtraImport": true,
         "detail": "langdetect",
-        "documentation": {}
-    },
-    {
-        "label": "sentiment_collection",
-        "importPath": "models.sentiment",
-        "description": "models.sentiment",
-        "isExtraImport": true,
-        "detail": "models.sentiment",
         "documentation": {}
     },
     {
@@ -474,7 +482,7 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def get_all_reviews():\n    pipeline = [\n        {\n            \"$lookup\": {\n                \"from\": \"hotels\",\n                \"localField\": \"hotel_id\",\n                \"foreignField\": \"_id\",\n                \"as\": \"hotel_info\"\n            }\n        },",
+        "peekOfCode": "def get_all_reviews():\n    pipeline = [\n        {\n            \"$lookup\": {\n                \"from\": \"sentiments\",  # name of the sentiment collection\n                \"localField\": \"_id\",\n                \"foreignField\": \"review_id\",\n                \"as\": \"sentiment_info\"\n            }\n        },",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
