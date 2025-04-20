@@ -1,5 +1,14 @@
 [
     {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
         "label": "request",
         "importPath": "flask",
         "description": "flask",
@@ -113,6 +122,14 @@
     },
     {
         "label": "ObjectId",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
+        "documentation": {}
+    },
+    {
+        "label": "regex",
         "importPath": "bson",
         "description": "bson",
         "isExtraImport": true,
@@ -378,15 +395,6 @@
         "documentation": {}
     },
     {
-        "label": "re",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "re",
-        "description": "re",
-        "detail": "re",
-        "documentation": {}
-    },
-    {
         "label": "Counter",
         "importPath": "collections",
         "description": "collections",
@@ -482,7 +490,7 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def get_all_reviews():\n    pipeline = [\n        {\n            \"$lookup\": {\n                \"from\": \"sentiments\",  # name of the sentiment collection\n                \"localField\": \"_id\",\n                \"foreignField\": \"review_id\",\n                \"as\": \"sentiment_info\"\n            }\n        },",
+        "peekOfCode": "def get_all_reviews():\n    pipeline = [\n        {\n            \"$lookup\": {\n                \"from\": \"sentiments\", \n                \"localField\": \"_id\",\n                \"foreignField\": \"review_id\",\n                \"as\": \"sentiment_info\"\n            }\n        },",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
@@ -590,7 +598,7 @@
         "kind": 2,
         "importPath": "routes.hotel_routes",
         "description": "routes.hotel_routes",
-        "peekOfCode": "def create_hotel_blueprint(app):\n    hotel_bp = Blueprint(\"hotels\", __name__)\n    db = HotelsDB(app)\n    controller = HotelController(db)\n    hotel_bp.add_url_rule(\"/hotels\", \"get_hotels\", controller.get_hotels, methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"get_hotel\", controller.get_hotel, methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels\", \"create_hotel\", controller.create_hotel, methods=[\"POST\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"update_hotel\", controller.update_hotel, methods=[\"PUT\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"delete_hotel\", controller.delete_hotel, methods=[\"DELETE\"])\n    return hotel_bp",
+        "peekOfCode": "def create_hotel_blueprint(app):\n    hotel_bp = Blueprint(\"hotels\", __name__)\n    db = HotelsDB(app)\n    controller = HotelController(db)\n    hotel_bp.add_url_rule(\"/hotels\", \"get_hotels\", controller.get_hotels, methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"get_hotel\", controller.get_hotel, methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels\", \"create_hotel\", controller.create_hotel, methods=[\"POST\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"update_hotel\", controller.update_hotel, methods=[\"PUT\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"delete_hotel\", controller.delete_hotel, methods=[\"DELETE\"])\n    hotel_bp.add_url_rule(\"/hotels/search\", \"search_hotels\", controller.search_hotels, methods=[\"GET\"])",
         "detail": "routes.hotel_routes",
         "documentation": {}
     },

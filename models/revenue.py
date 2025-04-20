@@ -120,8 +120,12 @@ class RevenueDB:
         if not self.hotel_exists(hotel_id):
             return 0
 
-        updated_data["hotel_id"] = hotel_id
-        processed_data = self.calculate_revenue(updated_data)
+        merged_data = existing_doc.copy()
+        merged_data.update(updated_data)
+
+        merged_data["hotel_id"] = hotel_id
+
+        processed_data = self.calculate_revenue(merged_data)
         processed_data["hotel_id"] = hotel_id
 
         result = self.mongo.db.revenues.update_one(

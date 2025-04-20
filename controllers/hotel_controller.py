@@ -1,5 +1,6 @@
-from flask import request, jsonify
-from bson import ObjectId
+import re
+from flask import request, jsonify # type: ignore
+from bson import ObjectId, regex # type: ignore
 
 class HotelController:
     def __init__(self, db):
@@ -64,3 +65,25 @@ class HotelController:
             return jsonify({"error": "Hotel not found"}), 404
 
         return jsonify({"message": "Hotel deleted"}), 200
+    
+    def search_hotels(self):
+        search_term = request.args.get("q")
+        query = {}
+
+        if search_term:
+            query = {
+                "$or": [
+                    {"hotel_name": {"$regex": re.escape(search_term), "$options": "i"}},
+                    {"city": {"$regex": re.escape(search_term), "$options": "i"}},
+                    {"country": {"$regex": re.escape(search_term), "$options": "i"}},
+                    {"address": {"$regex": re.escape(search_term), "$options": "i"}}
+                ]
+            }
+
+        hotels = []
+        for hotel in self.db.collection.find(query):
+            hotel["_id"] = str(hotel["_id"])
+            hotels.append(hotel)
+
+        return jsonify(hotels)
+
