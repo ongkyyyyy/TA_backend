@@ -40,6 +40,15 @@ class HotelController:
             "page": page,
             "limit": limit
         })
+        
+    def get_hotels_dropdown(self):
+        hotels = []
+        for hotel in self.db.collection.find({}, {"hotel_name": 1}):
+            hotels.append({
+                "_id": str(hotel["_id"]),
+                "hotel_name": hotel.get("hotel_name", "")
+            })
+        return jsonify(hotels)
 
     def get_hotel(self, hotel_id):
         try:

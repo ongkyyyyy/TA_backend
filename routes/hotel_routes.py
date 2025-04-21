@@ -13,5 +13,6 @@ def create_hotel_blueprint(app):
     hotel_bp.add_url_rule("/hotels/<hotel_id>", "update_hotel", controller.update_hotel, methods=["PUT"])
     hotel_bp.add_url_rule("/hotels/<hotel_id>", "delete_hotel", controller.delete_hotel, methods=["DELETE"])
     hotel_bp.add_url_rule("/hotels/search", "search_hotels", controller.search_hotels, methods=["GET"])
+    hotel_bp.add_url_rule("/hotels/dropdown", "get_hotels_dropdown", controller.get_hotels_dropdown, methods=["GET"])
 
     return hotel_bp
