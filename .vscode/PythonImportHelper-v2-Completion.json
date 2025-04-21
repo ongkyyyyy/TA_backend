@@ -517,7 +517,7 @@
         "kind": 6,
         "importPath": "models.hotels",
         "description": "models.hotels",
-        "peekOfCode": "class HotelsDB:\n    def __init__(self, app=None):\n        self.client = MongoClient(MONGO_URI)\n        self.db = self.client.hotelPerformance\n        self.collection = self.db.hotels\nhotels_collection = HotelsDB().collection",
+        "peekOfCode": "class HotelsDB:\n    def __init__(self, app=None):\n        self.client = MongoClient(MONGO_URI)\n        self.db = self.client.hotelPerformance\n        self.collection = self.db.hotels\n        self.revenues = self.db.revenues\nhotels_collection = HotelsDB().collection",
         "detail": "models.hotels",
         "documentation": {}
     },

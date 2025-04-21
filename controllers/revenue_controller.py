@@ -1,5 +1,5 @@
-from flask import jsonify, request
-from bson import ObjectId
+from flask import jsonify, request # type: ignore
+from bson import ObjectId # type: ignore
 
 class RevenueController:
     def __init__(self, db):
@@ -40,15 +40,29 @@ class RevenueController:
     def edit_revenue(self, revenue_id):
         try:
             updated_data = request.json
-            update_status = self.db.update_revenue(ObjectId(revenue_id), updated_data)
+            revenue_obj_id = ObjectId(revenue_id)
+
+            update_status = self.db.update_revenue(revenue_obj_id, updated_data)
 
             if update_status == -1:
                 return jsonify({"success": False, "message": "Revenue record not found"}), 404
             elif update_status == 0:
                 return jsonify({"success": False, "message": "No matching fields found for update"}), 400
             else:
-                return jsonify({"success": True, "message": "Revenue updated successfully"}), 200
-        except Exception:
+                updated_revenue = self.db.mongo.db.revenues.find_one({"_id": revenue_obj_id})
+                
+                if updated_revenue:
+                    updated_revenue["_id"] = str(updated_revenue["_id"])
+                    updated_revenue["hotel_id"] = str(updated_revenue["hotel_id"])
+
+                return jsonify({
+                    "success": True,
+                    "message": "Revenue updated successfully",
+                    "data": updated_revenue
+                }), 200
+
+        except Exception as e:
+            print("Error:", e)
             return jsonify({"success": False, "message": "Invalid revenue ID format"}), 400
 
     def remove_revenue(self, revenue_id):

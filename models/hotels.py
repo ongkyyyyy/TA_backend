@@ -6,5 +6,6 @@ class HotelsDB:
         self.client = MongoClient(MONGO_URI)
         self.db = self.client.hotelPerformance
         self.collection = self.db.hotels
+        self.revenues = self.db.revenues
 
 hotels_collection = HotelsDB().collection

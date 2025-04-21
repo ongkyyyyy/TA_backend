@@ -22,11 +22,24 @@ class HotelController:
         return jsonify({"message": "Hotel created", "id": str(hotel_id)}), 201
 
     def get_hotels(self):
+        page = int(request.args.get("page", 1))
+        limit = int(request.args.get("limit", 15))
+        skip = (page - 1) * limit
+
         hotels = []
-        for hotel in self.db.collection.find():
+        cursor = self.db.collection.find().skip(skip).limit(limit)
+        total_count = self.db.collection.count_documents({})
+
+        for hotel in cursor:
             hotel["_id"] = str(hotel["_id"])
             hotels.append(hotel)
-        return jsonify(hotels)
+
+        return jsonify({
+            "data": hotels,
+            "total": total_count,
+            "page": page,
+            "limit": limit
+        })
 
     def get_hotel(self, hotel_id):
         try:
@@ -57,19 +70,31 @@ class HotelController:
 
     def delete_hotel(self, hotel_id):
         try:
-            result = self.db.collection.delete_one({"_id": ObjectId(hotel_id)})
+            hotel_obj_id = ObjectId(hotel_id)
         except Exception:
             return jsonify({"error": "Invalid hotel ID"}), 400
 
-        if result.deleted_count == 0:
+        hotel = self.db.collection.find_one({"_id": hotel_obj_id})
+        if not hotel:
             return jsonify({"error": "Hotel not found"}), 404
 
-        return jsonify({"message": "Hotel deleted"}), 200
+        hotel_result = self.db.collection.delete_one({"_id": hotel_obj_id})
+
+        revenue_result = self.db.revenues.delete_many({"hotel_id": hotel_obj_id})
+
+        return jsonify({
+            "message": "Hotel and associated revenues deleted successfully.",
+            "hotel_deleted": hotel_result.deleted_count,
+            "revenues_deleted": revenue_result.deleted_count
+        }), 200
     
     def search_hotels(self):
         search_term = request.args.get("q")
-        query = {}
+        page = int(request.args.get("page", 1))
+        limit = int(request.args.get("limit", 15))
+        skip = (page - 1) * limit
 
+        query = {}
         if search_term:
             query = {
                 "$or": [
@@ -81,9 +106,17 @@ class HotelController:
             }
 
         hotels = []
-        for hotel in self.db.collection.find(query):
+        cursor = self.db.collection.find(query).skip(skip).limit(limit)
+        total_count = self.db.collection.count_documents(query)
+
+        for hotel in cursor:
             hotel["_id"] = str(hotel["_id"])
             hotels.append(hotel)
 
-        return jsonify(hotels)
+        return jsonify({
+            "data": hotels,
+            "total": total_count,
+            "page": page,
+            "limit": limit
+        })
 
