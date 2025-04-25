@@ -395,6 +395,14 @@
         "documentation": {}
     },
     {
+        "label": "Counter",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
+        "documentation": {}
+    },
+    {
         "label": "joblib",
         "kind": 6,
         "isExtraImport": true,
@@ -466,6 +474,14 @@
         "description": "scipy.sparse",
         "isExtraImport": true,
         "detail": "scipy.sparse",
+        "documentation": {}
+    },
+    {
+        "label": "SMOTE",
+        "importPath": "imblearn.over_sampling",
+        "description": "imblearn.over_sampling",
+        "isExtraImport": true,
+        "detail": "imblearn.over_sampling",
         "documentation": {}
     },
     {
@@ -710,16 +726,7 @@
         "kind": 2,
         "importPath": "sentiment_analysis.sentiment_analysis",
         "description": "sentiment_analysis.sentiment_analysis",
-        "peekOfCode": "def load_words_from_txt(path):\n    with open(path, 'r', encoding='utf-8') as file:\n        return set(line.strip().lower() for line in file if line.strip())\nPOSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)",
-        "detail": "sentiment_analysis.sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "extract_features",
-        "kind": 2,
-        "importPath": "sentiment_analysis.sentiment_analysis",
-        "description": "sentiment_analysis.sentiment_analysis",
-        "peekOfCode": "def extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)\n    word_count = len(words)\n    return {\n        \"pos_count\": pos_count,",
+        "peekOfCode": "def load_words_from_txt(path):\n    with open(path, 'r', encoding='utf-8') as file:\n        return set(line.strip().lower() for line in file if line.strip())\nPOSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\ndef analyze_sentiment(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)",
         "detail": "sentiment_analysis.sentiment_analysis",
         "documentation": {}
     },
@@ -728,7 +735,7 @@
         "kind": 2,
         "importPath": "sentiment_analysis.sentiment_analysis",
         "description": "sentiment_analysis.sentiment_analysis",
-        "peekOfCode": "def analyze_sentiment(text):\n    features = extract_features(text)\n    df = pd.DataFrame([features])\n    sentiment = MODEL.predict(df)[0]\n    return sentiment, features[\"pos_count\"], features[\"neg_count\"]",
+        "peekOfCode": "def analyze_sentiment(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    if pos_count > neg_count:\n        sentiment = \"positive\"\n    elif neg_count > pos_count:\n        sentiment = \"negative\"\n    else:",
         "detail": "sentiment_analysis.sentiment_analysis",
         "documentation": {}
     },
@@ -737,7 +744,7 @@
         "kind": 5,
         "importPath": "sentiment_analysis.sentiment_analysis",
         "description": "sentiment_analysis.sentiment_analysis",
-        "peekOfCode": "POSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)",
+        "peekOfCode": "POSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\ndef analyze_sentiment(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    if pos_count > neg_count:\n        sentiment = \"positive\"\n    elif neg_count > pos_count:",
         "detail": "sentiment_analysis.sentiment_analysis",
         "documentation": {}
     },
@@ -746,17 +753,62 @@
         "kind": 5,
         "importPath": "sentiment_analysis.sentiment_analysis",
         "description": "sentiment_analysis.sentiment_analysis",
-        "peekOfCode": "NEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)\n    word_count = len(words)",
+        "peekOfCode": "NEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\ndef analyze_sentiment(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    if pos_count > neg_count:\n        sentiment = \"positive\"\n    elif neg_count > pos_count:\n        sentiment = \"negative\"",
         "detail": "sentiment_analysis.sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "load_words_from_txt",
+        "kind": 2,
+        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "peekOfCode": "def load_words_from_txt(path):\n    with open(path, 'r', encoding='utf-8') as file:\n        return set(line.strip().lower() for line in file if line.strip())\nPOSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)",
+        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "extract_features",
+        "kind": 2,
+        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "peekOfCode": "def extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)\n    word_count = len(words)\n    return {\n        \"pos_count\": pos_count,",
+        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "analyze_sentiment",
+        "kind": 2,
+        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "peekOfCode": "def analyze_sentiment(text):\n    features = extract_features(text)\n    df = pd.DataFrame([features])\n    sentiment = MODEL.predict(df)[0]\n    return sentiment, features[\"pos_count\"], features[\"neg_count\"]",
+        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "POSITIVE_WORDS",
+        "kind": 5,
+        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "peekOfCode": "POSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)",
+        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "documentation": {}
+    },
+    {
+        "label": "NEGATIVE_WORDS",
+        "kind": 5,
+        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "peekOfCode": "NEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)\n    word_count = len(words)",
+        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
         "documentation": {}
     },
     {
         "label": "MODEL",
         "kind": 5,
-        "importPath": "sentiment_analysis.sentiment_analysis",
-        "description": "sentiment_analysis.sentiment_analysis",
+        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
+        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
         "peekOfCode": "MODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)\n    word_count = len(words)\n    return {",
-        "detail": "sentiment_analysis.sentiment_analysis",
+        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
         "documentation": {}
     },
     {

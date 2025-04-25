@@ -8,7 +8,7 @@ from scipy.sparse import hstack
 import joblib
 
 # Optional: Uncomment if using SMOTE
-# from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE
 
 # Load sentiment word lists
 def load_words_from_txt(path):

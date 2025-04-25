@@ -17,18 +17,21 @@ async function scrapeReviews(retryAttempt = 0) {
 
     console.log(`Launching Puppeteer (Attempt ${retryAttempt + 1})...`);
     const browser = await puppeteer.launch({
-        headless: "new",
+        headless: false,
         defaultViewport: null,
         args: ["--start-maximized"]
     });
 
     try {
+        console.log("✅ Opened browser, creating new page...");
         const page = await browser.newPage();
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36');
-
-        console.log(`Opening the hotel page: ${hotelUrl}`);
+    
+        console.log("✅ Setting user agent...");
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64)...');
+    
+        console.log(`✅ Going to URL: ${hotelUrl}`);
         await page.goto(hotelUrl, { waitUntil: 'domcontentloaded' });
-
+    
         const hotelName = await page.evaluate(() => {
             const hotelNameElem = document.querySelector('[data-testid="display_name_label"]');
             return hotelNameElem ? hotelNameElem.innerText.trim() : 'Unknown Hotel';
@@ -43,28 +46,48 @@ async function scrapeReviews(retryAttempt = 0) {
             console.log(`Scraping page ${pageCounter}...`);
             await new Promise(resolve => setTimeout(resolve, 3000));
 
+            const convertToDate = (relativeDate) => {
+                const now = new Date();
+                
+                // Match for "Diulas X minggu lalu" (X weeks ago)
+                const weekMatch = relativeDate.match(/Diulas\s+(\d+)\s+minggu\s+lalu/);
+                
+                // Match for "Diulas X hari lalu" (X days ago)
+                const dayMatch = relativeDate.match(/Diulas\s+(\d+)\s+hari\s+lalu/);
+                
+                if (weekMatch) {
+                    const weeksAgo = parseInt(weekMatch[1]);
+                    now.setDate(now.getDate() - weeksAgo * 7); // Subtract weeks
+                    return now;
+                }
+            
+                if (dayMatch) {
+                    const daysAgo = parseInt(dayMatch[1]);
+                    now.setDate(now.getDate() - daysAgo); // Subtract days
+                    return now;
+                }
+            
+                return null; // If it doesn't match either format
+            };
+            
             const reviews = await page.evaluate((hotelName) => {
-                return Array.from(document.querySelectorAll('.css-1dbjc4n.r-14lw9ot.r-h1746q.r-kdyh1x.r-d045u9.r-18u37iz.r-1fdih9r.r-1udh08x.r-d23pfw')).map(review => {
+                return Array.from(document.querySelectorAll('.css-1dbjc4n.r-14lw9ot.r-h1746q.r-kdyh1x.r-d045u9.r-1udh08x.r-d23pfw')).map(review => {
                     const usernameElem = review.querySelector('[data-testid="reviewer-name"]');
                     const ratingElem = review.querySelector('[data-testid="tvat-ratingScore"]');
                     const commentElem = review.querySelector('.css-901oao.css-cens5h');
                     const timestampElem = Array.from(review.querySelectorAll("div.css-901oao"))
-                        .find(div => div.innerText.match(/\d{1,2} \w{3,} \d{4}/));
-
+                        .find(div => div.innerText.match(/Diulas\s+\d+\s+(minggu\s+lalu|hari\s+lalu)/)); 
+            
                     return {
                         username: usernameElem ? usernameElem.innerText.trim() : 'Anonymous',
                         rating: ratingElem ? parseFloat(ratingElem.innerText.trim().replace(',', '.')) : null,
                         comment: commentElem && commentElem.innerText.trim() ? commentElem.innerText.trim() : '-',
                         timestamp: (() => {
                             if (!timestampElem) return 'Unknown Date';
-                            const months = {
-                                Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
-                                Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
-                            };
-                            const match = timestampElem.innerText.trim().match(/(\d{1,2}) (\w{3}) (\d{4})/);
-                            if (!match) return 'Unknown Date';
-                            const [_, day, monthAbbrev, year] = match;
-                            const dateObj = new Date(year, months[monthAbbrev], day);
+            
+                            const dateObj = convertToDate(timestampElem.innerText.trim());
+                            if (!dateObj) return 'Unknown Date';
+            
                             const dd = String(dateObj.getDate()).padStart(2, '0');
                             const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
                             const yyyy = String(dateObj.getFullYear());
@@ -74,7 +97,7 @@ async function scrapeReviews(retryAttempt = 0) {
                         OTA: 'Traveloka'
                     };
                 }).filter(review => review.comment && review.rating !== null && review.rating > 0);
-            }, hotelName);
+            }, hotelName);            
 
             for (const review of reviews) {
                 const [day, month, year] = review.timestamp.split('-').map(val => parseInt(val, 10));
