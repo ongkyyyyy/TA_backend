@@ -83,3 +83,29 @@ class RevenueController:
             return jsonify({"success": True, "data": revenues}), 200
         except Exception as e:
             return jsonify({"success": False, "error": str(e)}), 500
+        
+    def get_hotels_with_revenues(self):
+        try:
+            hotels_with_revenues = self.db.get_all_hotels_with_revenues()
+
+            simplified_result = []
+            for hotel in hotels_with_revenues:
+                hotel_name = hotel.get("hotel_name", "Unknown Hotel")
+                revenues = hotel.get("revenues", [])
+
+                if revenues:
+                    for rev in revenues:
+                        rev["_id"] = str(rev["_id"])
+                        rev["hotel_id"] = str(rev["hotel_id"])
+
+                    simplified_result.append({
+                        "name": hotel_name,
+                        "revenues": revenues
+                    })
+            return jsonify({"success": True, "data": simplified_result}), 200
+        except Exception as e:
+            return jsonify({"success": False, "message": str(e)}), 500
+
+
+
+

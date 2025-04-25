@@ -115,19 +115,21 @@ class RevenueDB:
         if not existing_doc:
             return -1
 
-        hotel_id = updated_data.get("hotel_id", existing_doc.get("hotel_id"))
+        hotel_id_raw = updated_data.get("hotel_id", existing_doc.get("hotel_id"))
 
+        try:
+            hotel_id = ObjectId(hotel_id_raw) if isinstance(hotel_id_raw, str) else hotel_id_raw
+        except Exception:
+            return 0 
         if not self.hotel_exists(hotel_id):
             return 0
 
         merged_data = existing_doc.copy()
         merged_data.update(updated_data)
-
         merged_data["hotel_id"] = hotel_id
 
         processed_data = self.calculate_revenue(merged_data)
-        processed_data["hotel_id"] = hotel_id
-
+        processed_data["hotel_id"] = hotel_id  
         result = self.mongo.db.revenues.update_one(
             {"_id": revenue_oid},
             {"$set": processed_data}
@@ -147,3 +149,11 @@ class RevenueDB:
 
     def get_revenues_by_hotel(self, hotel_id):
         return list(self.mongo.db.revenues.find({"hotel_id": ObjectId(hotel_id)}))
+    
+    def get_all_hotels_with_revenues(self):
+        hotels = list(self.mongo.db.hotels.find({}))
+        for hotel in hotels:
+            hotel_id = hotel["_id"]
+            revenues = list(self.mongo.db.revenues.find({"hotel_id": hotel_id}))
+            hotel["revenues"] = revenues
+        return hotels
