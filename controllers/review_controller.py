@@ -5,6 +5,7 @@ from models.sentiment import sentiment_collection
 from datetime import datetime
 from langdetect import detect, LangDetectException # type: ignore
 from bson import ObjectId # type: ignore
+from flask import request # type: ignore
 
 def save_reviews(reviews, hotel_id=None):  
     if not reviews:
@@ -79,6 +80,11 @@ def save_reviews(reviews, hotel_id=None):
     }
 
 def get_all_reviews():
+    page = int(request.args.get('page', 1)) 
+    per_page = 15
+
+    skip = (page - 1) * per_page
+
     pipeline = [
         {
             "$lookup": {
@@ -122,8 +128,10 @@ def get_all_reviews():
                 "positive_score": "$sentiment_info.positive_score",
                 "negative_score": "$sentiment_info.negative_score"
             }
-        }
+        },
+        {"$sort": {"timestamp": -1}},
+        {"$skip": skip},
+        {"$limit": per_page}
     ]
-
     reviews = list(reviews_collection.aggregate(pipeline))
     return reviews

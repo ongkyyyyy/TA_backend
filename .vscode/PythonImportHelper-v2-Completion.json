@@ -41,6 +41,14 @@
         "documentation": {}
     },
     {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "jsonify",
         "importPath": "flask",
         "description": "flask",
@@ -564,7 +572,7 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def get_all_reviews():\n    pipeline = [\n        {\n            \"$lookup\": {\n                \"from\": \"sentiments\", \n                \"localField\": \"_id\",\n                \"foreignField\": \"review_id\",\n                \"as\": \"sentiment_info\"\n            }\n        },",
+        "peekOfCode": "def get_all_reviews():\n    page = int(request.args.get('page', 1)) \n    per_page = 15\n    skip = (page - 1) * per_page\n    pipeline = [\n        {\n            \"$lookup\": {\n                \"from\": \"sentiments\", \n                \"localField\": \"_id\",\n                \"foreignField\": \"review_id\",",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
