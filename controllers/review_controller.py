@@ -6,6 +6,7 @@ from datetime import datetime
 from langdetect import detect, LangDetectException # type: ignore
 from bson import ObjectId # type: ignore
 from flask import request # type: ignore
+import re
 
 def save_reviews(reviews, hotel_id=None):  
     if not reviews:
@@ -80,15 +81,27 @@ def save_reviews(reviews, hotel_id=None):
     }
 
 def get_all_reviews():
-    page = int(request.args.get('page', 1)) 
+    page = int(request.args.get('page', 1))
     per_page = 15
-
     skip = (page - 1) * per_page
+
+    search_query = request.args.get('search', '').strip()
+
+    match_stage = {}
+    if search_query:
+        regex = re.compile(re.escape(search_query), re.IGNORECASE)
+        match_stage = {
+            "$or": [
+                {"username": {"$regex": regex}},
+                {"comment": {"$regex": regex}},
+                {"hotel_info.hotel_name": {"$regex": regex}}
+            ]
+        }
 
     pipeline = [
         {
             "$lookup": {
-                "from": "sentiments", 
+                "from": "sentiments",
                 "localField": "_id",
                 "foreignField": "review_id",
                 "as": "sentiment_info"
@@ -114,6 +127,20 @@ def get_all_reviews():
                 "preserveNullAndEmptyArrays": True
             }
         },
+        *( [{"$match": match_stage}] if match_stage else [] ),
+        {
+            "$addFields": {
+                "timestamp_date": {
+                    "$dateFromString": {
+                        "dateString": "$timestamp",
+                        "format": "%d-%m-%Y"
+                    }
+                }
+            }
+        },
+        {
+            "$sort": {"timestamp_date": -1}
+        },
         {
             "$project": {
                 "_id": 0,
@@ -126,12 +153,13 @@ def get_all_reviews():
                 "OTA": 1,
                 "sentiment": "$sentiment_info.sentiment",
                 "positive_score": "$sentiment_info.positive_score",
-                "negative_score": "$sentiment_info.negative_score"
+                "negative_score": "$sentiment_info.negative_score",
             }
         },
-        {"$sort": {"timestamp": -1}},
         {"$skip": skip},
         {"$limit": per_page}
     ]
+
     reviews = list(reviews_collection.aggregate(pipeline))
     return reviews
+
