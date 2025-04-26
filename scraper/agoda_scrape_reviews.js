@@ -52,7 +52,7 @@ async function scrapeReviews(retryAttempt = 0) {
 
     console.log(`Launching Puppeteer (Attempt ${retryAttempt + 1})...`);
     const browser = await puppeteer.launch({
-        headless: "new",
+        headless: false,
         defaultViewport: {
             width: 1280 + Math.floor(Math.random() * 100),
             height: 720 + Math.floor(Math.random() * 100),

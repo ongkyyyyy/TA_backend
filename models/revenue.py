@@ -151,9 +151,16 @@ class RevenueDB:
         return list(self.mongo.db.revenues.find({"hotel_id": ObjectId(hotel_id)}))
     
     def get_all_hotels_with_revenues(self):
-        hotels = list(self.mongo.db.hotels.find({}))
-        for hotel in hotels:
-            hotel_id = hotel["_id"]
-            revenues = list(self.mongo.db.revenues.find({"hotel_id": hotel_id}))
-            hotel["revenues"] = revenues
-        return hotels
+        pipeline = [
+            {
+                "$lookup": {
+                    "from": "revenues",
+                    "localField": "_id",
+                    "foreignField": "hotel_id",
+                    "as": "revenues"
+                }
+            }
+        ]
+        hotels_with_revenues = list(self.mongo.db.hotels.aggregate(pipeline))
+        return hotels_with_revenues
+
