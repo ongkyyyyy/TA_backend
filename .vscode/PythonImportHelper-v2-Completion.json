@@ -568,11 +568,20 @@
         "documentation": {}
     },
     {
+        "label": "prepare_unicode_friendly_regex",
+        "kind": 2,
+        "importPath": "controllers.review_controller",
+        "description": "controllers.review_controller",
+        "peekOfCode": "def prepare_unicode_friendly_regex(text):\n    safe_text = re.escape(text)\n    safe_text = safe_text.replace('', '[\\u200B-\\u200D\\uFEFF]?')\n    return re.compile(safe_text, re.IGNORECASE)\ndef get_all_reviews():\n    page = int(request.args.get('page', 1))\n    per_page = 15\n    skip = (page - 1) * per_page\n    search_query = request.args.get('search', '').strip()\n    sentiment_filter = request.args.get('sentiment')",
+        "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
         "label": "get_all_reviews",
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def get_all_reviews():\n    page = int(request.args.get('page', 1))\n    per_page = 15\n    skip = (page - 1) * per_page\n    search_query = request.args.get('search', '').strip()\n    match_stage = {}\n    if search_query:\n        regex = re.compile(re.escape(search_query), re.IGNORECASE)\n        match_stage = {\n            \"$or\": [",
+        "peekOfCode": "def get_all_reviews():\n    page = int(request.args.get('page', 1))\n    per_page = 15\n    skip = (page - 1) * per_page\n    search_query = request.args.get('search', '').strip()\n    sentiment_filter = request.args.get('sentiment')\n    min_rating = request.args.get('min_rating', type=float)\n    max_rating = request.args.get('max_rating', type=float)\n    ota_filter = request.args.get('ota')\n    min_date = request.args.get('min_date')",
         "detail": "controllers.review_controller",
         "documentation": {}
     },

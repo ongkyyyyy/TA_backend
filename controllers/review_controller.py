@@ -80,67 +80,113 @@ def save_reviews(reviews, hotel_id=None):
         "skipped_non_id": non_id_count
     }
 
+def prepare_unicode_friendly_regex(text):
+    safe_text = re.escape(text)
+    safe_text = safe_text.replace('', '[\u200B-\u200D\uFEFF]?')
+    return re.compile(safe_text, re.IGNORECASE)
+
 def get_all_reviews():
     page = int(request.args.get('page', 1))
     per_page = 15
     skip = (page - 1) * per_page
 
     search_query = request.args.get('search', '').strip()
+    sentiment_filter = request.args.get('sentiment')
+    min_rating = request.args.get('min_rating', type=float)
+    max_rating = request.args.get('max_rating', type=float)
+    ota_filter = request.args.get('ota')
+    min_date = request.args.get('min_date')
+    max_date = request.args.get('max_date')
+    hotel_id = request.args.get('hotel_id')
 
-    match_stage = {}
+    early_match_conditions = []
+
+    if min_rating is not None or max_rating is not None:
+        rating_filter = {}
+        if min_rating is not None:
+            rating_filter["$gte"] = min_rating
+        if max_rating is not None:
+            rating_filter["$lte"] = max_rating
+        early_match_conditions.append({"rating": rating_filter})
+
+    if ota_filter:
+        early_match_conditions.append({"OTA": ota_filter})
+
+    if hotel_id:
+        try:
+            early_match_conditions.append({"hotel_id": ObjectId(hotel_id)})
+        except Exception:
+            pass
+
+    pipeline = []
+
+    if early_match_conditions:
+        pipeline.append({"$match": {"$and": early_match_conditions}})
+
+    pipeline.append({
+        "$addFields": {
+            "timestamp_date": {
+                "$dateFromString": {
+                    "dateString": "$timestamp",
+                    "format": "%d-%m-%Y",
+                    "onError": None,
+                    "onNull": None
+                }
+            }
+        }
+    })
+
+    pipeline.append({
+        "$match": {
+            "timestamp_date": {"$ne": None}
+        }
+    })
+
+    if min_date or max_date:
+        date_filter = {}
+        if min_date:
+            date_filter["$gte"] = datetime.strptime(min_date, "%d-%m-%Y")
+        if max_date:
+            date_filter["$lte"] = datetime.strptime(max_date, "%d-%m-%Y")
+        pipeline.append({"$match": {"timestamp_date": date_filter}})
+
+    pipeline.append({
+        "$lookup": {
+            "from": "sentiments",
+            "localField": "_id",
+            "foreignField": "review_id",
+            "as": "sentiment_info"
+        }
+    })
+    pipeline.append({
+        "$unwind": {
+            "path": "$sentiment_info",
+            "preserveNullAndEmptyArrays": True
+        }
+    })
+
+    post_lookup_conditions = []
+
     if search_query:
-        regex = re.compile(re.escape(search_query), re.IGNORECASE)
-        match_stage = {
+        regex = prepare_unicode_friendly_regex(search_query)
+        post_lookup_conditions.append({
             "$or": [
                 {"username": {"$regex": regex}},
                 {"comment": {"$regex": regex}},
-                {"hotel_info.hotel_name": {"$regex": regex}}
+                {"hotel_name": {"$regex": regex}}
             ]
-        }
+        })
 
-    pipeline = [
-        {
-            "$lookup": {
-                "from": "sentiments",
-                "localField": "_id",
-                "foreignField": "review_id",
-                "as": "sentiment_info"
-            }
-        },
-        {
-            "$unwind": {
-                "path": "$sentiment_info",
-                "preserveNullAndEmptyArrays": True
-            }
-        },
-        {
-            "$lookup": {
-                "from": "hotels",
-                "localField": "hotel_id",
-                "foreignField": "_id",
-                "as": "hotel_info"
-            }
-        },
-        {
-            "$unwind": {
-                "path": "$hotel_info",
-                "preserveNullAndEmptyArrays": True
-            }
-        },
-        *( [{"$match": match_stage}] if match_stage else [] ),
-        {
-            "$addFields": {
-                "timestamp_date": {
-                    "$dateFromString": {
-                        "dateString": "$timestamp",
-                        "format": "%d-%m-%Y"
-                    }
-                }
-            }
-        },
-        {
-            "$sort": {"timestamp_date": -1}
-        },
+    if sentiment_filter:
+        post_lookup_conditions.append({
+            "sentiment_info.sentiment": sentiment_filter.lower()
+        })
+
+    if post_lookup_conditions:
+        pipeline.append({"$match": {"$and": post_lookup_conditions}})
+
+    pipeline += [
+        {"$sort": {"timestamp_date": -1}},
         {
             "$project": {
                 "_id": 0,
@@ -148,7 +194,7 @@ def get_all_reviews():
                 "comment": 1,
                 "rating": 1,
                 "timestamp": 1,
-                "hotel_name": "$hotel_info.hotel_name",
+                "hotel_name": 1,
                 "hotel_id": 1,
                 "OTA": 1,
                 "sentiment": "$sentiment_info.sentiment",
@@ -162,4 +208,3 @@ def get_all_reviews():
 
     reviews = list(reviews_collection.aggregate(pipeline))
     return reviews
-
