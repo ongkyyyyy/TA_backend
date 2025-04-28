@@ -1,6 +1,7 @@
 from flask_pymongo import PyMongo # type: ignore
 from bson import ObjectId # type: ignore
-from flask import jsonify # type: ignore
+from flask import request,jsonify # type: ignore
+from datetime import datetime
 
 class RevenueDB:
     def __init__(self, app):
@@ -151,16 +152,77 @@ class RevenueDB:
         return list(self.mongo.db.revenues.find({"hotel_id": ObjectId(hotel_id)}))
     
     def get_all_hotels_with_revenues(self):
-        pipeline = [
+
+        # Read query parameters
+        page = int(request.args.get('page', 1))
+        per_page_hotels = int(request.args.get('per_page_hotels', 5))
+        revenues_per_hotel = int(request.args.get('revenues_per_hotel', 10))
+        hotel_id = request.args.get('hotel_id')  # Optional filter
+        min_date = request.args.get('minDate')  # Format: dd-mm-yyyy
+        max_date = request.args.get('maxDate')
+        sort_by = request.args.get('sort_by', 'date')  # date or revenue or occupancy
+        sort_order = int(request.args.get('sort_order', 1))  # 1 for ascending, -1 for descending
+        min_revenue = request.args.get('minRevenue')
+        max_revenue = request.args.get('maxRevenue')
+        min_occupancy = request.args.get('minOccupancy')
+        max_occupancy = request.args.get('maxOccupancy')
+
+        skip = (page - 1) * per_page_hotels
+
+        match_revenue_conditions = {}
+
+        if min_date or max_date:
+            date_conditions = {}
+            if min_date:
+                date_conditions["$gte"] = min_date
+            if max_date:
+                date_conditions["$lte"] = max_date
+            match_revenue_conditions["date"] = date_conditions
+
+        if min_revenue or max_revenue:
+            revenue_conditions = {}
+            if min_revenue:
+                revenue_conditions["$gte"] = int(min_revenue)
+            if max_revenue:
+                revenue_conditions["$lte"] = int(max_revenue)
+            match_revenue_conditions["grand_total_revenue"] = revenue_conditions
+
+        if min_occupancy or max_occupancy:
+            occupancy_conditions = {}
+            if min_occupancy:
+                occupancy_conditions["$gte"] = int(min_occupancy)
+            if max_occupancy:
+                occupancy_conditions["$lte"] = int(max_occupancy)
+            match_revenue_conditions["room_stats.occupancy"] = occupancy_conditions
+
+        pipeline = []
+
+        match_conditions = {}
+        if hotel_id:
+            match_conditions["_id"] = ObjectId(hotel_id)
+            pipeline.append({"$match": match_conditions})
+
+        pipeline.extend([
             {
                 "$lookup": {
                     "from": "revenues",
-                    "localField": "_id",
-                    "foreignField": "hotel_id",
+                    "let": { "hotelId": "$_id" },
+                    "pipeline": [
+                        { "$match": { "$expr": { "$eq": ["$hotel_id", "$$hotelId"] } } },
+                        { "$match": match_revenue_conditions },
+                        { "$sort": {
+                            "date" if sort_by == "date" else
+                            "grand_total_revenue" if sort_by == "revenue" else
+                            "room_stats.occupancy": sort_order
+                        }},
+                        { "$limit": revenues_per_hotel }
+                    ],
                     "as": "revenues"
                 }
-            }
-        ]
+            },
+            { "$skip": skip },
+            { "$limit": per_page_hotels }
+        ])
+
         hotels_with_revenues = list(self.mongo.db.hotels.aggregate(pipeline))
         return hotels_with_revenues
-
