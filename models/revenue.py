@@ -158,8 +158,8 @@ class RevenueDB:
         per_page_hotels = int(request.args.get('per_page_hotels', 5))
         revenues_per_hotel = int(request.args.get('revenues_per_hotel', 10))
         hotel_id = request.args.get('hotel_id')  # Optional filter
-        min_date = request.args.get('minDate')  # Format: dd-mm-yyyy
-        max_date = request.args.get('maxDate')
+        min_date = request.args.get('min_date')  # Format: dd-mm-yyyy
+        max_date = request.args.get('max_date')
         sort_by = request.args.get('sort_by', 'date')  # date or revenue or occupancy
         sort_order = int(request.args.get('sort_order', 1))  # 1 for ascending, -1 for descending
         min_revenue = request.args.get('minRevenue')
