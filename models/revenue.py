@@ -153,15 +153,14 @@ class RevenueDB:
     
     def get_all_hotels_with_revenues(self):
 
-        # Read query parameters
         page = int(request.args.get('page', 1))
         per_page_hotels = int(request.args.get('per_page_hotels', 5))
         revenues_per_hotel = int(request.args.get('revenues_per_hotel', 10))
-        hotel_id = request.args.get('hotel_id')  # Optional filter
-        min_date = request.args.get('min_date')  # Format: dd-mm-yyyy
+        hotel_id = request.args.get('hotel_id')  
+        min_date = request.args.get('min_date') 
         max_date = request.args.get('max_date')
-        sort_by = request.args.get('sort_by', 'date')  # date or revenue or occupancy
-        sort_order = int(request.args.get('sort_order', 1))  # 1 for ascending, -1 for descending
+        sort_by = request.args.get('sort_by', 'date')  
+        sort_order = int(request.args.get('sort_order', 1)) 
         min_revenue = request.args.get('minRevenue')
         max_revenue = request.args.get('maxRevenue')
         min_occupancy = request.args.get('minOccupancy')

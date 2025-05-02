@@ -16,6 +16,14 @@
         "documentation": {}
     },
     {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "jsonify",
         "importPath": "flask",
         "description": "flask",
@@ -232,11 +240,44 @@
         "documentation": {}
     },
     {
+        "label": "defaultdict",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
+        "documentation": {}
+    },
+    {
+        "label": "Counter",
+        "importPath": "collections",
+        "description": "collections",
+        "isExtraImport": true,
+        "detail": "collections",
+        "documentation": {}
+    },
+    {
         "label": "db",
         "importPath": "models.diagram",
         "description": "models.diagram",
         "isExtraImport": true,
         "detail": "models.diagram",
+        "documentation": {}
+    },
+    {
+        "label": "calendar",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "calendar",
+        "description": "calendar",
+        "detail": "calendar",
+        "documentation": {}
+    },
+    {
+        "label": "parse",
+        "importPath": "dateutil.parser",
+        "description": "dateutil.parser",
+        "isExtraImport": true,
+        "detail": "dateutil.parser",
         "documentation": {}
     },
     {
@@ -401,15 +442,7 @@
         "documentation": {}
     },
     {
-        "label": "get_revenue_diagram_data",
-        "importPath": "controllers.diagram_controller",
-        "description": "controllers.diagram_controller",
-        "isExtraImport": true,
-        "detail": "controllers.diagram_controller",
-        "documentation": {}
-    },
-    {
-        "label": "get_reviews_sentiments",
+        "label": "get_revenue_sentiment_diagram",
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
         "isExtraImport": true,
@@ -488,104 +521,6 @@
         "description": "controllers.review_controller",
         "isExtraImport": true,
         "detail": "controllers.review_controller",
-        "documentation": {}
-    },
-    {
-        "label": "Counter",
-        "importPath": "collections",
-        "description": "collections",
-        "isExtraImport": true,
-        "detail": "collections",
-        "documentation": {}
-    },
-    {
-        "label": "joblib",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "joblib",
-        "description": "joblib",
-        "detail": "joblib",
-        "documentation": {}
-    },
-    {
-        "label": "pandas",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "pandas",
-        "description": "pandas",
-        "detail": "pandas",
-        "documentation": {}
-    },
-    {
-        "label": "NEGATION_WORDS",
-        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
-        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
-        "isExtraImport": true,
-        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
-        "documentation": {}
-    },
-    {
-        "label": "CONTRAST_WORDS",
-        "importPath": "sentiment_analysis.indonesian_sentiment_lexicon",
-        "description": "sentiment_analysis.indonesian_sentiment_lexicon",
-        "isExtraImport": true,
-        "detail": "sentiment_analysis.indonesian_sentiment_lexicon",
-        "documentation": {}
-    },
-    {
-        "label": "LogisticRegression",
-        "importPath": "sklearn.linear_model",
-        "description": "sklearn.linear_model",
-        "isExtraImport": true,
-        "detail": "sklearn.linear_model",
-        "documentation": {}
-    },
-    {
-        "label": "TfidfVectorizer",
-        "importPath": "sklearn.feature_extraction.text",
-        "description": "sklearn.feature_extraction.text",
-        "isExtraImport": true,
-        "detail": "sklearn.feature_extraction.text",
-        "documentation": {}
-    },
-    {
-        "label": "train_test_split",
-        "importPath": "sklearn.model_selection",
-        "description": "sklearn.model_selection",
-        "isExtraImport": true,
-        "detail": "sklearn.model_selection",
-        "documentation": {}
-    },
-    {
-        "label": "classification_report",
-        "importPath": "sklearn.metrics",
-        "description": "sklearn.metrics",
-        "isExtraImport": true,
-        "detail": "sklearn.metrics",
-        "documentation": {}
-    },
-    {
-        "label": "hstack",
-        "importPath": "scipy.sparse",
-        "description": "scipy.sparse",
-        "isExtraImport": true,
-        "detail": "scipy.sparse",
-        "documentation": {}
-    },
-    {
-        "label": "SMOTE",
-        "importPath": "imblearn.over_sampling",
-        "description": "imblearn.over_sampling",
-        "isExtraImport": true,
-        "detail": "imblearn.over_sampling",
-        "documentation": {}
-    },
-    {
-        "label": "array",
-        "importPath": "numpy",
-        "description": "numpy",
-        "isExtraImport": true,
-        "detail": "numpy",
         "documentation": {}
     },
     {
@@ -709,20 +644,38 @@
         "documentation": {}
     },
     {
-        "label": "get_revenue_diagram_data",
+        "label": "get_month_key",
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_revenue_diagram_data(hotel_id: str):\n    revenues = list(db.revenues.find({\"hotel_id\": ObjectId(hotel_id)}).sort(\"date\", 1))\n    revenue_data = {\n        \"dates\": [],\n        \"room_revenue\": [],\n        \"restaurant_revenue\": [],\n        \"other_revenue\": [],\n        \"nett_revenue\": [],\n        \"gross_revenue\": [],\n        \"grand_total_revenue\": []",
+        "peekOfCode": "def get_month_key(date):\n    if isinstance(date, str):\n        date = parse(date)\n    return date.strftime('%Y-%m')\ndef month_label(date_str):\n    dt = datetime.strptime(date_str, \"%Y-%m\")\n    return f\"{calendar.month_abbr[dt.month]} {dt.year}\"\ndef get_filter_year():\n    year = request.args.get('year')\n    return int(year) if year and year.isdigit() else None",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
     {
-        "label": "get_reviews_sentiments",
+        "label": "month_label",
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_reviews_sentiments(hotel_id: str):\n    reviews = list(db.reviews.find({\"hotel_id\": ObjectId(hotel_id)}).sort(\"timestamp\", 1))\n    sentiment_map = {s[\"review_id\"]: s for s in db.sentiments.find({\n        \"review_id\": {\"$in\": [r[\"_id\"] for r in reviews]}\n    })}\n    result = {\n        \"dates\": [],\n        \"ratings\": [],\n        \"positive\": [],\n        \"neutral\": [],",
+        "peekOfCode": "def month_label(date_str):\n    dt = datetime.strptime(date_str, \"%Y-%m\")\n    return f\"{calendar.month_abbr[dt.month]} {dt.year}\"\ndef get_filter_year():\n    year = request.args.get('year')\n    return int(year) if year and year.isdigit() else None\ndef get_revenue_sentiment_diagram():\n    hotel_id = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()",
+        "detail": "controllers.diagram_controller",
+        "documentation": {}
+    },
+    {
+        "label": "get_filter_year",
+        "kind": 2,
+        "importPath": "controllers.diagram_controller",
+        "description": "controllers.diagram_controller",
+        "peekOfCode": "def get_filter_year():\n    year = request.args.get('year')\n    return int(year) if year and year.isdigit() else None\ndef get_revenue_sentiment_diagram():\n    hotel_id = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month\n    revenue_query = {}",
+        "detail": "controllers.diagram_controller",
+        "documentation": {}
+    },
+    {
+        "label": "get_revenue_sentiment_diagram",
+        "kind": 2,
+        "importPath": "controllers.diagram_controller",
+        "description": "controllers.diagram_controller",
+        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_id = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month\n    revenue_query = {}\n    if hotel_id != \"All\":\n        revenue_query[\"hotel_id\"] = ObjectId(hotel_id)\n    revenues = [",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
@@ -893,7 +846,7 @@
         "kind": 2,
         "importPath": "routes.diagram_routes",
         "description": "routes.diagram_routes",
-        "peekOfCode": "def create_diagram_blueprint(app):\n    diagram_bp = Blueprint(\"diagrams\", __name__)\n    diagram_bp.add_url_rule(\n        \"/diagram/revenue/<hotel_id>\", \n        \"diagram_revenue\", \n        get_revenue_diagram_data, \n        methods=[\"GET\"]\n    )\n    diagram_bp.add_url_rule(\n        \"/diagram/review-sentiment/<hotel_id>\", ",
+        "peekOfCode": "def create_diagram_blueprint(app):\n    diagram_bp = Blueprint(\"diagrams\", __name__)\n    diagram_bp.add_url_rule(\n        \"/diagram/revenue-sentiment\",\n        \"diagram_revenue_sentiment\",\n        get_revenue_sentiment_diagram,\n        methods=[\"GET\"]\n    )\n    return diagram_bp",
         "detail": "routes.diagram_routes",
         "documentation": {}
     },
@@ -985,195 +938,6 @@
         "description": "sentiment_analysis.sentiment_analysis",
         "peekOfCode": "NEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\ndef analyze_sentiment(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    if pos_count > neg_count:\n        sentiment = \"positive\"\n    elif neg_count > pos_count:\n        sentiment = \"negative\"",
         "detail": "sentiment_analysis.sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "load_words_from_txt",
-        "kind": 2,
-        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "peekOfCode": "def load_words_from_txt(path):\n    with open(path, 'r', encoding='utf-8') as file:\n        return set(line.strip().lower() for line in file if line.strip())\nPOSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)",
-        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "extract_features",
-        "kind": 2,
-        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "peekOfCode": "def extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)\n    word_count = len(words)\n    return {\n        \"pos_count\": pos_count,",
-        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "analyze_sentiment",
-        "kind": 2,
-        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "peekOfCode": "def analyze_sentiment(text):\n    features = extract_features(text)\n    df = pd.DataFrame([features])\n    sentiment = MODEL.predict(df)[0]\n    return sentiment, features[\"pos_count\"], features[\"neg_count\"]",
-        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "POSITIVE_WORDS",
-        "kind": 5,
-        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "peekOfCode": "POSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)",
-        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "NEGATIVE_WORDS",
-        "kind": 5,
-        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "peekOfCode": "NEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nMODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)\n    word_count = len(words)",
-        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "MODEL",
-        "kind": 5,
-        "importPath": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "description": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "peekOfCode": "MODEL = joblib.load('sentiment_analysis/sentiment_model.pkl')\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    pos_count = sum(1 for word in words if word in POSITIVE_WORDS)\n    neg_count = sum(1 for word in words if word in NEGATIVE_WORDS)\n    has_negation = any(word in NEGATION_WORDS for word in words)\n    has_contrast = any(word in CONTRAST_WORDS for word in words)\n    word_count = len(words)\n    return {",
-        "detail": "sentiment_analysis.tfidf_lexicon_sentiment_analysis",
-        "documentation": {}
-    },
-    {
-        "label": "load_words_from_txt",
-        "kind": 2,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "def load_words_from_txt(path):\n    with open(path, 'r', encoding='utf-8') as file:\n        return set(line.strip().lower() for line in file if line.strip())\nPOSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nNEGATION_WORDS = {\"tidak\", \"bukan\", \"jangan\", \"tanpa\"}\nCONTRAST_WORDS = {\"tetapi\", \"namun\", \"meskipun\", \"walaupun\"}\n# Extract lexical features\ndef extract_features(text):\n    text = text.lower()",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "extract_features",
-        "kind": 2,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "def extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    return {\n        \"pos_count\": sum(word in POSITIVE_WORDS for word in words),\n        \"neg_count\": sum(word in NEGATIVE_WORDS for word in words),\n        \"has_negation\": int(any(word in NEGATION_WORDS for word in words)),\n        \"has_contrast\": int(any(word in CONTRAST_WORDS for word in words)),\n        \"word_count\": len(words)\n    }",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "POSITIVE_WORDS",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "POSITIVE_WORDS = load_words_from_txt('sentiment_analysis/positive.txt')\nNEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nNEGATION_WORDS = {\"tidak\", \"bukan\", \"jangan\", \"tanpa\"}\nCONTRAST_WORDS = {\"tetapi\", \"namun\", \"meskipun\", \"walaupun\"}\n# Extract lexical features\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    return {\n        \"pos_count\": sum(word in POSITIVE_WORDS for word in words),",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "NEGATIVE_WORDS",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "NEGATIVE_WORDS = load_words_from_txt('sentiment_analysis/negative.txt')\nNEGATION_WORDS = {\"tidak\", \"bukan\", \"jangan\", \"tanpa\"}\nCONTRAST_WORDS = {\"tetapi\", \"namun\", \"meskipun\", \"walaupun\"}\n# Extract lexical features\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    return {\n        \"pos_count\": sum(word in POSITIVE_WORDS for word in words),\n        \"neg_count\": sum(word in NEGATIVE_WORDS for word in words),",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "NEGATION_WORDS",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "NEGATION_WORDS = {\"tidak\", \"bukan\", \"jangan\", \"tanpa\"}\nCONTRAST_WORDS = {\"tetapi\", \"namun\", \"meskipun\", \"walaupun\"}\n# Extract lexical features\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    return {\n        \"pos_count\": sum(word in POSITIVE_WORDS for word in words),\n        \"neg_count\": sum(word in NEGATIVE_WORDS for word in words),\n        \"has_negation\": int(any(word in NEGATION_WORDS for word in words)),",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "CONTRAST_WORDS",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "CONTRAST_WORDS = {\"tetapi\", \"namun\", \"meskipun\", \"walaupun\"}\n# Extract lexical features\ndef extract_features(text):\n    text = text.lower()\n    words = re.findall(r'\\b\\w+\\b', text)\n    return {\n        \"pos_count\": sum(word in POSITIVE_WORDS for word in words),\n        \"neg_count\": sum(word in NEGATIVE_WORDS for word in words),\n        \"has_negation\": int(any(word in NEGATION_WORDS for word in words)),\n        \"has_contrast\": int(any(word in CONTRAST_WORDS for word in words)),",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "df",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "df = pd.read_csv(\"sentiment_analysis/labeled_reviews.csv\")\ndf.dropna(subset=[\"review\", \"label\"], inplace=True)\n# Extract features\nlexical_features = df[\"review\"].apply(extract_features).apply(pd.Series)\n# TF-IDF Vectorization\ntfidf = TfidfVectorizer(ngram_range=(1, 2), max_features=3000)\ntfidf_features = tfidf.fit_transform(df[\"review\"])\n# Combine TF-IDF + Lexical features\nfrom numpy import array\nX_combined = hstack([tfidf_features, array(lexical_features)])",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "lexical_features",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "lexical_features = df[\"review\"].apply(extract_features).apply(pd.Series)\n# TF-IDF Vectorization\ntfidf = TfidfVectorizer(ngram_range=(1, 2), max_features=3000)\ntfidf_features = tfidf.fit_transform(df[\"review\"])\n# Combine TF-IDF + Lexical features\nfrom numpy import array\nX_combined = hstack([tfidf_features, array(lexical_features)])\ny = df[\"label\"]\n# Optional: Handle imbalanced dataset\nsmote = SMOTE(random_state=42)",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "tfidf",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "tfidf = TfidfVectorizer(ngram_range=(1, 2), max_features=3000)\ntfidf_features = tfidf.fit_transform(df[\"review\"])\n# Combine TF-IDF + Lexical features\nfrom numpy import array\nX_combined = hstack([tfidf_features, array(lexical_features)])\ny = df[\"label\"]\n# Optional: Handle imbalanced dataset\nsmote = SMOTE(random_state=42)\nX_combined, y = smote.fit_resample(X_combined, y)\n# Train/test split",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "tfidf_features",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "tfidf_features = tfidf.fit_transform(df[\"review\"])\n# Combine TF-IDF + Lexical features\nfrom numpy import array\nX_combined = hstack([tfidf_features, array(lexical_features)])\ny = df[\"label\"]\n# Optional: Handle imbalanced dataset\nsmote = SMOTE(random_state=42)\nX_combined, y = smote.fit_resample(X_combined, y)\n# Train/test split\nX_train, X_test, y_train, y_test = train_test_split(X_combined, y, test_size=0.2, stratify=y, random_state=42)",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "X_combined",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "X_combined = hstack([tfidf_features, array(lexical_features)])\ny = df[\"label\"]\n# Optional: Handle imbalanced dataset\nsmote = SMOTE(random_state=42)\nX_combined, y = smote.fit_resample(X_combined, y)\n# Train/test split\nX_train, X_test, y_train, y_test = train_test_split(X_combined, y, test_size=0.2, stratify=y, random_state=42)\n# Train model\nclf = LogisticRegression(max_iter=1000, class_weight=\"balanced\", random_state=42)\nclf.fit(X_train, y_train)",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "y",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "y = df[\"label\"]\n# Optional: Handle imbalanced dataset\nsmote = SMOTE(random_state=42)\nX_combined, y = smote.fit_resample(X_combined, y)\n# Train/test split\nX_train, X_test, y_train, y_test = train_test_split(X_combined, y, test_size=0.2, stratify=y, random_state=42)\n# Train model\nclf = LogisticRegression(max_iter=1000, class_weight=\"balanced\", random_state=42)\nclf.fit(X_train, y_train)\n# Evaluate",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "smote",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "smote = SMOTE(random_state=42)\nX_combined, y = smote.fit_resample(X_combined, y)\n# Train/test split\nX_train, X_test, y_train, y_test = train_test_split(X_combined, y, test_size=0.2, stratify=y, random_state=42)\n# Train model\nclf = LogisticRegression(max_iter=1000, class_weight=\"balanced\", random_state=42)\nclf.fit(X_train, y_train)\n# Evaluate\ny_pred = clf.predict(X_test)\nprint(classification_report(y_test, y_pred))",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "clf",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "clf = LogisticRegression(max_iter=1000, class_weight=\"balanced\", random_state=42)\nclf.fit(X_train, y_train)\n# Evaluate\ny_pred = clf.predict(X_test)\nprint(classification_report(y_test, y_pred))\n# Save model and vectorizer\njoblib.dump(clf, \"sentiment_analysis/sentiment_model.pkl\")\njoblib.dump(tfidf, \"sentiment_analysis/tfidf_vectorizer.pkl\")",
-        "detail": "sentiment_analysis.train_sentiment_model",
-        "documentation": {}
-    },
-    {
-        "label": "y_pred",
-        "kind": 5,
-        "importPath": "sentiment_analysis.train_sentiment_model",
-        "description": "sentiment_analysis.train_sentiment_model",
-        "peekOfCode": "y_pred = clf.predict(X_test)\nprint(classification_report(y_test, y_pred))\n# Save model and vectorizer\njoblib.dump(clf, \"sentiment_analysis/sentiment_model.pkl\")\njoblib.dump(tfidf, \"sentiment_analysis/tfidf_vectorizer.pkl\")",
-        "detail": "sentiment_analysis.train_sentiment_model",
         "documentation": {}
     },
     {
