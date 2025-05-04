@@ -1,5 +1,6 @@
-from flask import Blueprint  # type: ignore
+from flask import Blueprint
 from controllers.diagram_controller import get_revenue_sentiment_diagram
+from controllers.middleware.auth_middleware import token_required
 
 def create_diagram_blueprint(app):
     diagram_bp = Blueprint("diagrams", __name__)
@@ -7,7 +8,7 @@ def create_diagram_blueprint(app):
     diagram_bp.add_url_rule(
         "/diagram/revenue-sentiment",
         "diagram_revenue_sentiment",
-        get_revenue_sentiment_diagram,
+        token_required(get_revenue_sentiment_diagram),
         methods=["GET"]
     )
 

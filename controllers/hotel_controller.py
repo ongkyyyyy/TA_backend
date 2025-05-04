@@ -22,6 +22,8 @@ class HotelController:
         return jsonify({"message": "Hotel created", "id": str(hotel_id)}), 201
 
     def get_hotels(self):
+        print(">>> get_hotels called")
+
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 15))
         skip = (page - 1) * limit

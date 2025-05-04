@@ -1,5 +1,29 @@
 [
     {
+        "label": "wraps",
+        "importPath": "functools",
+        "description": "functools",
+        "isExtraImport": true,
+        "detail": "functools",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "jsonify",
         "importPath": "flask",
         "description": "flask",
@@ -49,6 +73,22 @@
     },
     {
         "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
         "importPath": "flask",
         "description": "flask",
         "isExtraImport": true,
@@ -137,6 +177,14 @@
     },
     {
         "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
         "isExtraImport": true,
@@ -149,6 +197,23 @@
         "description": "flask",
         "isExtraImport": true,
         "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jwt",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "jwt",
+        "description": "jwt",
+        "detail": "jwt",
+        "documentation": {}
+    },
+    {
+        "label": "ObjectId",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
         "documentation": {}
     },
     {
@@ -205,6 +270,103 @@
         "description": "bson",
         "isExtraImport": true,
         "detail": "bson",
+        "documentation": {}
+    },
+    {
+        "label": "ObjectId",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
+        "documentation": {}
+    },
+    {
+        "label": "SECRET_KEY",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "SECRET_KEY",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "UsersDB",
+        "importPath": "models.user",
+        "description": "models.user",
+        "isExtraImport": true,
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
+        "label": "UsersDB",
+        "importPath": "models.user",
+        "description": "models.user",
+        "isExtraImport": true,
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "datetime",
+        "description": "datetime",
+        "detail": "datetime",
         "documentation": {}
     },
     {
@@ -362,11 +524,19 @@
         "documentation": {}
     },
     {
-        "label": "MongoClient",
-        "importPath": "pymongo",
-        "description": "pymongo",
+        "label": "generate_password_hash",
+        "importPath": "werkzeug.security",
+        "description": "werkzeug.security",
         "isExtraImport": true,
-        "detail": "pymongo",
+        "detail": "werkzeug.security",
+        "documentation": {}
+    },
+    {
+        "label": "check_password_hash",
+        "importPath": "werkzeug.security",
+        "description": "werkzeug.security",
+        "isExtraImport": true,
+        "detail": "werkzeug.security",
         "documentation": {}
     },
     {
@@ -394,43 +564,19 @@
         "documentation": {}
     },
     {
-        "label": "MONGO_URI",
-        "importPath": "config",
-        "description": "config",
+        "label": "MongoClient",
+        "importPath": "pymongo",
+        "description": "pymongo",
         "isExtraImport": true,
-        "detail": "config",
+        "detail": "pymongo",
         "documentation": {}
     },
     {
-        "label": "MONGO_URI",
-        "importPath": "config",
-        "description": "config",
+        "label": "MongoClient",
+        "importPath": "pymongo",
+        "description": "pymongo",
         "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "MONGO_URI",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "MONGO_URI",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
-        "documentation": {}
-    },
-    {
-        "label": "MONGO_URI",
-        "importPath": "config",
-        "description": "config",
-        "isExtraImport": true,
-        "detail": "config",
+        "detail": "pymongo",
         "documentation": {}
     },
     {
@@ -447,6 +593,22 @@
         "description": "controllers.diagram_controller",
         "isExtraImport": true,
         "detail": "controllers.diagram_controller",
+        "documentation": {}
+    },
+    {
+        "label": "token_required",
+        "importPath": "controllers.middleware.auth_middleware",
+        "description": "controllers.middleware.auth_middleware",
+        "isExtraImport": true,
+        "detail": "controllers.middleware.auth_middleware",
+        "documentation": {}
+    },
+    {
+        "label": "token_required",
+        "importPath": "controllers.middleware.auth_middleware",
+        "description": "controllers.middleware.auth_middleware",
+        "isExtraImport": true,
+        "detail": "controllers.middleware.auth_middleware",
         "documentation": {}
     },
     {
@@ -521,6 +683,14 @@
         "description": "controllers.review_controller",
         "isExtraImport": true,
         "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "UserController",
+        "importPath": "controllers.user_controller",
+        "description": "controllers.user_controller",
+        "isExtraImport": true,
+        "detail": "controllers.user_controller",
         "documentation": {}
     },
     {
@@ -636,11 +806,28 @@
         "documentation": {}
     },
     {
+        "label": "create_user_blueprint",
+        "importPath": "routes.user_routes",
+        "description": "routes.user_routes",
+        "isExtraImport": true,
+        "detail": "routes.user_routes",
+        "documentation": {}
+    },
+    {
         "label": "CORS",
         "importPath": "flask_cors",
         "description": "flask_cors",
         "isExtraImport": true,
         "detail": "flask_cors",
+        "documentation": {}
+    },
+    {
+        "label": "token_required",
+        "kind": 2,
+        "importPath": "controllers.middleware.auth_middleware",
+        "description": "controllers.middleware.auth_middleware",
+        "peekOfCode": "def token_required(f):\n    @wraps(f)\n    def decorated_function(*args, **kwargs):\n        print(\">>> token_required activated\")\n        # Get token from the Authorization header\n        auth_header = request.headers.get(\"Authorization\", \"\")\n        token = None\n        # Validate Bearer token format\n        if auth_header.startswith(\"Bearer \"):\n            token = auth_header.split(\" \")[1]",
+        "detail": "controllers.middleware.auth_middleware",
         "documentation": {}
     },
     {
@@ -743,6 +930,15 @@
         "documentation": {}
     },
     {
+        "label": "UserController",
+        "kind": 6,
+        "importPath": "controllers.user_controller",
+        "description": "controllers.user_controller",
+        "peekOfCode": "class UserController:\n    def __init__(self, db):\n        self.db = db\n    def register(self):\n        data = request.json\n        if not data.get(\"username\") or not data.get(\"password\"):\n            return jsonify({\"error\": \"Username and password are required\"}), 400\n        if self.db.collection.find_one({\"username\": data[\"username\"]}):\n            return jsonify({\"error\": \"Username already exists\"}), 409\n        hashed_pw = generate_password_hash(data[\"password\"])",
+        "detail": "controllers.user_controller",
+        "documentation": {}
+    },
+    {
         "label": "DiagramDB",
         "kind": 6,
         "importPath": "models.diagram",
@@ -842,11 +1038,29 @@
         "documentation": {}
     },
     {
+        "label": "UsersDB",
+        "kind": 6,
+        "importPath": "models.user",
+        "description": "models.user",
+        "peekOfCode": "class UsersDB:\n    def __init__(self, app=None):\n        self.client = MongoClient(MONGO_URI)\n        self.db = self.client.hotelPerformance\n        self.collection = self.db.users\nusers_collection = UsersDB().collection",
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
+        "label": "users_collection",
+        "kind": 5,
+        "importPath": "models.user",
+        "description": "models.user",
+        "peekOfCode": "users_collection = UsersDB().collection",
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
         "label": "create_diagram_blueprint",
         "kind": 2,
         "importPath": "routes.diagram_routes",
         "description": "routes.diagram_routes",
-        "peekOfCode": "def create_diagram_blueprint(app):\n    diagram_bp = Blueprint(\"diagrams\", __name__)\n    diagram_bp.add_url_rule(\n        \"/diagram/revenue-sentiment\",\n        \"diagram_revenue_sentiment\",\n        get_revenue_sentiment_diagram,\n        methods=[\"GET\"]\n    )\n    return diagram_bp",
+        "peekOfCode": "def create_diagram_blueprint(app):\n    diagram_bp = Blueprint(\"diagrams\", __name__)\n    diagram_bp.add_url_rule(\n        \"/diagram/revenue-sentiment\",\n        \"diagram_revenue_sentiment\",\n        token_required(get_revenue_sentiment_diagram),\n        methods=[\"GET\"]\n    )\n    return diagram_bp",
         "detail": "routes.diagram_routes",
         "documentation": {}
     },
@@ -855,7 +1069,7 @@
         "kind": 2,
         "importPath": "routes.hotel_routes",
         "description": "routes.hotel_routes",
-        "peekOfCode": "def create_hotel_blueprint(app):\n    hotel_bp = Blueprint(\"hotels\", __name__)\n    db = HotelsDB(app)\n    controller = HotelController(db)\n    hotel_bp.add_url_rule(\"/hotels\", \"get_hotels\", controller.get_hotels, methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"get_hotel\", controller.get_hotel, methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels\", \"create_hotel\", controller.create_hotel, methods=[\"POST\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"update_hotel\", controller.update_hotel, methods=[\"PUT\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"delete_hotel\", controller.delete_hotel, methods=[\"DELETE\"])\n    hotel_bp.add_url_rule(\"/hotels/search\", \"search_hotels\", controller.search_hotels, methods=[\"GET\"])",
+        "peekOfCode": "def create_hotel_blueprint(app):\n    hotel_bp = Blueprint(\"hotels\", __name__)\n    db = HotelsDB(app)\n    controller = HotelController(db)\n    hotel_bp.add_url_rule(\"/hotels\", \"get_hotels\", token_required(controller.get_hotels), methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"get_hotel\", token_required(controller.get_hotel), methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels\", \"create_hotel\", token_required(controller.create_hotel), methods=[\"POST\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"update_hotel\", token_required(controller.update_hotel), methods=[\"PUT\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"delete_hotel\", token_required(controller.delete_hotel), methods=[\"DELETE\"])\n    hotel_bp.add_url_rule(\"/hotels/search\", \"search_hotels\", token_required(controller.search_hotels), methods=[\"GET\"])",
         "detail": "routes.hotel_routes",
         "documentation": {}
     },
@@ -884,6 +1098,15 @@
         "description": "routes.sentiment_routes",
         "peekOfCode": "def create_sentiment_blueprint(app):\n    sentiments_bp = Blueprint(\"sentiments\", __name__)\n    @sentiments_bp.route(\"/sentiments\", methods=[\"GET\"])\n    def get_sentiments():\n        sentiments = get_all_sentiments()\n        jsonify({\"reviews\": sentiments})\n    return sentiments_bp",
         "detail": "routes.sentiment_routes",
+        "documentation": {}
+    },
+    {
+        "label": "create_user_blueprint",
+        "kind": 2,
+        "importPath": "routes.user_routes",
+        "description": "routes.user_routes",
+        "peekOfCode": "def create_user_blueprint(app):\n    user_bp = Blueprint(\"users\", __name__)\n    db = UsersDB(app)\n    controller = UserController(db)\n    user_bp.add_url_rule(\"/register\", \"register\", controller.register, methods=[\"POST\"])\n    user_bp.add_url_rule(\"/login\", \"login\", controller.login, methods=[\"POST\"])\n    user_bp.add_url_rule(\"/logout\", \"logout\", controller.logout, methods=[\"POST\"])\n    return user_bp",
+        "detail": "routes.user_routes",
         "documentation": {}
     },
     {
@@ -1251,7 +1474,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "reviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "reviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)",
         "detail": "app",
         "documentation": {}
     },
@@ -1260,7 +1483,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
@@ -1269,7 +1492,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
@@ -1278,7 +1501,16 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "user_bp",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
@@ -1287,7 +1519,16 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MONGO_URI = \"mongodb+srv://williamongkywow:williamongkywow@clusterta.poz3g.mongodb.net/hotelPerformance\"",
+        "peekOfCode": "MONGO_URI = \"mongodb+srv://williamongkywow:williamongkywow@clusterta.poz3g.mongodb.net/hotelPerformance\"\nSECRET_KEY = \"supersecretkey_987654321\"",
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "SECRET_KEY",
+        "kind": 5,
+        "importPath": "config",
+        "description": "config",
+        "peekOfCode": "SECRET_KEY = \"supersecretkey_987654321\"",
         "detail": "config",
         "documentation": {}
     }
