@@ -345,7 +345,7 @@
         "documentation": {}
     },
     {
-        "label": "UsersDB",
+        "label": "users_collection",
         "importPath": "models.user",
         "description": "models.user",
         "isExtraImport": true,
@@ -826,7 +826,7 @@
         "kind": 2,
         "importPath": "controllers.middleware.auth_middleware",
         "description": "controllers.middleware.auth_middleware",
-        "peekOfCode": "def token_required(f):\n    @wraps(f)\n    def decorated_function(*args, **kwargs):\n        print(\">>> token_required activated\")\n        # Get token from the Authorization header\n        auth_header = request.headers.get(\"Authorization\", \"\")\n        token = None\n        # Validate Bearer token format\n        if auth_header.startswith(\"Bearer \"):\n            token = auth_header.split(\" \")[1]",
+        "peekOfCode": "def token_required(f):\n    @wraps(f)\n    def decorated_function(*args, **kwargs):\n        auth_header = request.headers.get(\"Authorization\", \"\")\n        token = None\n        if auth_header.startswith(\"Bearer \"):\n            token = auth_header.split(\" \")[1]\n        else:\n            return jsonify({\"error\": \"Authorization header missing or not Bearer token\"}), 401\n        if not token:",
         "detail": "controllers.middleware.auth_middleware",
         "documentation": {}
     },
@@ -1042,7 +1042,25 @@
         "kind": 6,
         "importPath": "models.user",
         "description": "models.user",
-        "peekOfCode": "class UsersDB:\n    def __init__(self, app=None):\n        self.client = MongoClient(MONGO_URI)\n        self.db = self.client.hotelPerformance\n        self.collection = self.db.users\nusers_collection = UsersDB().collection",
+        "peekOfCode": "class UsersDB:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
+        "label": "client",
+        "kind": 5,
+        "importPath": "models.user",
+        "description": "models.user",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance\nusers_collection = db.users  \nclass UsersDB:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
+        "detail": "models.user",
+        "documentation": {}
+    },
+    {
+        "label": "db",
+        "kind": 5,
+        "importPath": "models.user",
+        "description": "models.user",
+        "peekOfCode": "db = client.hotelPerformance\nusers_collection = db.users  \nclass UsersDB:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
         "detail": "models.user",
         "documentation": {}
     },
@@ -1051,7 +1069,7 @@
         "kind": 5,
         "importPath": "models.user",
         "description": "models.user",
-        "peekOfCode": "users_collection = UsersDB().collection",
+        "peekOfCode": "users_collection = db.users  \nclass UsersDB:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
         "detail": "models.user",
         "documentation": {}
     },
