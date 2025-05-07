@@ -636,6 +636,14 @@
         "documentation": {}
     },
     {
+        "label": "hotels_collection",
+        "importPath": "models.hotels",
+        "description": "models.hotels",
+        "isExtraImport": true,
+        "detail": "models.hotels",
+        "documentation": {}
+    },
+    {
         "label": "RevenueController",
         "importPath": "controllers.revenue_controller",
         "description": "controllers.revenue_controller",
@@ -819,6 +827,22 @@
         "description": "flask_cors",
         "isExtraImport": true,
         "detail": "flask_cors",
+        "documentation": {}
+    },
+    {
+        "label": "BackgroundScheduler",
+        "importPath": "apscheduler.schedulers.background",
+        "description": "apscheduler.schedulers.background",
+        "isExtraImport": true,
+        "detail": "apscheduler.schedulers.background",
+        "documentation": {}
+    },
+    {
+        "label": "run_scraping_for_all_hotels",
+        "importPath": "scheduler.review_scraper_scheduler",
+        "description": "scheduler.review_scraper_scheduler",
+        "isExtraImport": true,
+        "detail": "scheduler.review_scraper_scheduler",
         "documentation": {}
     },
     {
@@ -1125,6 +1149,24 @@
         "description": "routes.user_routes",
         "peekOfCode": "def create_user_blueprint(app):\n    user_bp = Blueprint(\"users\", __name__)\n    db = UsersDB(app)\n    controller = UserController(db)\n    user_bp.add_url_rule(\"/register\", \"register\", controller.register, methods=[\"POST\"])\n    user_bp.add_url_rule(\"/login\", \"login\", controller.login, methods=[\"POST\"])\n    user_bp.add_url_rule(\"/logout\", \"logout\", controller.logout, methods=[\"POST\"])\n    return user_bp",
         "detail": "routes.user_routes",
+        "documentation": {}
+    },
+    {
+        "label": "run_scraping_for_all_hotels",
+        "kind": 2,
+        "importPath": "scheduler.review_scraper_scheduler",
+        "description": "scheduler.review_scraper_scheduler",
+        "peekOfCode": "def run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")\n    backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n    script_dir = os.path.join(backend_dir, \"scraper\")\n    for hotel in hotels_collection.find():\n        hotel_id = str(hotel[\"_id\"])\n        for source, (script_name, link_field) in SOURCE_MAP.items():\n            hotel_url = hotel.get(link_field)\n            if not hotel_url:\n                print(f\"[{hotel.get('name', hotel_id)}] No link for {source}, skipping.\")",
+        "detail": "scheduler.review_scraper_scheduler",
+        "documentation": {}
+    },
+    {
+        "label": "SOURCE_MAP",
+        "kind": 5,
+        "importPath": "scheduler.review_scraper_scheduler",
+        "description": "scheduler.review_scraper_scheduler",
+        "peekOfCode": "SOURCE_MAP = {\n    \"traveloka\": (\"scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")\n    backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n    script_dir = os.path.join(backend_dir, \"scraper\")",
+        "detail": "scheduler.review_scraper_scheduler",
         "documentation": {}
     },
     {
@@ -1501,7 +1543,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()",
         "detail": "app",
         "documentation": {}
     },
@@ -1510,7 +1552,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()",
         "detail": "app",
         "documentation": {}
     },
@@ -1519,7 +1561,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
@@ -1528,7 +1570,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    app.run(debug=False)",
+        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
