@@ -112,6 +112,22 @@
         "documentation": {}
     },
     {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
         "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
@@ -153,6 +169,22 @@
     },
     {
         "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "current_app",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
         "isExtraImport": true,
@@ -281,6 +313,14 @@
         "documentation": {}
     },
     {
+        "label": "ObjectId",
+        "importPath": "bson",
+        "description": "bson",
+        "isExtraImport": true,
+        "detail": "bson",
+        "documentation": {}
+    },
+    {
         "label": "SECRET_KEY",
         "importPath": "config",
         "description": "config",
@@ -290,6 +330,14 @@
     },
     {
         "label": "SECRET_KEY",
+        "importPath": "config",
+        "description": "config",
+        "isExtraImport": true,
+        "detail": "config",
+        "documentation": {}
+    },
+    {
+        "label": "MONGO_URI",
         "importPath": "config",
         "description": "config",
         "isExtraImport": true,
@@ -580,6 +628,14 @@
         "documentation": {}
     },
     {
+        "label": "MongoClient",
+        "importPath": "pymongo",
+        "description": "pymongo",
+        "isExtraImport": true,
+        "detail": "pymongo",
+        "documentation": {}
+    },
+    {
         "label": "PyMongo",
         "importPath": "flask_pymongo",
         "description": "flask_pymongo",
@@ -593,6 +649,14 @@
         "description": "controllers.diagram_controller",
         "isExtraImport": true,
         "detail": "controllers.diagram_controller",
+        "documentation": {}
+    },
+    {
+        "label": "token_required",
+        "importPath": "controllers.middleware.auth_middleware",
+        "description": "controllers.middleware.auth_middleware",
+        "isExtraImport": true,
+        "detail": "controllers.middleware.auth_middleware",
         "documentation": {}
     },
     {
@@ -691,6 +755,22 @@
         "description": "controllers.review_controller",
         "isExtraImport": true,
         "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "ScrapeLogController",
+        "importPath": "controllers.scrape_log_controller",
+        "description": "controllers.scrape_log_controller",
+        "isExtraImport": true,
+        "detail": "controllers.scrape_log_controller",
+        "documentation": {}
+    },
+    {
+        "label": "ScrapeLogController",
+        "importPath": "controllers.scrape_log_controller",
+        "description": "controllers.scrape_log_controller",
+        "isExtraImport": true,
+        "detail": "controllers.scrape_log_controller",
         "documentation": {}
     },
     {
@@ -822,6 +902,14 @@
         "documentation": {}
     },
     {
+        "label": "create_scrape_log_blueprint",
+        "importPath": "routes.scrape_log_routes",
+        "description": "routes.scrape_log_routes",
+        "isExtraImport": true,
+        "detail": "routes.scrape_log_routes",
+        "documentation": {}
+    },
+    {
         "label": "CORS",
         "importPath": "flask_cors",
         "description": "flask_cors",
@@ -843,6 +931,14 @@
         "description": "scheduler.review_scraper_scheduler",
         "isExtraImport": true,
         "detail": "scheduler.review_scraper_scheduler",
+        "documentation": {}
+    },
+    {
+        "label": "ScrapeLogDB",
+        "importPath": "models.scrape_log",
+        "description": "models.scrape_log",
+        "isExtraImport": true,
+        "detail": "models.scrape_log",
         "documentation": {}
     },
     {
@@ -933,6 +1029,15 @@
         "description": "controllers.review_controller",
         "peekOfCode": "def get_all_reviews():\n    page = int(request.args.get('page', 1))\n    per_page = 15\n    skip = (page - 1) * per_page\n    search_query = request.args.get('search', '').strip()\n    sentiment_filter = request.args.get('sentiment')\n    min_rating = request.args.get('min_rating', type=float)\n    max_rating = request.args.get('max_rating', type=float)\n    ota_filter = request.args.get('ota')\n    min_date = request.args.get('min_date')",
         "detail": "controllers.review_controller",
+        "documentation": {}
+    },
+    {
+        "label": "ScrapeLogController",
+        "kind": 6,
+        "importPath": "controllers.scrape_log_controller",
+        "description": "controllers.scrape_log_controller",
+        "peekOfCode": "class ScrapeLogController:\n    def __init__(self, db):\n        self.db = db \n    def create_scrape_log(self):\n        data = request.json\n        required_fields = [\"hotel_id\", \"ota\", \"status\", \"total_reviews\", \"scrape_date\", \"timestamp\"]\n        for field in required_fields:\n            if field not in data:\n                return jsonify({\"error\": f\"Missing field: {field}\"}), 400\n        result = self.db.collection.insert_one(data)",
+        "detail": "controllers.scrape_log_controller",
         "documentation": {}
     },
     {
@@ -1035,6 +1140,15 @@
         "documentation": {}
     },
     {
+        "label": "ScrapeLogDB",
+        "kind": 6,
+        "importPath": "models.scrape_log",
+        "description": "models.scrape_log",
+        "peekOfCode": "class ScrapeLogDB:\n    def __init__(self, app=None):\n        client = MongoClient(MONGO_URI)\n        db = client.hotelPerformance\n        self.collection = db.scrape_log",
+        "detail": "models.scrape_log",
+        "documentation": {}
+    },
+    {
         "label": "client",
         "kind": 5,
         "importPath": "models.sentiment",
@@ -1120,7 +1234,7 @@
         "kind": 2,
         "importPath": "routes.revenue_routes",
         "description": "routes.revenue_routes",
-        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = RevenueDB(app)\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", controller.get_revenues, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"get_revenue\", controller.get_revenue, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/by-hotel/<hotel_id>\", \"get_revenues_by_hotel\", controller.get_revenues_by_hotel, methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", controller.create_revenue, methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", controller.edit_revenue, methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", controller.remove_revenue, methods=[\"DELETE\"])",
+        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = RevenueDB(app)\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", token_required(controller.get_revenues), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"get_revenue\", token_required(controller.get_revenue), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/by-hotel/<hotel_id>\", \"get_revenues_by_hotel\", token_required(controller.get_revenues_by_hotel), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", token_required(controller.create_revenue), methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", token_required(controller.edit_revenue), methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", token_required(controller.remove_revenue), methods=[\"DELETE\"])",
         "detail": "routes.revenue_routes",
         "documentation": {}
     },
@@ -1131,6 +1245,15 @@
         "description": "routes.review_routes",
         "peekOfCode": "def create_review_blueprint(app):\n    review_bp = Blueprint(\"reviews\", __name__)\n    @review_bp.route(\"/scrape/<source>\", methods=[\"POST\"])\n    def scrape_reviews(source):\n        data = request.json\n        hotel_id = data.get(\"hotel_id\")\n        if not hotel_id:\n            return jsonify({\"error\": \"hotel_id is required\"}), 400\n        try:\n            hotel_id_obj = ObjectId(hotel_id)",
         "detail": "routes.review_routes",
+        "documentation": {}
+    },
+    {
+        "label": "create_scrape_log_blueprint",
+        "kind": 2,
+        "importPath": "routes.scrape_log_routes",
+        "description": "routes.scrape_log_routes",
+        "peekOfCode": "def create_scrape_log_blueprint(app):\n    bp = Blueprint(\"scrape_logs\", __name__)\n    controller = ScrapeLogController(app.scrape_log_db)\n    bp.add_url_rule(\"/scrape_logs\", \"get_scrape_logs\", controller.get_scrape_logs, methods=[\"GET\"])\n    bp.add_url_rule(\"/scrape_logs/<log_id>\", \"get_scrape_log\", controller.get_scrape_log, methods=[\"GET\"])\n    bp.add_url_rule(\"/scrape_logs\", \"create_scrape_log\", controller.create_scrape_log, methods=[\"POST\"])\n    bp.add_url_rule(\"/scrape_logs/<log_id>\", \"update_scrape_log\", controller.update_scrape_log, methods=[\"PUT\"])\n    bp.add_url_rule(\"/scrape_logs/<log_id>\", \"delete_scrape_log\", controller.delete_scrape_log, methods=[\"DELETE\"])\n    return bp",
+        "detail": "routes.scrape_log_routes",
         "documentation": {}
     },
     {
@@ -1507,7 +1630,16 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\nCORS(app)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)",
+        "peekOfCode": "app = Flask(__name__)\napp.scrape_log_db = ScrapeLogDB(app)\nCORS(app)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.scrape_log_db",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.scrape_log_db = ScrapeLogDB(app)\nCORS(app)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)",
         "detail": "app",
         "documentation": {}
     },
@@ -1543,7 +1675,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()",
+        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))",
         "detail": "app",
         "documentation": {}
     },
@@ -1552,7 +1684,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()",
+        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()",
         "detail": "app",
         "documentation": {}
     },
@@ -1561,7 +1693,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
+        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()",
         "detail": "app",
         "documentation": {}
     },
@@ -1570,7 +1702,16 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
+        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "scrape_log_bp",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "scrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },

@@ -3,9 +3,11 @@ from datetime import datetime
 import subprocess
 import os
 from controllers.review_controller import save_reviews, get_all_reviews
+from controllers.scrape_log_controller import ScrapeLogController
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
 from models.hotels import hotels_collection
 from bson import ObjectId  # type: ignore
+from flask import current_app
 
 def create_review_blueprint(app):
     review_bp = Blueprint("reviews", __name__)
@@ -75,18 +77,55 @@ def create_review_blueprint(app):
     def receive_reviews():
         data = request.json
         reviews = data.get("reviews", [])
-        hotel_id = data.get("hotel_id") 
+        hotel_id = data.get("hotel_id")
+        ota = data.get("ota", "unknown")
 
-        result = save_reviews(reviews, hotel_id)
+        now = datetime.utcnow()
 
-        if not result.get("inserted_ids"):
-            return jsonify({"message": result["message"]}), result["status"]
+        scrape_log_data = {
+            "hotel_id": hotel_id,
+            "ota": ota,
+            "scrape_date": now.strftime("%d-%m-%y"),
+            "timestamp": now,
+            "total_reviews": len(reviews),
+            "note": "",  # Add a note field initially
+        }
 
-        return jsonify({
-            "message": result["message"],
-            "inserted_ids": [str(_id) for _id in result["inserted_ids"]],
-            "status": result["status"]
-        }), result["status"]
+        db = current_app.scrape_log_db
+        log_controller = ScrapeLogController(db)
+
+        try:
+            result = save_reviews(reviews, hotel_id)
+            inserted_ids = result.get("inserted_ids", [])
+
+            if inserted_ids:
+                # Success, reviews inserted
+                scrape_log_data["status"] = "success"
+                scrape_log_data["total_reviews"] = len(inserted_ids)
+                scrape_log_data["note"] = f"Scraping successful, {len(inserted_ids)} new reviews inserted."
+            else:
+                # Success, but no new reviews inserted
+                scrape_log_data["status"] = "success"
+                scrape_log_data["note"] = "Scraping succeeded but no new reviews were inserted (possibly duplicates)."
+
+            with current_app.test_request_context(json=scrape_log_data):
+                log_controller.create_scrape_log()
+
+            return jsonify({
+                "message": result["message"],
+                "inserted_ids": [str(_id) for _id in inserted_ids],
+                "status": result["status"],
+                "note": scrape_log_data["note"]
+            }), result["status"]
+
+        except Exception as e:
+            scrape_log_data["status"] = "error"
+            scrape_log_data["note"] = f"Error occurred: {str(e)}"
+
+            with current_app.test_request_context(json=scrape_log_data):
+                log_controller.create_scrape_log()
+
+            return jsonify({"message": "Internal server error", "error": str(e), "note": scrape_log_data["note"]}), 500
             
     @review_bp.route("/reviews", methods=["GET"])
     def fetch_reviews():

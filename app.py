@@ -6,13 +6,15 @@ from routes.sentiment_routes import create_sentiment_blueprint
 from routes.hotel_routes import create_hotel_blueprint
 from routes.diagram_routes import create_diagram_blueprint
 from routes.user_routes import create_user_blueprint
+from routes.scrape_log_routes import create_scrape_log_blueprint
 from flask_cors import CORS
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from scheduler.review_scraper_scheduler import run_scraping_for_all_hotels
-
+from models.scrape_log import ScrapeLogDB
 
 app = Flask(__name__)
+app.scrape_log_db = ScrapeLogDB(app)
 CORS(app)
 app.config["MONGO_URI"] = MONGO_URI
 
@@ -33,6 +35,9 @@ app.register_blueprint(diagram_bp)
 
 user_bp = create_user_blueprint(app)
 app.register_blueprint(user_bp)
+
+scrape_log_bp = create_scrape_log_blueprint(app)
+app.register_blueprint(create_scrape_log_blueprint(app))
 
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()

@@ -272,7 +272,8 @@ async function sendReviews(reviews, hotelId) {
         if (reviews.length > 0) {
             await axios.post('http://127.0.0.1:5000/reviews', {
                 reviews,
-                hotel_id: hotelId
+                hotel_id: hotelId,
+                ota: "trip.com"
             });
             console.log('✅ Data sent to backend successfully');
             console.log('Total Reviews Sent:', reviews.length);

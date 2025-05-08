@@ -52,7 +52,7 @@ async function scrapeReviews(retryAttempt = 0) {
 
     console.log(`Launching Puppeteer (Attempt ${retryAttempt + 1})...`);
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: "new",
         defaultViewport: {
             width: 1280 + Math.floor(Math.random() * 100),
             height: 720 + Math.floor(Math.random() * 100),
@@ -216,7 +216,8 @@ async function sendReviews(reviews, hotelId) {
         if (reviews.length > 0) {
             await axios.post('http://127.0.0.1:5000/reviews', {
                 reviews,
-                hotel_id: hotelId
+                hotel_id: hotelId,
+                ota: "agoda"
             });
             console.log('✅ Data sent to backend successfully');
             console.log('Total Reviews Sent:', reviews.length);
