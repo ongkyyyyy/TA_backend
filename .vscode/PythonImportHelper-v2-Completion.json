@@ -450,6 +450,14 @@
         "documentation": {}
     },
     {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "defaultdict",
         "importPath": "collections",
         "description": "collections",
@@ -1036,7 +1044,7 @@
         "kind": 6,
         "importPath": "controllers.scrape_log_controller",
         "description": "controllers.scrape_log_controller",
-        "peekOfCode": "class ScrapeLogController:\n    def __init__(self, db):\n        self.db = db \n    def create_scrape_log(self):\n        data = request.json\n        required_fields = [\"hotel_id\", \"ota\", \"status\", \"total_reviews\", \"scrape_date\", \"timestamp\"]\n        for field in required_fields:\n            if field not in data:\n                return jsonify({\"error\": f\"Missing field: {field}\"}), 400\n        result = self.db.collection.insert_one(data)",
+        "peekOfCode": "class ScrapeLogController:\n    def __init__(self, db):\n        self.db = db \n    def create_scrape_log(self):\n        data = request.json\n        required_fields = [\"hotel_id\", \"ota\", \"status\", \"total_reviews\", \"timestamp\"]\n        for field in required_fields:\n            if field not in data:\n                return jsonify({\"error\": f\"Missing field: {field}\"}), 400\n        result = self.db.collection.insert_one(data)",
         "detail": "controllers.scrape_log_controller",
         "documentation": {}
     },
@@ -1630,7 +1638,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\napp.scrape_log_db = ScrapeLogDB(app)\nCORS(app)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)",
+        "peekOfCode": "app = Flask(__name__)\napp.scrape_log_db = ScrapeLogDB(app)\nCORS(app, supports_credentials=True)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)",
         "detail": "app",
         "documentation": {}
     },
@@ -1639,7 +1647,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app.scrape_log_db = ScrapeLogDB(app)\nCORS(app)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)",
+        "peekOfCode": "app.scrape_log_db = ScrapeLogDB(app)\nCORS(app, supports_credentials=True)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)",
         "detail": "app",
         "documentation": {}
     },
@@ -1675,7 +1683,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))",
+        "peekOfCode": "sentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)",
         "detail": "app",
         "documentation": {}
     },
@@ -1684,7 +1692,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()",
+        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()",
         "detail": "app",
         "documentation": {}
     },
@@ -1693,7 +1701,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()",
+        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()",
         "detail": "app",
         "documentation": {}
     },
@@ -1702,7 +1710,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
+        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },
@@ -1711,7 +1719,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "scrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(create_scrape_log_blueprint(app))\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
+        "peekOfCode": "scrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
         "detail": "app",
         "documentation": {}
     },

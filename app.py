@@ -15,7 +15,7 @@ from models.scrape_log import ScrapeLogDB
 
 app = Flask(__name__)
 app.scrape_log_db = ScrapeLogDB(app)
-CORS(app)
+CORS(app, supports_credentials=True)
 app.config["MONGO_URI"] = MONGO_URI
 
 revenue_bp = create_revenue_blueprint(app)
@@ -37,7 +37,7 @@ user_bp = create_user_blueprint(app)
 app.register_blueprint(user_bp)
 
 scrape_log_bp = create_scrape_log_blueprint(app)
-app.register_blueprint(create_scrape_log_blueprint(app))
+app.register_blueprint(scrape_log_bp)
 
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()

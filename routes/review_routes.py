@@ -85,10 +85,9 @@ def create_review_blueprint(app):
         scrape_log_data = {
             "hotel_id": hotel_id,
             "ota": ota,
-            "scrape_date": now.strftime("%d-%m-%y"),
-            "timestamp": now,
+            "timestamp": now, 
             "total_reviews": len(reviews),
-            "note": "",  # Add a note field initially
+            "note": "", 
         }
 
         db = current_app.scrape_log_db
@@ -99,12 +98,10 @@ def create_review_blueprint(app):
             inserted_ids = result.get("inserted_ids", [])
 
             if inserted_ids:
-                # Success, reviews inserted
                 scrape_log_data["status"] = "success"
                 scrape_log_data["total_reviews"] = len(inserted_ids)
                 scrape_log_data["note"] = f"Scraping successful, {len(inserted_ids)} new reviews inserted."
             else:
-                # Success, but no new reviews inserted
                 scrape_log_data["status"] = "success"
                 scrape_log_data["note"] = "Scraping succeeded but no new reviews were inserted (possibly duplicates)."
 
