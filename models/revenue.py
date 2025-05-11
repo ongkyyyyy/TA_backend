@@ -81,6 +81,32 @@ class RevenueDB:
         if match_conditions:
             pipeline.append({"$match": {"$and": match_conditions}})
 
+        # Join with hotels collection to get hotel name
+        pipeline.append({
+            "$lookup": {
+                "from": "hotels",
+                "localField": "hotel_id",
+                "foreignField": "_id",
+                "as": "hotel_info"
+            }
+        })
+        pipeline.append({
+            "$unwind": {
+                "path": "$hotel_info",
+                "preserveNullAndEmptyArrays": True
+            }
+        })
+        pipeline.append({
+            "$addFields": {
+                "hotel_name": "$hotel_info.hotel_name"
+            }
+        })
+        pipeline.append({
+            "$project": {
+                "hotel_info": 0  
+            }
+        })
+
         # Sorting logic
         if sort_by == "date":
             pipeline.append({
@@ -99,7 +125,6 @@ class RevenueDB:
         elif sort_by == "revenue":
             pipeline.append({"$sort": {"grand_total_revenue": sort_order}})
         else:
-            # Default to sort by date desc if invalid sort_by
             pipeline.append({
                 "$addFields": {
                     "parsed_date": {
