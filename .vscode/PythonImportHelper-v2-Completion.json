@@ -1116,7 +1116,7 @@
         "kind": 6,
         "importPath": "models.revenue",
         "description": "models.revenue",
-        "peekOfCode": "class RevenueDB:\n    def __init__(self, app):\n        self.mongo = PyMongo(app)\n    def get_all_revenues(self):\n        return list(self.mongo.db.revenues.find({}))\n    def get_revenue_by_id(self, object_id):\n        return self.mongo.db.revenues.find_one({\"_id\": object_id})\n    def calculate_revenue(self, data):\n        room_lodging = data.get(\"room_lodging\", 0)\n        rebate_discount = data.get(\"rebate_discount\", 0)",
+        "peekOfCode": "class RevenueDB:\n    def __init__(self, app):\n        self.mongo = PyMongo(app)\n    def get_all_revenues(self):\n        page = int(request.args.get('page', 1))\n        per_page = int(request.args.get('per_page', 10))\n        skip = (page - 1) * per_page\n        hotel_ids_param = request.args.get('hotel_id') or request.args.get('hotel_ids')\n        min_date = request.args.get('min_date')\n        max_date = request.args.get('max_date')",
         "detail": "models.revenue",
         "documentation": {}
     },

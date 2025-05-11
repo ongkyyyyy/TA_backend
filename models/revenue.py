@@ -8,8 +8,126 @@ class RevenueDB:
         self.mongo = PyMongo(app)
 
     def get_all_revenues(self):
-        return list(self.mongo.db.revenues.find({}))
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 10))
+        skip = (page - 1) * per_page
 
+        hotel_ids_param = request.args.get('hotel_id') or request.args.get('hotel_ids')
+        min_date = request.args.get('min_date')
+        max_date = request.args.get('max_date')
+        sort_by = request.args.get('sort_by', 'date')
+        sort_order = int(request.args.get('sort_order', -1))
+        min_revenue = request.args.get('minRevenue')
+        max_revenue = request.args.get('maxRevenue')
+        min_occupancy = request.args.get('minOccupancy')
+        max_occupancy = request.args.get('maxOccupancy')
+
+        pipeline = []
+        match_conditions = []
+
+        # Hotel ID filter
+        if hotel_ids_param:
+            try:
+                hotel_ids = [ObjectId(hid.strip()) for hid in hotel_ids_param.split(',') if hid.strip()]
+                if hotel_ids:
+                    match_conditions.append({"hotel_id": {"$in": hotel_ids}})
+            except Exception:
+                pass  # Ignore invalid ObjectId formats
+
+        # Date filter
+        if min_date or max_date:
+            try:
+                date_filter = {}
+                if min_date:
+                    date_filter["$gte"] = datetime.strptime(min_date, "%d-%m-%Y")
+                if max_date:
+                    date_filter["$lte"] = datetime.strptime(max_date, "%d-%m-%Y")
+                match_conditions.append({
+                    "$expr": {
+                        "$and": [
+                            {"$gte": [{"$dateFromString": {"dateString": "$date", "format": "%d-%m-%Y"}}, date_filter.get("$gte", datetime.min)]},
+                            {"$lte": [{"$dateFromString": {"dateString": "$date", "format": "%d-%m-%Y"}}, date_filter.get("$lte", datetime.max)]}
+                        ]
+                    }
+                })
+            except Exception:
+                pass
+
+        # Revenue range filter
+        try:
+            revenue_conditions = {}
+            if min_revenue:
+                revenue_conditions["$gte"] = float(min_revenue)
+            if max_revenue:
+                revenue_conditions["$lte"] = float(max_revenue)
+            if revenue_conditions:
+                match_conditions.append({"grand_total_revenue": revenue_conditions})
+        except ValueError:
+            pass
+
+        # Occupancy range filter
+        try:
+            occupancy_conditions = {}
+            if min_occupancy:
+                occupancy_conditions["$gte"] = float(min_occupancy)
+            if max_occupancy:
+                occupancy_conditions["$lte"] = float(max_occupancy)
+            if occupancy_conditions:
+                match_conditions.append({"room_stats.occupancy": occupancy_conditions})
+        except ValueError:
+            pass
+
+        # Apply match conditions
+        if match_conditions:
+            pipeline.append({"$match": {"$and": match_conditions}})
+
+        # Sorting
+        if sort_by == "date":
+            pipeline.append({
+                "$addFields": {
+                    "date_object": {
+                        "$dateFromString": {
+                            "dateString": "$date",
+                            "format": "%d-%m-%Y",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    }
+                }
+            })
+            pipeline.append({"$sort": {"date_object": sort_order}})
+        else:
+            pipeline.append({"$sort": {"grand_total_revenue": sort_order}})
+
+        # Pagination
+        pipeline.append({"$skip": skip})
+        pipeline.append({"$limit": per_page})
+
+        # Execute pipeline
+        try:
+            results = list(self.mongo.db.revenues.aggregate(pipeline))
+
+            # Format output
+            for item in results:
+                item["_id"] = str(item["_id"])
+                if "hotel_id" in item:
+                    item["hotel_id"] = str(item["hotel_id"])
+
+            # Count total documents using same filters
+            count_filter = {"$and": match_conditions} if match_conditions else {}
+            total = self.mongo.db.revenues.count_documents(count_filter)
+
+            return {
+                "page": page,
+                "per_page": per_page,
+                "total": total,
+                "total_pages": (total + per_page - 1) // per_page,
+                "data": results
+            }
+
+        except Exception as e:
+            return {"error": str(e)}, 500
+    
     def get_revenue_by_id(self, object_id):
         return self.mongo.db.revenues.find_one({"_id": object_id})
 

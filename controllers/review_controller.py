@@ -97,8 +97,8 @@ def get_all_reviews():
     ota_filter = request.args.get('ota')
     min_date = request.args.get('min_date')
     max_date = request.args.get('max_date')
-    hotel_id = request.args.get('hotel_id')
-
+    
+    hotel_ids_param = request.args.get('hotel_id') 
     early_match_conditions = []
 
     if min_rating is not None or max_rating is not None:
@@ -112,9 +112,10 @@ def get_all_reviews():
     if ota_filter:
         early_match_conditions.append({"OTA": ota_filter})
 
-    if hotel_id:
+    if hotel_ids_param:
         try:
-            early_match_conditions.append({"hotel_id": ObjectId(hotel_id)})
+            hotel_ids = [ObjectId(hid) for hid in hotel_ids_param.split(',')]
+            early_match_conditions.append({"hotel_id": {"$in": hotel_ids}})
         except Exception:
             pass
 
