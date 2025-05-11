@@ -32,7 +32,7 @@ class RevenueDB:
                 if hotel_ids:
                     match_conditions.append({"hotel_id": {"$in": hotel_ids}})
             except Exception:
-                pass  # Ignore invalid ObjectId formats
+                pass
 
         # Date filter
         if min_date or max_date:
@@ -53,7 +53,7 @@ class RevenueDB:
             except Exception:
                 pass
 
-        # Revenue range filter
+        # Revenue filter
         try:
             revenue_conditions = {}
             if min_revenue:
@@ -65,7 +65,7 @@ class RevenueDB:
         except ValueError:
             pass
 
-        # Occupancy range filter
+        # Occupancy filter
         try:
             occupancy_conditions = {}
             if min_occupancy:
@@ -77,15 +77,15 @@ class RevenueDB:
         except ValueError:
             pass
 
-        # Apply match conditions
+        # Apply all match conditions
         if match_conditions:
             pipeline.append({"$match": {"$and": match_conditions}})
 
-        # Sorting
+        # Sorting logic
         if sort_by == "date":
             pipeline.append({
                 "$addFields": {
-                    "date_object": {
+                    "parsed_date": {
                         "$dateFromString": {
                             "dateString": "$date",
                             "format": "%d-%m-%Y",
@@ -95,25 +95,40 @@ class RevenueDB:
                     }
                 }
             })
-            pipeline.append({"$sort": {"date_object": sort_order}})
-        else:
+            pipeline.append({"$sort": {"parsed_date": sort_order}})
+        elif sort_by == "revenue":
             pipeline.append({"$sort": {"grand_total_revenue": sort_order}})
+        else:
+            # Default to sort by date desc if invalid sort_by
+            pipeline.append({
+                "$addFields": {
+                    "parsed_date": {
+                        "$dateFromString": {
+                            "dateString": "$date",
+                            "format": "%d-%m-%Y",
+                            "onError": None,
+                            "onNull": None
+                        }
+                    }
+                }
+            })
+            pipeline.append({"$sort": {"parsed_date": -1}})
 
         # Pagination
         pipeline.append({"$skip": skip})
         pipeline.append({"$limit": per_page})
 
-        # Execute pipeline
+        # Execute
         try:
             results = list(self.mongo.db.revenues.aggregate(pipeline))
 
-            # Format output
+            # Convert ObjectId to string
             for item in results:
                 item["_id"] = str(item["_id"])
                 if "hotel_id" in item:
                     item["hotel_id"] = str(item["hotel_id"])
 
-            # Count total documents using same filters
+            # Total count
             count_filter = {"$and": match_conditions} if match_conditions else {}
             total = self.mongo.db.revenues.count_documents(count_filter)
 
