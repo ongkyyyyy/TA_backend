@@ -257,18 +257,32 @@ class RevenueDB:
             }
         }
 
+    def normalize_revenue_data(self, data):
+        nested_keys = ["room_details", "restaurant", "other_revenue", "room_stats"]
+        
+        flat_data = data.copy()
+        for key in nested_keys:
+            if key in data and isinstance(data[key], dict):
+                flat_data.update(data[key]) 
+                del flat_data[key]
+        
+        return flat_data
+
     def add_revenue(self, revenue_data):
         if "hotel_id" not in revenue_data:
             raise ValueError("Missing hotel_id in revenue_data")
 
         revenue_data["hotel_id"] = ObjectId(revenue_data["hotel_id"])
-
-        processed_data = self.calculate_revenue(revenue_data)
+   
+        flat_data = self.normalize_revenue_data(revenue_data)
+        
+        processed_data = self.calculate_revenue(flat_data)
         processed_data["hotel_id"] = revenue_data["hotel_id"]
+
         inserted = self.mongo.db.revenues.insert_one(processed_data)
         processed_data["_id"] = inserted.inserted_id
         return processed_data
-
+    
     def update_revenue(self, revenue_oid, updated_data):
         existing_doc = self.mongo.db.revenues.find_one({"_id": revenue_oid})
         if not existing_doc:
@@ -279,7 +293,7 @@ class RevenueDB:
         try:
             hotel_id = ObjectId(hotel_id_raw) if isinstance(hotel_id_raw, str) else hotel_id_raw
         except Exception:
-            return 0 
+            return 0
         if not self.hotel_exists(hotel_id):
             return 0
 
@@ -287,8 +301,12 @@ class RevenueDB:
         merged_data.update(updated_data)
         merged_data["hotel_id"] = hotel_id
 
-        processed_data = self.calculate_revenue(merged_data)
-        processed_data["hotel_id"] = hotel_id  
+        # Normalize nested fields before calculating
+        flat_data = self.normalize_revenue_data(merged_data)
+
+        processed_data = self.calculate_revenue(flat_data)
+        processed_data["hotel_id"] = hotel_id
+
         result = self.mongo.db.revenues.update_one(
             {"_id": revenue_oid},
             {"$set": processed_data}
