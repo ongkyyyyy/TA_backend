@@ -963,25 +963,16 @@
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_month_key(date):\n    if isinstance(date, str):\n        date = parse(date)\n    return date.strftime('%Y-%m')\ndef month_label(date_str):\n    dt = datetime.strptime(date_str, \"%Y-%m\")\n    return f\"{calendar.month_abbr[dt.month]} {dt.year}\"\ndef get_filter_year():\n    year = request.args.get('year')\n    return int(year) if year and year.isdigit() else None",
+        "peekOfCode": "def get_month_key(date):\n    if isinstance(date, str):\n        date = parse(date)\n    return date.strftime('%Y-%m')\ndef calculate_growth(current, previous):\n    if previous == 0:\n        return 100.0 if current > 0 else 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
     {
-        "label": "month_label",
+        "label": "calculate_growth",
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def month_label(date_str):\n    dt = datetime.strptime(date_str, \"%Y-%m\")\n    return f\"{calendar.month_abbr[dt.month]} {dt.year}\"\ndef get_filter_year():\n    year = request.args.get('year')\n    return int(year) if year and year.isdigit() else None\ndef get_revenue_sentiment_diagram():\n    hotel_id = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()",
-        "detail": "controllers.diagram_controller",
-        "documentation": {}
-    },
-    {
-        "label": "get_filter_year",
-        "kind": 2,
-        "importPath": "controllers.diagram_controller",
-        "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_filter_year():\n    year = request.args.get('year')\n    return int(year) if year and year.isdigit() else None\ndef get_revenue_sentiment_diagram():\n    hotel_id = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month\n    revenue_query = {}",
+        "peekOfCode": "def calculate_growth(current, previous):\n    if previous == 0:\n        return 100.0 if current > 0 else 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
@@ -990,7 +981,7 @@
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_id = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month\n    revenue_query = {}\n    if hotel_id != \"All\":\n        revenue_query[\"hotel_id\"] = ObjectId(hotel_id)\n    revenues = [",
+        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month\n    # Handle hotel_id param\n    if hotel_ids_param == \"All\":\n        hotel_ids = None\n    else:",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
