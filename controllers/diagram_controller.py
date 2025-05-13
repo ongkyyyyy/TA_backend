@@ -60,7 +60,7 @@ def get_revenue_sentiment_diagram():
         monthly_revenue[month]["gross_revenue"].append(rev["gross_revenue"])
         monthly_revenue[month]["grand_total_revenue"].append(rev["grand_total_revenue"])
 
-    # Query reviews
+    # Query reviews and sentiments
     review_query = {}
     if hotel_ids:
         review_query["hotel_id"] = {"$in": hotel_ids}
@@ -172,38 +172,80 @@ def get_revenue_sentiment_diagram():
         diagram_data["negative_ratio"].append(round(neg_ratio, 2))
         diagram_data["neutral_ratio"].append(round(neu_ratio, 2))
 
-    # Summary
+    # Summary calculations
     grand_totals = diagram_data["grand_total_revenue"]
+    sentiment_scores = diagram_data["sentiment_score"]
+    review_volumes = diagram_data["review_volume"]
+
     total_revenue = round(sum(grand_totals), 2)
-    avg_monthly_revenue = round(total_revenue / len(grand_totals), 2) if grand_totals else 0
-    total_reviews = sum(diagram_data["review_volume"])
-    latest_sentiment_score = diagram_data["sentiment_score"][-1] if diagram_data["sentiment_score"] else 0
+    active_revenue_months = sum(1 for rev in grand_totals if rev > 0)
+    avg_monthly_revenue = round(total_revenue / active_revenue_months, 2) if active_revenue_months else 0
+
+    total_reviews = sum(review_volumes)
+    avg_review_volume = round(total_reviews / len(review_volumes), 2) if review_volumes else 0
+
+    total_positive = sum(diagram_data["positive_sentiment"])
+    total_negative = sum(diagram_data["negative_sentiment"])
+    total_neutral = sum(diagram_data["neutral_sentiment"])
+
+    positive_negative_ratio = round(total_positive / total_negative, 2) if total_negative else total_positive
+
+    avg_sentiment_score = round(sum(sentiment_scores) / len(sentiment_scores), 2) if sentiment_scores else 0
+    latest_sentiment_score = sentiment_scores[-1] if sentiment_scores else 0
 
     best_month_index = grand_totals.index(max(grand_totals)) if grand_totals else 0
-    best_month = diagram_data["months"][best_month_index] if diagram_data["months"] else ""
+    worst_month_index = grand_totals.index(min([v for v in grand_totals if v > 0])) if any(grand_totals) else 0
 
-    if len(grand_totals) >= 2:
-        revenue_growth_pct = calculate_growth(grand_totals[-1], grand_totals[-2])
-        review_growth_pct = calculate_growth(diagram_data["review_volume"][-1], diagram_data["review_volume"][-2])
-        sentiment_growth_pct = calculate_growth(diagram_data["sentiment_score"][-1], diagram_data["sentiment_score"][-2])
-    else:
-        revenue_growth_pct = review_growth_pct = sentiment_growth_pct = 0.0
+    best_sentiment_index = sentiment_scores.index(max(sentiment_scores)) if sentiment_scores else 0
+    worst_sentiment_index = sentiment_scores.index(min(sentiment_scores)) if sentiment_scores else 0
+
+    peak_review_index = review_volumes.index(max(review_volumes)) if review_volumes else 0
 
     diagram_data["summary"] = {
         "total_revenue": total_revenue,
         "avg_monthly_revenue": avg_monthly_revenue,
+        "active_revenue_months": active_revenue_months,
         "total_reviews": total_reviews,
+        "avg_review_volume": avg_review_volume,
         "latest_sentiment_score": latest_sentiment_score,
+        "avg_sentiment_score": avg_sentiment_score,
+        "positive_negative_ratio": positive_negative_ratio,
+        "total_positive_sentiment": total_positive,
+        "total_negative_sentiment": total_negative,
+        "total_neutral_sentiment": total_neutral,
         "best_month": {
-            "month": best_month,
-            "revenue": grand_totals[best_month_index] if grand_totals else 0
+            "month": diagram_data["months"][best_month_index],
+            "revenue": grand_totals[best_month_index]
+        },
+        "worst_month": {
+            "month": diagram_data["months"][worst_month_index],
+            "revenue": grand_totals[worst_month_index]
+        },
+        "best_sentiment_month": {
+            "month": diagram_data["months"][best_sentiment_index],
+            "score": sentiment_scores[best_sentiment_index]
+        },
+        "worst_sentiment_month": {
+            "month": diagram_data["months"][worst_sentiment_index],
+            "score": sentiment_scores[worst_sentiment_index]
+        },
+        "peak_review_month": {
+            "month": diagram_data["months"][peak_review_index],
+            "reviews": review_volumes[peak_review_index]
         }
     }
 
-    diagram_data["growth"] = {
-        "revenue_growth_pct": revenue_growth_pct,
-        "reviews_growth_pct": review_growth_pct,
-        "sentiment_growth_pct": sentiment_growth_pct
-    }
+    if len(grand_totals) >= 2:
+        diagram_data["growth"] = {
+            "revenue_growth_pct": calculate_growth(grand_totals[-1], grand_totals[-2]),
+            "reviews_growth_pct": calculate_growth(review_volumes[-1], review_volumes[-2]),
+            "sentiment_growth_pct": calculate_growth(sentiment_scores[-1], sentiment_scores[-2])
+        }
+    else:
+        diagram_data["growth"] = {
+            "revenue_growth_pct": 0.0,
+            "reviews_growth_pct": 0.0,
+            "sentiment_growth_pct": 0.0
+        }
 
     return jsonify(diagram_data)

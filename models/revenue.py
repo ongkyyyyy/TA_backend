@@ -25,7 +25,6 @@ class RevenueDB:
         pipeline = []
         match_conditions = []
 
-        # Hotel ID filter
         if hotel_ids_param:
             try:
                 hotel_ids = [ObjectId(hid.strip()) for hid in hotel_ids_param.split(',') if hid.strip()]
@@ -34,7 +33,6 @@ class RevenueDB:
             except Exception:
                 pass
 
-        # Date filter
         if min_date or max_date:
             try:
                 date_filter = {}
@@ -53,7 +51,6 @@ class RevenueDB:
             except Exception:
                 pass
 
-        # Revenue filter
         try:
             revenue_conditions = {}
             if min_revenue:
@@ -65,7 +62,6 @@ class RevenueDB:
         except ValueError:
             pass
 
-        # Occupancy filter
         try:
             occupancy_conditions = {}
             if min_occupancy:
@@ -147,13 +143,11 @@ class RevenueDB:
         try:
             results = list(self.mongo.db.revenues.aggregate(pipeline))
 
-            # Convert ObjectId to string
             for item in results:
                 item["_id"] = str(item["_id"])
                 if "hotel_id" in item:
                     item["hotel_id"] = str(item["hotel_id"])
 
-            # Total count
             count_filter = {"$and": match_conditions} if match_conditions else {}
             total = self.mongo.db.revenues.count_documents(count_filter)
 
@@ -301,7 +295,6 @@ class RevenueDB:
         merged_data.update(updated_data)
         merged_data["hotel_id"] = hotel_id
 
-        # Normalize nested fields before calculating
         flat_data = self.normalize_revenue_data(merged_data)
 
         processed_data = self.calculate_revenue(flat_data)
