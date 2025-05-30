@@ -39,5 +39,4 @@ class UserController:
         return jsonify({"token": token}), 200
 
     def logout(self):
-        # Token removal is client-side
         return jsonify({"message": "Logged out successfully"}), 200

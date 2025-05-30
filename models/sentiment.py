@@ -1,7 +1,6 @@
-from pymongo import MongoClient # type: ignore
-from config import MONGO_URI
+from .base_db import BaseDB
 
-client = MongoClient(MONGO_URI)
-db = client.hotelPerformance  
-
-sentiment_collection = db.sentiments
+class SentimentDB(BaseDB):
+    def __init__(self):
+        super().__init__()
+        self.collection = self.db.sentiments

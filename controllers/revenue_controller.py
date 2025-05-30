@@ -33,8 +33,18 @@ class RevenueController:
 
         try:
             processed_data = self.db.add_revenue(revenue_data)
-            return jsonify({"success": True, "message": "Revenue added successfully", "data": processed_data}), 201
+
+            # Convert ObjectId fields to strings
+            processed_data["_id"] = str(processed_data["_id"])
+            processed_data["hotel_id"] = str(processed_data["hotel_id"])
+
+            return jsonify({
+                "success": True,
+                "message": "Revenue added successfully",
+                "data": processed_data
+            }), 201
         except Exception as e:
+            print("Error in create_revenue:", e)
             return jsonify({"success": False, "message": str(e)}), 500
 
     def edit_revenue(self, revenue_id):
@@ -49,7 +59,7 @@ class RevenueController:
             elif update_status == 0:
                 return jsonify({"success": False, "message": "No matching fields found for update"}), 400
             else:
-                updated_revenue = self.db.mongo.db.revenues.find_one({"_id": revenue_obj_id})
+                updated_revenue = self.db.db.revenues.find_one({"_id": revenue_obj_id})
                 
                 if updated_revenue:
                     updated_revenue["_id"] = str(updated_revenue["_id"])

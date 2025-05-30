@@ -5,7 +5,7 @@ from controllers.middleware.auth_middleware import token_required  # Import toke
 
 def create_hotel_blueprint(app):
     hotel_bp = Blueprint("hotels", __name__)
-    db = HotelsDB(app)
+    db = HotelsDB()
     controller = HotelController(db)
 
     hotel_bp.add_url_rule("/hotels", "get_hotels", token_required(controller.get_hotels), methods=["GET"])

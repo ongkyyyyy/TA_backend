@@ -1,11 +1,7 @@
-from pymongo import MongoClient # type: ignore
-from config import MONGO_URI
+from .base_db import BaseDB
 
-class HotelsDB:
-    def __init__(self, app=None):
-        self.client = MongoClient(MONGO_URI)
-        self.db = self.client.hotelPerformance
+class HotelsDB(BaseDB):
+    def __init__(self):
+        super().__init__()
         self.collection = self.db.hotels
-        self.revenues = self.db.revenues
-
-hotels_collection = HotelsDB().collection
+        self.revenues = self.db.revenues 

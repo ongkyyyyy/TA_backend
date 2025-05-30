@@ -1,8 +1,6 @@
-from pymongo import MongoClient
-from config import MONGO_URI
+from .base_db import BaseDB
 
-class ScrapeLogDB:
-    def __init__(self, app=None):
-        client = MongoClient(MONGO_URI)
-        db = client.hotelPerformance
-        self.collection = db.scrape_log
+class ScrapeLogDB(BaseDB):
+    def __init__(self):
+        super().__init__()
+        self.collection = self.db.scrape_log

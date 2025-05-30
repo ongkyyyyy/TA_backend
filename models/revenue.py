@@ -2,10 +2,12 @@ from flask_pymongo import PyMongo # type: ignore
 from bson import ObjectId # type: ignore
 from flask import request,jsonify # type: ignore
 from datetime import datetime
+from .base_db import BaseDB
 
-class RevenueDB:
-    def __init__(self, app):
-        self.mongo = PyMongo(app)
+class RevenueDB(BaseDB):
+    def __init__(self):
+        super().__init__()
+        self.collection = self.db.revenues
 
     def get_all_revenues(self):
         page = int(request.args.get('page', 1))
@@ -141,7 +143,7 @@ class RevenueDB:
 
         # Execute
         try:
-            results = list(self.mongo.db.revenues.aggregate(pipeline))
+            results = list(self.db.revenues.aggregate(pipeline))
 
             for item in results:
                 item["_id"] = str(item["_id"])
@@ -149,7 +151,7 @@ class RevenueDB:
                     item["hotel_id"] = str(item["hotel_id"])
 
             count_filter = {"$and": match_conditions} if match_conditions else {}
-            total = self.mongo.db.revenues.count_documents(count_filter)
+            total = self.db.revenues.count_documents(count_filter)
 
             return {
                 "page": page,
@@ -163,7 +165,7 @@ class RevenueDB:
             return {"error": str(e)}, 500
     
     def get_revenue_by_id(self, object_id):
-        return self.mongo.db.revenues.find_one({"_id": object_id})
+        return self.db.revenues.find_one({"_id": object_id})
 
     def calculate_revenue(self, data):
         room_lodging = data.get("room_lodging", 0)
@@ -263,31 +265,46 @@ class RevenueDB:
         return flat_data
 
     def add_revenue(self, revenue_data):
-        if "hotel_id" not in revenue_data:
-            raise ValueError("Missing hotel_id in revenue_data")
+        try:
+            if "hotel_id" not in revenue_data:
+                raise ValueError("Missing hotel_id in revenue_data")
 
-        revenue_data["hotel_id"] = ObjectId(revenue_data["hotel_id"])
-   
-        flat_data = self.normalize_revenue_data(revenue_data)
-        
-        processed_data = self.calculate_revenue(flat_data)
-        processed_data["hotel_id"] = revenue_data["hotel_id"]
+            hotel_id_raw = revenue_data["hotel_id"]
+            revenue_data["hotel_id"] = ObjectId(hotel_id_raw) if isinstance(hotel_id_raw, str) else hotel_id_raw
 
-        inserted = self.mongo.db.revenues.insert_one(processed_data)
-        processed_data["_id"] = inserted.inserted_id
-        return processed_data
+            flat_data = self.normalize_revenue_data(revenue_data)
+            processed_data = self.calculate_revenue(flat_data)
+            processed_data["hotel_id"] = revenue_data["hotel_id"]
+
+            inserted = self.db.revenues.insert_one(processed_data)
+            print("Inserted revenue with ID:", inserted.inserted_id)
+
+            processed_data["_id"] = inserted.inserted_id
+            return processed_data
+
+        except Exception as e:
+            print("Error in add_revenue:", e)
+            raise  # optionally raise again or return None/error code
     
     def update_revenue(self, revenue_oid, updated_data):
-        existing_doc = self.mongo.db.revenues.find_one({"_id": revenue_oid})
+        try:
+            revenue_oid = ObjectId(revenue_oid) if isinstance(revenue_oid, str) else revenue_oid
+        except Exception as e:
+            print(f"Invalid revenue_oid: {e}")
+            return -1
+
+        existing_doc = self.db.revenues.find_one({"_id": revenue_oid})
         if not existing_doc:
+            print("Revenue not found")
             return -1
 
         hotel_id_raw = updated_data.get("hotel_id", existing_doc.get("hotel_id"))
-
         try:
             hotel_id = ObjectId(hotel_id_raw) if isinstance(hotel_id_raw, str) else hotel_id_raw
-        except Exception:
+        except Exception as e:
+            print(f"Invalid hotel_id: {e}")
             return 0
+
         if not self.hotel_exists(hotel_id):
             return 0
 
@@ -296,24 +313,30 @@ class RevenueDB:
         merged_data["hotel_id"] = hotel_id
 
         flat_data = self.normalize_revenue_data(merged_data)
-
         processed_data = self.calculate_revenue(flat_data)
         processed_data["hotel_id"] = hotel_id
 
-        result = self.mongo.db.revenues.update_one(
+        result = self.db.revenues.update_one(
             {"_id": revenue_oid},
             {"$set": processed_data}
         )
 
+        print("Matched:", result.matched_count, "Modified:", result.modified_count)
         return result.modified_count
 
     def delete_revenue(self, revenue_oid):
-        result = self.mongo.db.revenues.delete_one({"_id": revenue_oid})
+        try:
+            revenue_oid = ObjectId(revenue_oid) if isinstance(revenue_oid, str) else revenue_oid
+        except Exception as e:
+            print(f"Invalid revenue_oid: {e}")
+            return 0
+
+        result = self.db.revenues.delete_one({"_id": revenue_oid})
         return result.deleted_count
 
     def hotel_exists(self, hotel_id):
         try:
-            return self.mongo.db.hotels.find_one({"_id": ObjectId(hotel_id)}) is not None
+            return self.db.hotels.find_one({"_id": ObjectId(hotel_id)}) is not None
         except Exception:
             return False
 
@@ -392,5 +415,5 @@ class RevenueDB:
             { "$limit": per_page_hotels }
         ])
 
-        hotels_with_revenues = list(self.mongo.db.hotels.aggregate(pipeline))
+        hotels_with_revenues = list(self.db.hotels.aggregate(pipeline))
         return hotels_with_revenues

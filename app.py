@@ -14,7 +14,7 @@ from scheduler.review_scraper_scheduler import run_scraping_for_all_hotels
 from models.scrape_log import ScrapeLogDB
 
 app = Flask(__name__)
-app.scrape_log_db = ScrapeLogDB(app)
+app.scrape_log_db = ScrapeLogDB()
 CORS(app, supports_credentials=True)
 app.config["MONGO_URI"] = MONGO_URI
 

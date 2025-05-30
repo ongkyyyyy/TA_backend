@@ -1,4 +1,7 @@
-from models.sentiment import sentiment_collection
+from models.sentiment import SentimentDB  
+
+sentiment_db = SentimentDB()
+sentiment_collection = sentiment_db.collection
 
 def save_sentiment_analysis(sentiments):
     if not sentiments:

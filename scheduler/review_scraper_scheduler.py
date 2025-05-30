@@ -1,6 +1,9 @@
 import os
 import subprocess
-from models.hotels import hotels_collection
+from models.hotels import HotelsDB
+
+hotels_db = HotelsDB()
+hotels_collection = hotels_db.collection
 
 SOURCE_MAP = {
     "traveloka": ("scrape_reviews.js", "traveloka_link"),

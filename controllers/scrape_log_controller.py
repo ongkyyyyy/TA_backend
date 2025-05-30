@@ -7,8 +7,10 @@ class ScrapeLogController:
     def __init__(self, db):
         self.db = db 
 
-    def create_scrape_log(self):
-        data = request.json
+    def create_scrape_log(self, data=None):
+        if data is None:
+            data = request.json
+
         required_fields = ["hotel_id", "ota", "status", "total_reviews", "timestamp"]
 
         for field in required_fields:
