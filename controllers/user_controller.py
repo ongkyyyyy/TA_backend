@@ -1,8 +1,7 @@
-import jwt
+import jwt # type: ignore
 import datetime
 from flask import request, jsonify  # type: ignore
 from werkzeug.security import generate_password_hash, check_password_hash  # type: ignore
-from bson import ObjectId
 from config import SECRET_KEY
 
 class UserController:

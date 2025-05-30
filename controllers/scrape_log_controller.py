@@ -1,5 +1,5 @@
-from flask import request, jsonify 
-from bson import ObjectId
+from flask import request, jsonify  # type: ignore
+from bson import ObjectId # type: ignore
 import re
 from datetime import datetime
 

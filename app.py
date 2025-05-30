@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask # type: ignore
 from config import MONGO_URI
 from routes.revenue_routes import create_revenue_blueprint
 from routes.review_routes import create_review_blueprint 
@@ -7,9 +7,8 @@ from routes.hotel_routes import create_hotel_blueprint
 from routes.diagram_routes import create_diagram_blueprint
 from routes.user_routes import create_user_blueprint
 from routes.scrape_log_routes import create_scrape_log_blueprint
-from flask_cors import CORS
-
-from apscheduler.schedulers.background import BackgroundScheduler
+from flask_cors import CORS # type: ignore
+from apscheduler.schedulers.background import BackgroundScheduler # type: ignore
 from scheduler.review_scraper_scheduler import run_scraping_for_all_hotels
 from models.scrape_log import ScrapeLogDB
 

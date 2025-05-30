@@ -1,7 +1,7 @@
 from functools import wraps
-from flask import request, jsonify
-import jwt
-from bson import ObjectId
+from flask import request, jsonify # type: ignore
+import jwt # type: ignore
+from bson import ObjectId # type: ignore
 from config import SECRET_KEY
 from models.user import users_collection  # use the shared collection
 

@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint # type: ignore
 from controllers.review_controller import ReviewController
 
 def create_review_blueprint(app):

@@ -1,4 +1,4 @@
-from flask import Blueprint 
+from flask import Blueprint  # type: ignore
 from controllers.scrape_log_controller import ScrapeLogController
 
 def create_scrape_log_blueprint(app):

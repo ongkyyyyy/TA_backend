@@ -1,14 +1,14 @@
 import os
 import subprocess
-from bson import ObjectId
-from flask import request, jsonify, current_app
+from bson import ObjectId # type: ignore
+from flask import request, jsonify, current_app # type: ignore
 from datetime import datetime
 from models.hotels import HotelsDB
 from models.review import ReviewsDB
 from controllers.scrape_log_controller import ScrapeLogController
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
 from controllers.sentiments_controller import save_sentiment_analysis
-from langdetect import detect, LangDetectException
+from langdetect import detect, LangDetectException # type: ignore
 import subprocess
 import re
 

@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint # type: ignore
 from controllers.diagram_controller import get_revenue_sentiment_diagram
 from controllers.middleware.auth_middleware import token_required
 
