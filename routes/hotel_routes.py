@@ -1,11 +1,11 @@
 from flask import Blueprint  # type: ignore
 from controllers.hotel_controller import HotelController
-from models.hotels import HotelsDB
+from models.hotels import Hotels
 from controllers.middleware.auth_middleware import token_required  # Import token_required
 
 def create_hotel_blueprint(app):
     hotel_bp = Blueprint("hotels", __name__)
-    db = HotelsDB()
+    db = Hotels()
     controller = HotelController(db)
 
     hotel_bp.add_url_rule("/hotels", "get_hotels", token_required(controller.get_hotels), methods=["GET"])

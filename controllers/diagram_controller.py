@@ -2,11 +2,11 @@ from flask import jsonify, request  # type: ignore
 from bson import ObjectId  # type: ignore
 from datetime import datetime
 from collections import defaultdict
-from models.diagram import DiagramDB
+from models.diagram import Diagram
 import calendar
 from dateutil.parser import parse  # type: ignore
 
-db = DiagramDB()
+db = Diagram()
 
 def get_month_key(date):
     if isinstance(date, str):

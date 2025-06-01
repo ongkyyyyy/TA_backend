@@ -1,6 +1,6 @@
 from .base_db import BaseDB
 
-class DiagramDB(BaseDB):
+class Diagram(BaseDB):
     def __init__(self):
         super().__init__()
         self.hotels = self.db.hotels

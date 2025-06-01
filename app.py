@@ -10,10 +10,10 @@ from routes.scrape_log_routes import create_scrape_log_blueprint
 from flask_cors import CORS # type: ignore
 from apscheduler.schedulers.background import BackgroundScheduler # type: ignore
 from scheduler.review_scraper_scheduler import run_scraping_for_all_hotels
-from models.scrape_log import ScrapeLogDB
+from models.scrape_log import ScrapeLog
 
 app = Flask(__name__)
-app.scrape_log_db = ScrapeLogDB()
+app.scrape_log_db = ScrapeLog()
 CORS(app, supports_credentials=True)
 app.config["MONGO_URI"] = MONGO_URI
 

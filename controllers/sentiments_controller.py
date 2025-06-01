@@ -1,6 +1,6 @@
-from models.sentiment import SentimentDB  
+from models.sentiment import Sentiment  
 
-sentiment_db = SentimentDB()
+sentiment_db = Sentiment()
 sentiment_collection = sentiment_db.collection
 
 def save_sentiment_analysis(sentiments):

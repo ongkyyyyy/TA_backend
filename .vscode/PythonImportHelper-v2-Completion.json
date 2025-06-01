@@ -321,7 +321,7 @@
         "documentation": {}
     },
     {
-        "label": "UsersDB",
+        "label": "Users",
         "importPath": "models.user",
         "description": "models.user",
         "isExtraImport": true,
@@ -386,7 +386,7 @@
         "documentation": {}
     },
     {
-        "label": "DiagramDB",
+        "label": "Diagram",
         "importPath": "models.diagram",
         "description": "models.diagram",
         "isExtraImport": true,
@@ -438,7 +438,7 @@
         "documentation": {}
     },
     {
-        "label": "HotelsDB",
+        "label": "Hotels",
         "importPath": "models.hotels",
         "description": "models.hotels",
         "isExtraImport": true,
@@ -446,7 +446,7 @@
         "documentation": {}
     },
     {
-        "label": "HotelsDB",
+        "label": "Hotels",
         "importPath": "models.hotels",
         "description": "models.hotels",
         "isExtraImport": true,
@@ -454,7 +454,7 @@
         "documentation": {}
     },
     {
-        "label": "HotelsDB",
+        "label": "Hotels",
         "importPath": "models.hotels",
         "description": "models.hotels",
         "isExtraImport": true,
@@ -462,7 +462,7 @@
         "documentation": {}
     },
     {
-        "label": "ReviewsDB",
+        "label": "Reviews",
         "importPath": "models.review",
         "description": "models.review",
         "isExtraImport": true,
@@ -526,7 +526,7 @@
         "documentation": {}
     },
     {
-        "label": "SentimentDB",
+        "label": "Sentiment",
         "importPath": "models.sentiment",
         "description": "models.sentiment",
         "isExtraImport": true,
@@ -614,7 +614,7 @@
         "documentation": {}
     },
     {
-        "label": "RevenueDB",
+        "label": "Revenue",
         "importPath": "models.revenue",
         "description": "models.revenue",
         "isExtraImport": true,
@@ -790,7 +790,7 @@
         "documentation": {}
     },
     {
-        "label": "ScrapeLogDB",
+        "label": "ScrapeLog",
         "importPath": "models.scrape_log",
         "description": "models.scrape_log",
         "isExtraImport": true,
@@ -838,7 +838,7 @@
         "kind": 5,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "db = DiagramDB()\ndef get_month_key(date):\n    if isinstance(date, str):\n        date = parse(date)\n    return date.strftime('%Y-%m')\ndef calculate_growth(current, previous):\n    if previous == 0:\n        return 100.0 if current > 0 else 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():",
+        "peekOfCode": "db = Diagram()\ndef get_month_key(date):\n    if isinstance(date, str):\n        date = parse(date)\n    return date.strftime('%Y-%m')\ndef calculate_growth(current, previous):\n    if previous == 0:\n        return 100.0 if current > 0 else 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
@@ -865,7 +865,7 @@
         "kind": 6,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "class ReviewController:\n    def __init__(self):\n        self.hotels_collection = HotelsDB().collection\n        self.reviews_collection = ReviewsDB().collection\n    def save_reviews(self, reviews, hotel_id=None):\n        if not reviews:\n            return {\"message\": \"No reviews to save\", \"status\": 400, \"inserted_ids\": []}\n        filters = [{\n            \"username\": r[\"username\"],\n            \"comment\": r[\"comment\"],",
+        "peekOfCode": "class ReviewController:\n    def __init__(self):\n        self.hotels_collection = Hotels().collection\n        self.reviews_collection = Reviews().collection\n    def save_reviews(self, reviews, hotel_id=None):\n        if not reviews:\n            return {\"message\": \"No reviews to save\", \"status\": 400, \"inserted_ids\": []}\n        filters = [{\n            \"username\": r[\"username\"],\n            \"comment\": r[\"comment\"],",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
@@ -874,7 +874,7 @@
         "kind": 2,
         "importPath": "controllers.review_controller",
         "description": "controllers.review_controller",
-        "peekOfCode": "def prepare_unicode_friendly_regex(text):\n    safe_text = re.escape(text)\n    safe_text = safe_text.replace('', '[\\u200B-\\u200D\\uFEFF]?')\n    return re.compile(safe_text, re.IGNORECASE)\nclass ReviewController:\n    def __init__(self):\n        self.hotels_collection = HotelsDB().collection\n        self.reviews_collection = ReviewsDB().collection\n    def save_reviews(self, reviews, hotel_id=None):\n        if not reviews:",
+        "peekOfCode": "def prepare_unicode_friendly_regex(text):\n    safe_text = re.escape(text)\n    safe_text = safe_text.replace('', '[\\u200B-\\u200D\\uFEFF]?')\n    return re.compile(safe_text, re.IGNORECASE)\nclass ReviewController:\n    def __init__(self):\n        self.hotels_collection = Hotels().collection\n        self.reviews_collection = Reviews().collection\n    def save_reviews(self, reviews, hotel_id=None):\n        if not reviews:",
         "detail": "controllers.review_controller",
         "documentation": {}
     },
@@ -910,7 +910,7 @@
         "kind": 5,
         "importPath": "controllers.sentiments_controller",
         "description": "controllers.sentiments_controller",
-        "peekOfCode": "sentiment_db = SentimentDB()\nsentiment_collection = sentiment_db.collection\ndef save_sentiment_analysis(sentiments):\n    if not sentiments:\n        return {\"message\": \"No sentiment data to save\", \"status\": 400}\n    sentiment_collection.insert_many(sentiments)\n    return {\"message\": \"Sentiment analysis saved successfully\", \"status\": 201}\ndef get_all_sentiments():\n    sentiments = list(sentiment_collection.find({}, {\"_id\": 0}))  \n    return sentiments",
+        "peekOfCode": "sentiment_db = Sentiment()\nsentiment_collection = sentiment_db.collection\ndef save_sentiment_analysis(sentiments):\n    if not sentiments:\n        return {\"message\": \"No sentiment data to save\", \"status\": 400}\n    sentiment_collection.insert_many(sentiments)\n    return {\"message\": \"Sentiment analysis saved successfully\", \"status\": 201}\ndef get_all_sentiments():\n    sentiments = list(sentiment_collection.find({}, {\"_id\": 0}))  \n    return sentiments",
         "detail": "controllers.sentiments_controller",
         "documentation": {}
     },
@@ -942,65 +942,65 @@
         "documentation": {}
     },
     {
-        "label": "DiagramDB",
+        "label": "Diagram",
         "kind": 6,
         "importPath": "models.diagram",
         "description": "models.diagram",
-        "peekOfCode": "class DiagramDB(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.hotels = self.db.hotels\n        self.revenues = self.db.revenues\n        self.reviews = self.db.reviews\n        self.sentiments = self.db.sentiments",
+        "peekOfCode": "class Diagram(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.hotels = self.db.hotels\n        self.revenues = self.db.revenues\n        self.reviews = self.db.reviews\n        self.sentiments = self.db.sentiments",
         "detail": "models.diagram",
         "documentation": {}
     },
     {
-        "label": "HotelsDB",
+        "label": "Hotels",
         "kind": 6,
         "importPath": "models.hotels",
         "description": "models.hotels",
-        "peekOfCode": "class HotelsDB(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.hotels\n        self.revenues = self.db.revenues",
+        "peekOfCode": "class Hotels(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.hotels\n        self.revenues = self.db.revenues",
         "detail": "models.hotels",
         "documentation": {}
     },
     {
-        "label": "RevenueDB",
+        "label": "Revenue",
         "kind": 6,
         "importPath": "models.revenue",
         "description": "models.revenue",
-        "peekOfCode": "class RevenueDB(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.revenues\n        self.hotels = self.db.hotels",
+        "peekOfCode": "class Revenue(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.revenues\n        self.hotels = self.db.hotels",
         "detail": "models.revenue",
         "documentation": {}
     },
     {
-        "label": "ReviewsDB",
+        "label": "Reviews",
         "kind": 6,
         "importPath": "models.review",
         "description": "models.review",
-        "peekOfCode": "class ReviewsDB(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.reviews",
+        "peekOfCode": "class Reviews(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.reviews",
         "detail": "models.review",
         "documentation": {}
     },
     {
-        "label": "ScrapeLogDB",
+        "label": "ScrapeLog",
         "kind": 6,
         "importPath": "models.scrape_log",
         "description": "models.scrape_log",
-        "peekOfCode": "class ScrapeLogDB(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.scrape_log",
+        "peekOfCode": "class ScrapeLog(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.scrape_log",
         "detail": "models.scrape_log",
         "documentation": {}
     },
     {
-        "label": "SentimentDB",
+        "label": "Sentiment",
         "kind": 6,
         "importPath": "models.sentiment",
         "description": "models.sentiment",
-        "peekOfCode": "class SentimentDB(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.sentiments",
+        "peekOfCode": "class Sentiment(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.sentiments",
         "detail": "models.sentiment",
         "documentation": {}
     },
     {
-        "label": "UsersDB",
+        "label": "Users",
         "kind": 6,
         "importPath": "models.user",
         "description": "models.user",
-        "peekOfCode": "class UsersDB:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
+        "peekOfCode": "class Users:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
         "detail": "models.user",
         "documentation": {}
     },
@@ -1009,7 +1009,7 @@
         "kind": 5,
         "importPath": "models.user",
         "description": "models.user",
-        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance\nusers_collection = db.users  \nclass UsersDB:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
+        "peekOfCode": "client = MongoClient(MONGO_URI)\ndb = client.hotelPerformance\nusers_collection = db.users  \nclass Users:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
         "detail": "models.user",
         "documentation": {}
     },
@@ -1018,7 +1018,7 @@
         "kind": 5,
         "importPath": "models.user",
         "description": "models.user",
-        "peekOfCode": "db = client.hotelPerformance\nusers_collection = db.users  \nclass UsersDB:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
+        "peekOfCode": "db = client.hotelPerformance\nusers_collection = db.users  \nclass Users:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
         "detail": "models.user",
         "documentation": {}
     },
@@ -1027,7 +1027,7 @@
         "kind": 5,
         "importPath": "models.user",
         "description": "models.user",
-        "peekOfCode": "users_collection = db.users  \nclass UsersDB:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
+        "peekOfCode": "users_collection = db.users  \nclass Users:\n    def __init__(self, app=None):\n        self.client = client\n        self.db = db\n        self.collection = users_collection",
         "detail": "models.user",
         "documentation": {}
     },
@@ -1045,7 +1045,7 @@
         "kind": 2,
         "importPath": "routes.hotel_routes",
         "description": "routes.hotel_routes",
-        "peekOfCode": "def create_hotel_blueprint(app):\n    hotel_bp = Blueprint(\"hotels\", __name__)\n    db = HotelsDB()\n    controller = HotelController(db)\n    hotel_bp.add_url_rule(\"/hotels\", \"get_hotels\", token_required(controller.get_hotels), methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"get_hotel\", token_required(controller.get_hotel), methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels\", \"create_hotel\", token_required(controller.create_hotel), methods=[\"POST\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"update_hotel\", token_required(controller.update_hotel), methods=[\"PUT\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"delete_hotel\", token_required(controller.delete_hotel), methods=[\"DELETE\"])\n    hotel_bp.add_url_rule(\"/hotels/search\", \"search_hotels\", token_required(controller.search_hotels), methods=[\"GET\"])",
+        "peekOfCode": "def create_hotel_blueprint(app):\n    hotel_bp = Blueprint(\"hotels\", __name__)\n    db = Hotels()\n    controller = HotelController(db)\n    hotel_bp.add_url_rule(\"/hotels\", \"get_hotels\", token_required(controller.get_hotels), methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"get_hotel\", token_required(controller.get_hotel), methods=[\"GET\"])\n    hotel_bp.add_url_rule(\"/hotels\", \"create_hotel\", token_required(controller.create_hotel), methods=[\"POST\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"update_hotel\", token_required(controller.update_hotel), methods=[\"PUT\"])\n    hotel_bp.add_url_rule(\"/hotels/<hotel_id>\", \"delete_hotel\", token_required(controller.delete_hotel), methods=[\"DELETE\"])\n    hotel_bp.add_url_rule(\"/hotels/search\", \"search_hotels\", token_required(controller.search_hotels), methods=[\"GET\"])",
         "detail": "routes.hotel_routes",
         "documentation": {}
     },
@@ -1054,7 +1054,7 @@
         "kind": 2,
         "importPath": "routes.revenue_routes",
         "description": "routes.revenue_routes",
-        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = RevenueDB()\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", token_required(controller.get_revenues), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", token_required(controller.create_revenue), methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", token_required(controller.edit_revenue), methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", token_required(controller.remove_revenue), methods=[\"DELETE\"])\n    return revenue_bp",
+        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = Revenue()\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", token_required(controller.get_revenues), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", token_required(controller.create_revenue), methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", token_required(controller.edit_revenue), methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", token_required(controller.remove_revenue), methods=[\"DELETE\"])\n    return revenue_bp",
         "detail": "routes.revenue_routes",
         "documentation": {}
     },
@@ -1090,7 +1090,7 @@
         "kind": 2,
         "importPath": "routes.user_routes",
         "description": "routes.user_routes",
-        "peekOfCode": "def create_user_blueprint(app):\n    user_bp = Blueprint(\"users\", __name__)\n    db = UsersDB(app)\n    controller = UserController(db)\n    user_bp.add_url_rule(\"/register\", \"register\", controller.register, methods=[\"POST\"])\n    user_bp.add_url_rule(\"/login\", \"login\", controller.login, methods=[\"POST\"])\n    user_bp.add_url_rule(\"/logout\", \"logout\", controller.logout, methods=[\"POST\"])\n    return user_bp",
+        "peekOfCode": "def create_user_blueprint(app):\n    user_bp = Blueprint(\"users\", __name__)\n    db = Users(app)\n    controller = UserController(db)\n    user_bp.add_url_rule(\"/register\", \"register\", controller.register, methods=[\"POST\"])\n    user_bp.add_url_rule(\"/login\", \"login\", controller.login, methods=[\"POST\"])\n    user_bp.add_url_rule(\"/logout\", \"logout\", controller.logout, methods=[\"POST\"])\n    return user_bp",
         "detail": "routes.user_routes",
         "documentation": {}
     },
@@ -1108,7 +1108,7 @@
         "kind": 5,
         "importPath": "scheduler.review_scraper_scheduler",
         "description": "scheduler.review_scraper_scheduler",
-        "peekOfCode": "hotels_db = HotelsDB()\nhotels_collection = hotels_db.collection\nSOURCE_MAP = {\n    \"traveloka\": (\"scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")",
+        "peekOfCode": "hotels_db = Hotels()\nhotels_collection = hotels_db.collection\nSOURCE_MAP = {\n    \"traveloka\": (\"scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")",
         "detail": "scheduler.review_scraper_scheduler",
         "documentation": {}
     },
@@ -1468,7 +1468,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app = Flask(__name__)\napp.scrape_log_db = ScrapeLogDB()\nCORS(app, supports_credentials=True)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)",
+        "peekOfCode": "app = Flask(__name__)\napp.scrape_log_db = ScrapeLog()\nCORS(app, supports_credentials=True)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)",
         "detail": "app",
         "documentation": {}
     },
@@ -1477,7 +1477,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "app.scrape_log_db = ScrapeLogDB()\nCORS(app, supports_credentials=True)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)",
+        "peekOfCode": "app.scrape_log_db = ScrapeLog()\nCORS(app, supports_credentials=True)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)\napp.register_blueprint(sentiments_bp)\nhotels_bp = create_hotel_blueprint(app)",
         "detail": "app",
         "documentation": {}
     },

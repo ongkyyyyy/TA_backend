@@ -3,8 +3,8 @@ import subprocess
 from bson import ObjectId # type: ignore
 from flask import request, jsonify, current_app # type: ignore
 from datetime import datetime
-from models.hotels import HotelsDB
-from models.review import ReviewsDB
+from models.hotels import Hotels
+from models.review import Reviews
 from controllers.scrape_log_controller import ScrapeLogController
 from sentiment_analysis.sentiment_analysis import analyze_sentiment
 from controllers.sentiments_controller import save_sentiment_analysis
@@ -19,8 +19,8 @@ def prepare_unicode_friendly_regex(text):
 
 class ReviewController:
     def __init__(self):
-        self.hotels_collection = HotelsDB().collection
-        self.reviews_collection = ReviewsDB().collection
+        self.hotels_collection = Hotels().collection
+        self.reviews_collection = Reviews().collection
     
     def save_reviews(self, reviews, hotel_id=None):
         if not reviews:

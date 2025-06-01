@@ -1,11 +1,11 @@
 from flask import Blueprint  # type: ignore
 from controllers.revenue_controller import RevenueController
-from models.revenue import RevenueDB
+from models.revenue import Revenue
 from controllers.middleware.auth_middleware import token_required
 
 def create_revenue_blueprint(app):
     revenue_bp = Blueprint("revenue", __name__)
-    db = RevenueDB()
+    db = Revenue()
     controller = RevenueController(db)
 
     revenue_bp.add_url_rule("/revenues", "get_revenues", token_required(controller.get_revenues), methods=["GET"])

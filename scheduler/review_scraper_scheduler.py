@@ -1,8 +1,8 @@
 import os
 import subprocess
-from models.hotels import HotelsDB
+from models.hotels import Hotels
 
-hotels_db = HotelsDB()
+hotels_db = Hotels()
 hotels_collection = hotels_db.collection
 
 SOURCE_MAP = {

@@ -5,7 +5,7 @@ client = MongoClient(MONGO_URI)
 db = client.hotelPerformance
 users_collection = db.users  
 
-class UsersDB:
+class Users:
     def __init__(self, app=None):
         self.client = client
         self.db = db
