@@ -128,22 +128,6 @@
         "documentation": {}
     },
     {
-        "label": "request",
-        "importPath": "flask",
-        "description": "flask",
-        "isExtraImport": true,
-        "detail": "flask",
-        "documentation": {}
-    },
-    {
-        "label": "jsonify",
-        "importPath": "flask",
-        "description": "flask",
-        "isExtraImport": true,
-        "detail": "flask",
-        "documentation": {}
-    },
-    {
         "label": "Blueprint",
         "importPath": "flask",
         "description": "flask",
@@ -258,14 +242,6 @@
     },
     {
         "label": "regex",
-        "importPath": "bson",
-        "description": "bson",
-        "isExtraImport": true,
-        "detail": "bson",
-        "documentation": {}
-    },
-    {
-        "label": "ObjectId",
         "importPath": "bson",
         "description": "bson",
         "isExtraImport": true,
@@ -590,14 +566,6 @@
         "documentation": {}
     },
     {
-        "label": "PyMongo",
-        "importPath": "flask_pymongo",
-        "description": "flask_pymongo",
-        "isExtraImport": true,
-        "detail": "flask_pymongo",
-        "documentation": {}
-    },
-    {
         "label": "get_revenue_sentiment_diagram",
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
@@ -888,7 +856,7 @@
         "kind": 6,
         "importPath": "controllers.revenue_controller",
         "description": "controllers.revenue_controller",
-        "peekOfCode": "class RevenueController:\n    def __init__(self, db):\n        self.db = db\n    def get_revenues(self):\n        try:\n            revenues = self.db.get_all_revenues()\n            return jsonify({\"success\": True, \"data\": revenues}), 200\n        except Exception as e:\n            return jsonify({\"success\": False, \"error\": str(e)}), 500\n    def get_revenue(self, revenue_id):",
+        "peekOfCode": "class RevenueController:\n    def __init__(self, db):\n        self.db = db\n    def calculate_revenue(self, data):\n        try:\n            data = self.normalize_revenue_data(data)\n            room_lodging = float(data.get(\"room_lodging\", 0))\n            rebate_discount = float(data.get(\"rebate_discount\", 0))\n            total_room_revenue = room_lodging - rebate_discount\n            breakfast = float(data.get(\"breakfast\", 0))",
         "detail": "controllers.revenue_controller",
         "documentation": {}
     },
@@ -996,7 +964,7 @@
         "kind": 6,
         "importPath": "models.revenue",
         "description": "models.revenue",
-        "peekOfCode": "class RevenueDB(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.revenues\n    def get_all_revenues(self):\n        page = int(request.args.get('page', 1))\n        per_page = int(request.args.get('per_page', 10))\n        skip = (page - 1) * per_page\n        hotel_ids_param = request.args.get('hotel_id') or request.args.get('hotel_ids')\n        min_date = request.args.get('min_date')",
+        "peekOfCode": "class RevenueDB(BaseDB):\n    def __init__(self):\n        super().__init__()\n        self.collection = self.db.revenues\n        self.hotels = self.db.hotels",
         "detail": "models.revenue",
         "documentation": {}
     },
@@ -1086,7 +1054,7 @@
         "kind": 2,
         "importPath": "routes.revenue_routes",
         "description": "routes.revenue_routes",
-        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = RevenueDB()\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", token_required(controller.get_revenues), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"get_revenue\", token_required(controller.get_revenue), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues/by-hotel/<hotel_id>\", \"get_revenues_by_hotel\", token_required(controller.get_revenues_by_hotel), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", token_required(controller.create_revenue), methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", token_required(controller.edit_revenue), methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", token_required(controller.remove_revenue), methods=[\"DELETE\"])",
+        "peekOfCode": "def create_revenue_blueprint(app):\n    revenue_bp = Blueprint(\"revenue\", __name__)\n    db = RevenueDB()\n    controller = RevenueController(db)\n    revenue_bp.add_url_rule(\"/revenues\", \"get_revenues\", token_required(controller.get_revenues), methods=[\"GET\"])\n    revenue_bp.add_url_rule(\"/revenues\", \"create_revenue\", token_required(controller.create_revenue), methods=[\"POST\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"edit_revenue\", token_required(controller.edit_revenue), methods=[\"PUT\"])\n    revenue_bp.add_url_rule(\"/revenues/<revenue_id>\", \"remove_revenue\", token_required(controller.remove_revenue), methods=[\"DELETE\"])\n    return revenue_bp",
         "detail": "routes.revenue_routes",
         "documentation": {}
     },
