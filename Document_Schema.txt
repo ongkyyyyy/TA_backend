@@ -1,0 +1,101 @@
+hotels
+{
+  _id: ObjectId,
+  hotel_name: String,
+  address: String,
+  city: String,
+  country: String,
+  agoda_link: String,
+  traveloka_link: String,
+  tripcom_link: String,
+  ticketcom_link: String
+}
+
+revenues
+{
+  _id: ObjectId,
+  hotel_id: ObjectId,
+  date: String,               
+  room_details: {
+    room_lodging: Number,
+    rebate_discount: Number,
+    total_room_revenue: Number
+  },
+  restaurant: {
+    breakfast: Number,
+    restaurant_food: Number,
+    restaurant_beverage: Number,
+    total_restaurant_revenue: Number
+  },
+  other_revenue: {
+    other_room_revenue: Number,
+    telephone: Number,
+    business_center: Number,
+    other_income: Number,
+    spa_therapy: Number,
+    misc: Number,
+    allowance_other: Number,
+    total_other_revenue: Number
+  },
+  nett_revenue: Number,
+  service_charge: Number,
+  government_tax: Number,
+  gross_revenue: Number,
+  ap_restaurant: Number,
+  tips: Number,
+  grand_total_revenue: Number,
+  room_stats: {
+    active_rooms: Number,
+    room_available: Number,
+    house_use: Number,
+    complimentary: Number,
+    rooms_occupied: Number,
+    rooms_sold: Number,
+    vacant_rooms: Number,
+    occupancy: Number,
+    guests_in_house: Number,
+    average_room_rate: Number
+  }
+}
+
+reviews
+{
+  _id: ObjectId,
+  username: String,
+  rating: Number,
+  comment: String,
+  timestamp: String,      
+  hotel_name: String,
+  OTA: String,
+  hotel_id: ObjectId      
+}
+
+sentiments
+{
+  _id: ObjectId,
+  review_id: ObjectId,     
+  comment: String,
+  sentiment: String,     
+  positive_score: Number,
+  negative_score: Number,
+  created_at: Date
+}
+
+scrape_log
+{
+  _id: ObjectId,
+  hotel_id: ObjectId,      
+  ota: String,             
+  scrape_date: String,  
+  timestamp: Date,
+  total_reviews: Number,
+  note: String,
+  status: String           
+}
+
+users
+{
+  _id: ObjectId,
+  username: String,
+  password: String   
+}

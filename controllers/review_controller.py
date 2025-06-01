@@ -157,7 +157,6 @@ class ReviewController:
         scrape_log_data = {
             "hotel_id": hotel_id,
             "ota": ota,
-            "scrape_date": now.strftime("%d-%m-%y"),
             "timestamp": now, 
             "total_reviews": len(reviews),
             "note": "",
