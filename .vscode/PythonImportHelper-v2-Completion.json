@@ -861,7 +861,7 @@
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month\n    # Handle hotel_id param\n    if hotel_ids_param == \"All\":\n        hotel_ids = None\n    else:",
+        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month\n    if hotel_ids_param == \"All\":\n        hotel_ids = None\n    else:\n        try:",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },

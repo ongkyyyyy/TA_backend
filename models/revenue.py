@@ -75,11 +75,9 @@ class RevenueDB(BaseDB):
         except ValueError:
             pass
 
-        # Apply all match conditions
         if match_conditions:
             pipeline.append({"$match": {"$and": match_conditions}})
 
-        # Join with hotels collection to get hotel name
         pipeline.append({
             "$lookup": {
                 "from": "hotels",
@@ -105,7 +103,6 @@ class RevenueDB(BaseDB):
             }
         })
 
-        # Sorting logic
         if sort_by == "date":
             pipeline.append({
                 "$addFields": {
@@ -137,11 +134,9 @@ class RevenueDB(BaseDB):
             })
             pipeline.append({"$sort": {"parsed_date": -1}})
 
-        # Pagination
         pipeline.append({"$skip": skip})
         pipeline.append({"$limit": per_page})
 
-        # Execute
         try:
             results = list(self.db.revenues.aggregate(pipeline))
 
@@ -284,7 +279,7 @@ class RevenueDB(BaseDB):
 
         except Exception as e:
             print("Error in add_revenue:", e)
-            raise  # optionally raise again or return None/error code
+            raise  
     
     def update_revenue(self, revenue_oid, updated_data):
         try:

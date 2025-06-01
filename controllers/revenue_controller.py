@@ -34,7 +34,6 @@ class RevenueController:
         try:
             processed_data = self.db.add_revenue(revenue_data)
 
-            # Convert ObjectId fields to strings
             processed_data["_id"] = str(processed_data["_id"])
             processed_data["hotel_id"] = str(processed_data["hotel_id"])
 

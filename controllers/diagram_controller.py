@@ -28,7 +28,6 @@ def get_revenue_sentiment_diagram():
     current_year = today.year
     current_month = today.month
 
-    # Handle hotel_id param
     if hotel_ids_param == "All":
         hotel_ids = None
     else:
@@ -37,7 +36,6 @@ def get_revenue_sentiment_diagram():
         except Exception:
             return jsonify({"error": "One or more hotel_id values are not valid ObjectIds."}), 400
 
-    # Query revenues
     revenue_query = {}
     if hotel_ids:
         revenue_query["hotel_id"] = {"$in": hotel_ids}
@@ -61,7 +59,6 @@ def get_revenue_sentiment_diagram():
         monthly_revenue[month]["gross_revenue"].append(rev["gross_revenue"])
         monthly_revenue[month]["grand_total_revenue"].append(rev["grand_total_revenue"])
 
-    # Query reviews and sentiments
     review_query = {}
     if hotel_ids:
         review_query["hotel_id"] = {"$in": hotel_ids}
@@ -106,7 +103,6 @@ def get_revenue_sentiment_diagram():
 
         monthly_sentiment[month]["total"] += 1
 
-    # Setup month labels
     if year:
         month_limit = current_month if year == current_year else 12
         months_range = [f"{year}-{m:02d}" for m in range(1, month_limit + 1)]
@@ -117,7 +113,6 @@ def get_revenue_sentiment_diagram():
         month_labels = [calendar.month_abbr[int(m)] for m in months_range]
         key_fn = lambda m: m[-2:]
 
-    # Assemble result
     diagram_data = {
         "months": month_labels,
         "room_revenue": [],
@@ -173,7 +168,6 @@ def get_revenue_sentiment_diagram():
         diagram_data["negative_ratio"].append(round(neg_ratio, 2))
         diagram_data["neutral_ratio"].append(round(neu_ratio, 2))
 
-    # Summary calculations
     grand_totals = diagram_data["grand_total_revenue"]
     sentiment_scores = diagram_data["sentiment_score"]
     review_volumes = diagram_data["review_volume"]
