@@ -1,104 +1,11 @@
 from flask import jsonify, request  # type: ignore
 from bson import ObjectId  # type: ignore
 from datetime import datetime
+from collections import OrderedDict
 
 class RevenueController:
     def __init__(self, db):
         self.db = db
-
-    def calculate_revenue(self, data):
-        try:
-            data = self.normalize_revenue_data(data)
-
-            room_lodging = float(data.get("room_lodging", 0))
-            rebate_discount = float(data.get("rebate_discount", 0))
-            total_room_revenue = room_lodging - rebate_discount
-
-            breakfast = float(data.get("breakfast", 0))
-            restaurant_food = float(data.get("restaurant_food", 0))
-            restaurant_beverage = float(data.get("restaurant_beverage", 0))
-            total_restaurant_revenue = breakfast + restaurant_food + restaurant_beverage
-
-            other_room_revenue = float(data.get("other_room_revenue", 0))
-            telephone = float(data.get("telephone", 0))
-            business_center = float(data.get("business_center", 0))
-            other_income = float(data.get("other_income", 0))
-            spa_therapy = float(data.get("spa_therapy", 0))
-            misc = float(data.get("misc", 0))
-            allowance_other = float(data.get("allowance_other", 0))
-            total_other_revenue = (
-                other_room_revenue + telephone + business_center +
-                other_income + spa_therapy + misc - allowance_other
-            )
-
-            nett_revenue = total_room_revenue + total_restaurant_revenue + total_other_revenue
-            service_charge = nett_revenue * 0.10
-            government_tax = nett_revenue * 0.11
-            gross_revenue = nett_revenue + service_charge + government_tax
-
-            ap_restaurant = float(data.get("ap_restaurant", 0))
-            tips = float(data.get("tips", 0))
-            grand_total_revenue = gross_revenue + ap_restaurant + tips
-
-            active_rooms = int(data.get("active_rooms", 0))
-            room_available = int(data.get("room_available", 0))
-            house_use = int(data.get("house_use", 0))
-            complimentary = int(data.get("complimentary", 0))
-            rooms_occupied = int(data.get("rooms_occupied", 0))
-            rooms_sold = int(data.get("rooms_sold", 0))
-            guests_in_house = int(data.get("guests_in_house", 0))
-
-            vacant_rooms = room_available - rooms_occupied if room_available > 0 else 0
-            occupancy = (rooms_occupied / room_available) * 100 if room_available > 0 else 0
-            average_room_rate = total_room_revenue / rooms_sold if rooms_sold > 0 else 0
-
-            data.update({
-                "room_details": {
-                    "room_lodging": room_lodging,
-                    "rebate_discount": rebate_discount,
-                    "total_room_revenue": round(total_room_revenue, 2)
-                },
-                "restaurant": {
-                    "breakfast": breakfast,
-                    "restaurant_food": restaurant_food,
-                    "restaurant_beverage": restaurant_beverage,
-                    "total_restaurant_revenue": round(total_restaurant_revenue, 2)
-                },
-                "other_revenue": {
-                    "other_room_revenue": other_room_revenue,
-                    "telephone": telephone,
-                    "business_center": business_center,
-                    "other_income": other_income,
-                    "spa_therapy": spa_therapy,
-                    "misc": misc,
-                    "allowance_other": allowance_other,
-                    "total_other_revenue": round(total_other_revenue, 2)
-                },
-                "nett_revenue": round(nett_revenue, 2),
-                "service_charge": round(service_charge, 2),
-                "government_tax": round(government_tax, 2),
-                "gross_revenue": round(gross_revenue, 2),
-                "ap_restaurant": ap_restaurant,
-                "tips": tips,
-                "grand_total_revenue": round(grand_total_revenue, 2),
-                "room_stats": {
-                    "active_rooms": active_rooms,
-                    "room_available": room_available,
-                    "house_use": house_use,
-                    "complimentary": complimentary,
-                    "rooms_occupied": rooms_occupied,
-                    "rooms_sold": rooms_sold,
-                    "guests_in_house": guests_in_house,
-                    "vacant_rooms": vacant_rooms,
-                    "occupancy": round(occupancy, 2),
-                    "average_room_rate": round(average_room_rate, 2)
-                }
-            })
-
-            return data
-
-        except Exception as e:
-            raise ValueError(f"Error in calculating revenue: {str(e)}")
 
     def get_revenues(self):
 
@@ -256,6 +163,104 @@ class RevenueController:
 
         except Exception as e:
             return jsonify({"success": False, "error": str(e)}), 500
+        
+    
+    def calculate_revenue(self, data):
+        try:
+            # Normalize input first: flatten nested keys if any
+            flat_data = self.normalize_revenue_data(data)
+
+            # Extract flat fields from normalized data
+            room_lodging = float(flat_data.get("room_lodging", 0))
+            rebate_discount = float(flat_data.get("rebate_discount", 0))
+            total_room_revenue = room_lodging - rebate_discount
+
+            breakfast = float(flat_data.get("breakfast", 0))
+            restaurant_food = float(flat_data.get("restaurant_food", 0))
+            restaurant_beverage = float(flat_data.get("restaurant_beverage", 0))
+            total_restaurant_revenue = breakfast + restaurant_food + restaurant_beverage
+
+            other_room_revenue = float(flat_data.get("other_room_revenue", 0))
+            telephone = float(flat_data.get("telephone", 0))
+            business_center = float(flat_data.get("business_center", 0))
+            other_income = float(flat_data.get("other_income", 0))
+            spa_therapy = float(flat_data.get("spa_therapy", 0))
+            misc = float(flat_data.get("misc", 0))
+            allowance_other = float(flat_data.get("allowance_other", 0))
+            total_other_revenue = (
+                other_room_revenue + telephone + business_center +
+                other_income + spa_therapy + misc - allowance_other
+            )
+
+            nett_revenue = total_room_revenue + total_restaurant_revenue + total_other_revenue
+            service_charge = nett_revenue * 0.10
+            government_tax = nett_revenue * 0.11
+            gross_revenue = nett_revenue + service_charge + government_tax
+
+            ap_restaurant = float(flat_data.get("ap_restaurant", 0))
+            tips = float(flat_data.get("tips", 0))
+            grand_total_revenue = gross_revenue + ap_restaurant + tips
+
+            active_rooms = int(flat_data.get("active_rooms", 0))
+            room_available = int(flat_data.get("room_available", 0))
+            house_use = int(flat_data.get("house_use", 0))
+            complimentary = int(flat_data.get("complimentary", 0))
+            rooms_occupied = int(flat_data.get("rooms_occupied", 0))
+            rooms_sold = int(flat_data.get("rooms_sold", 0))
+            guests_in_house = int(flat_data.get("guests_in_house", 0))
+
+            vacant_rooms = room_available - rooms_occupied if room_available > 0 else 0
+            occupancy = (rooms_occupied / room_available) * 100 if room_available > 0 else 0
+            average_room_rate = total_room_revenue / rooms_sold if rooms_sold > 0 else 0
+
+            # Build a new clean nested dict from scratch
+            clean_data = {
+                "room_details": {
+                    "room_lodging": room_lodging,
+                    "rebate_discount": rebate_discount,
+                    "total_room_revenue": round(total_room_revenue, 2)
+                },
+                "restaurant": {
+                    "breakfast": breakfast,
+                    "restaurant_food": restaurant_food,
+                    "restaurant_beverage": restaurant_beverage,
+                    "total_restaurant_revenue": round(total_restaurant_revenue, 2)
+                },
+                "other_revenue": {
+                    "other_room_revenue": other_room_revenue,
+                    "telephone": telephone,
+                    "business_center": business_center,
+                    "other_income": other_income,
+                    "spa_therapy": spa_therapy,
+                    "misc": misc,
+                    "allowance_other": allowance_other,
+                    "total_other_revenue": round(total_other_revenue, 2)
+                },
+                "nett_revenue": round(nett_revenue, 2),
+                "service_charge": round(service_charge, 2),
+                "government_tax": round(government_tax, 2),
+                "gross_revenue": round(gross_revenue, 2),
+                "ap_restaurant": ap_restaurant,
+                "tips": tips,
+                "grand_total_revenue": round(grand_total_revenue, 2),
+                "room_stats": {
+                    "active_rooms": active_rooms,
+                    "room_available": room_available,
+                    "house_use": house_use,
+                    "complimentary": complimentary,
+                    "rooms_occupied": rooms_occupied,
+                    "rooms_sold": rooms_sold,
+                    "guests_in_house": guests_in_house,
+                    "vacant_rooms": vacant_rooms,
+                    "occupancy": round(occupancy, 2),
+                    "average_room_rate": round(average_room_rate, 2)
+                }
+            }
+
+            return clean_data
+
+        except Exception as e:
+            raise ValueError(f"Error in calculating revenue: {str(e)}")
     
     def normalize_revenue_data(self, data):
         nested_keys = ["room_details", "restaurant", "other_revenue", "room_stats"]
@@ -277,37 +282,50 @@ class RevenueController:
     def create_revenue(self):
         revenue_data = request.json
 
-        if not revenue_data.get("hotel_id"):
+        hotel_id_raw = revenue_data.get("hotel_id")
+        if not hotel_id_raw:
             return jsonify({"success": False, "message": "hotel_id is required"}), 400
-
-        hotel_id_raw = revenue_data["hotel_id"]
 
         if not self.hotel_exists(hotel_id_raw):
             return jsonify({"success": False, "message": "Hotel ID not found"}), 404
 
         try:
             revenue_data["hotel_id"] = ObjectId(hotel_id_raw) if isinstance(hotel_id_raw, str) else hotel_id_raw
+            processed = self.calculate_revenue(revenue_data)
+            processed["hotel_id"] = revenue_data["hotel_id"]
 
-            flat_data = self.normalize_revenue_data(revenue_data)
-            processed_data = self.calculate_revenue(flat_data)
-            processed_data["hotel_id"] = revenue_data["hotel_id"]
+            if "date" in revenue_data:
+                processed["date"] = revenue_data["date"]
 
-            inserted = self.db.collection.insert_one(processed_data)
-            print("Inserted revenue with ID:", inserted.inserted_id)
+            inserted = self.db.collection.insert_one(processed)
 
-            processed_data["_id"] = str(inserted.inserted_id)
-            processed_data["hotel_id"] = str(processed_data["hotel_id"])
+            response_data = OrderedDict([
+                ("_id", {"$oid": str(inserted.inserted_id)}),
+                ("hotel_id", {"$oid": str(processed["hotel_id"])}),
+                ("date", processed.get("date", "")),
+                ("room_details", processed.get("room_details", {})),
+                ("restaurant", processed.get("restaurant", {})),
+                ("other_revenue", processed.get("other_revenue", {})),
+                ("nett_revenue", processed.get("nett_revenue", 0)),
+                ("service_charge", processed.get("service_charge", 0)),
+                ("government_tax", processed.get("government_tax", 0)),
+                ("gross_revenue", processed.get("gross_revenue", 0)),
+                ("ap_restaurant", processed.get("ap_restaurant", 0)),
+                ("tips", processed.get("tips", 0)),
+                ("grand_total_revenue", processed.get("grand_total_revenue", 0)),
+                ("room_stats", processed.get("room_stats", {})),
+            ])
 
             return jsonify({
                 "success": True,
                 "message": "Revenue added successfully",
-                "data": processed_data
+                "data": response_data
             }), 201
 
         except Exception as e:
             print("Error in create_revenue:", e)
             return jsonify({"success": False, "message": str(e)}), 500
-
+    
     def edit_revenue(self, revenue_id):
         try:
             updated_data = request.json
@@ -364,7 +382,6 @@ class RevenueController:
         try:
             revenue_oid = ObjectId(revenue_id)
 
-            # Attempt to delete
             result = self.db.collection.delete_one({"_id": revenue_oid})
 
             if result.deleted_count:
