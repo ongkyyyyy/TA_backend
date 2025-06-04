@@ -22,14 +22,25 @@ class HotelController:
         return jsonify({"message": "Hotel created", "id": str(hotel_id)}), 201
 
     def get_hotels(self):
-
+        search_term = request.args.get("q")
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 15))
         skip = (page - 1) * limit
 
+        query = {}
+        if search_term:
+            query = {
+                "$or": [
+                    {"hotel_name": {"$regex": re.escape(search_term), "$options": "i"}},
+                    {"city": {"$regex": re.escape(search_term), "$options": "i"}},
+                    {"country": {"$regex": re.escape(search_term), "$options": "i"}},
+                    {"address": {"$regex": re.escape(search_term), "$options": "i"}}
+                ]
+            }
+
         hotels = []
-        cursor = self.db.collection.find().skip(skip).limit(limit)
-        total_count = self.db.collection.count_documents({})
+        cursor = self.db.collection.find(query).skip(skip).limit(limit)
+        total_count = self.db.collection.count_documents(query)
 
         for hotel in cursor:
             hotel["_id"] = str(hotel["_id"])
@@ -50,18 +61,6 @@ class HotelController:
                 "hotel_name": hotel.get("hotel_name", "")
             })
         return jsonify(hotels)
-
-    def get_hotel(self, hotel_id):
-        try:
-            hotel = self.db.collection.find_one({"_id": ObjectId(hotel_id)})
-        except Exception:
-            return jsonify({"error": "Invalid hotel ID"}), 400
-
-        if not hotel:
-            return jsonify({"error": "Hotel not found"}), 404
-
-        hotel["_id"] = str(hotel["_id"])
-        return jsonify(hotel)
 
     def update_hotel(self, hotel_id):
         data = request.json
@@ -97,36 +96,3 @@ class HotelController:
             "hotel_deleted": hotel_result.deleted_count,
             "revenues_deleted": revenue_result.deleted_count
         }), 200
-    
-    def search_hotels(self):
-        search_term = request.args.get("q")
-        page = int(request.args.get("page", 1))
-        limit = int(request.args.get("limit", 15))
-        skip = (page - 1) * limit
-
-        query = {}
-        if search_term:
-            query = {
-                "$or": [
-                    {"hotel_name": {"$regex": re.escape(search_term), "$options": "i"}},
-                    {"city": {"$regex": re.escape(search_term), "$options": "i"}},
-                    {"country": {"$regex": re.escape(search_term), "$options": "i"}},
-                    {"address": {"$regex": re.escape(search_term), "$options": "i"}}
-                ]
-            }
-
-        hotels = []
-        cursor = self.db.collection.find(query).skip(skip).limit(limit)
-        total_count = self.db.collection.count_documents(query)
-
-        for hotel in cursor:
-            hotel["_id"] = str(hotel["_id"])
-            hotels.append(hotel)
-
-        return jsonify({
-            "data": hotels,
-            "total": total_count,
-            "page": page,
-            "limit": limit
-        })
-
