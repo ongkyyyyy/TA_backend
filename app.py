@@ -40,7 +40,15 @@ app.register_blueprint(scrape_log_bp)
 
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()
-    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)
+    scheduler.add_job(
+        run_scraping_for_all_hotels,
+        trigger='cron',
+        hour=1,
+        minute=0,
+        id='run_scraping_for_all_hotels',
+        misfire_grace_time=30,
+        replace_existing=True  
+    )
     scheduler.start()
 
     app.run(debug=False)

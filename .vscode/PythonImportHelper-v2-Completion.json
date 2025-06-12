@@ -1116,7 +1116,7 @@
         "kind": 5,
         "importPath": "scheduler.review_scraper_scheduler",
         "description": "scheduler.review_scraper_scheduler",
-        "peekOfCode": "hotels_db = Hotels()\nhotels_collection = hotels_db.collection\nSOURCE_MAP = {\n    \"traveloka\": (\"scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")",
+        "peekOfCode": "hotels_db = Hotels()\nhotels_collection = hotels_db.collection\nSOURCE_MAP = {\n    \"traveloka\": (\"traveloka_scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")",
         "detail": "scheduler.review_scraper_scheduler",
         "documentation": {}
     },
@@ -1125,7 +1125,7 @@
         "kind": 5,
         "importPath": "scheduler.review_scraper_scheduler",
         "description": "scheduler.review_scraper_scheduler",
-        "peekOfCode": "hotels_collection = hotels_db.collection\nSOURCE_MAP = {\n    \"traveloka\": (\"scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")\n    backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))",
+        "peekOfCode": "hotels_collection = hotels_db.collection\nSOURCE_MAP = {\n    \"traveloka\": (\"traveloka_scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")\n    backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))",
         "detail": "scheduler.review_scraper_scheduler",
         "documentation": {}
     },
@@ -1134,7 +1134,7 @@
         "kind": 5,
         "importPath": "scheduler.review_scraper_scheduler",
         "description": "scheduler.review_scraper_scheduler",
-        "peekOfCode": "SOURCE_MAP = {\n    \"traveloka\": (\"scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")\n    backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n    script_dir = os.path.join(backend_dir, \"scraper\")",
+        "peekOfCode": "SOURCE_MAP = {\n    \"traveloka\": (\"traveloka_scrape_reviews.js\", \"traveloka_link\"),\n    \"ticketcom\": (\"ticketcom_scrape_reviews.js\", \"ticketcom_link\"),\n    \"agoda\": (\"agoda_scrape_reviews.js\", \"agoda_link\"),\n    \"tripcom\": (\"tripcom_scrape_reviews.js\", \"tripcom_link\"),\n}\ndef run_scraping_for_all_hotels():\n    print(\"[Scheduler] Starting scraping job for all hotels...\")\n    backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))\n    script_dir = os.path.join(backend_dir, \"scraper\")",
         "detail": "scheduler.review_scraper_scheduler",
         "documentation": {}
     },
@@ -1539,7 +1539,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()",
+        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(\n        run_scraping_for_all_hotels,",
         "detail": "app",
         "documentation": {}
     },
@@ -1548,7 +1548,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
+        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(\n        run_scraping_for_all_hotels,\n        trigger='cron',\n        hour=1,",
         "detail": "app",
         "documentation": {}
     },
@@ -1557,7 +1557,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "scrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(run_scraping_for_all_hotels, 'cron', hour=1, minute=0)\n    scheduler.start()\n    app.run(debug=False)",
+        "peekOfCode": "scrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(\n        run_scraping_for_all_hotels,\n        trigger='cron',\n        hour=1,\n        minute=0,\n        id='run_scraping_for_all_hotels',",
         "detail": "app",
         "documentation": {}
     },

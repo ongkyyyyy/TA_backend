@@ -167,10 +167,8 @@ class RevenueController:
     
     def calculate_revenue(self, data):
         try:
-            # Normalize input first: flatten nested keys if any
             flat_data = self.normalize_revenue_data(data)
 
-            # Extract flat fields from normalized data
             room_lodging = float(flat_data.get("room_lodging", 0))
             rebate_discount = float(flat_data.get("rebate_discount", 0))
             total_room_revenue = room_lodging - rebate_discount
@@ -213,7 +211,6 @@ class RevenueController:
             occupancy = (rooms_occupied / room_available) * 100 if room_available > 0 else 0
             average_room_rate = total_room_revenue / rooms_sold if rooms_sold > 0 else 0
 
-            # Build a new clean nested dict from scratch
             clean_data = {
                 "room_details": {
                     "room_lodging": room_lodging,
@@ -323,7 +320,6 @@ class RevenueController:
             }), 201
 
         except Exception as e:
-            print("Error in create_revenue:", e)
             return jsonify({"success": False, "message": str(e)}), 500
     
     def edit_revenue(self, revenue_id):
@@ -339,7 +335,6 @@ class RevenueController:
             try:
                 hotel_id = ObjectId(hotel_id_raw) if isinstance(hotel_id_raw, str) else hotel_id_raw
             except Exception as e:
-                print(f"Invalid hotel_id: {e}")
                 return jsonify({"success": False, "message": "Invalid hotel ID"}), 400
 
             if not self.hotel_exists(hotel_id):
@@ -357,8 +352,6 @@ class RevenueController:
                 {"_id": revenue_oid},
                 {"$set": processed_data}
             )
-
-            print("Matched:", result.matched_count, "Modified:", result.modified_count)
 
             if result.modified_count == 0:
                 return jsonify({"success": False, "message": "No matching fields found for update"}), 400

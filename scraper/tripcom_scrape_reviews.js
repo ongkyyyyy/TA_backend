@@ -153,7 +153,6 @@ async function scrapeReviews() {
                                 dec: 11, desember: 11
                             };
 
-                            // Handle English: 'Posted May 26, 2024' or 'May 26, 2024'
                             let match = raw.match(/(?:Posted\s*)?(\w+)\s+(\d{1,2}),?\s+(\d{4})/i);
                             if (match) {
                                 const [, monthName, day, year] = match;
@@ -167,7 +166,6 @@ async function scrapeReviews() {
                                 }
                             }
 
-                            // Handle Indonesian: '3 Juni 2024'
                             match = raw.match(/(\d{1,2})\s+(\w+)\s+(\d{4})/i);
                             if (match) {
                                 const [, day, monthName, year] = match;

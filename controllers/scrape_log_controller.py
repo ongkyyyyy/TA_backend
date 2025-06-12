@@ -25,35 +25,14 @@ class ScrapeLogController:
         limit = int(request.args.get("limit", 15))
         skip = (page - 1) * limit
 
-        ota = request.args.get("ota")
-        status = request.args.get("status")
-        start_date = request.args.get("start_date") 
-        end_date = request.args.get("end_date")
-
-        query = {}
-        if ota:
-            query["ota"] = ota
-        if status:
-            query["status"] = status
-
-        if start_date or end_date:
-            date_filter = {}
-            if start_date:
-                start_dt = datetime.strptime(start_date, "%d-%m-%Y")
-                date_filter["$gte"] = start_dt
-            if end_date:
-                end_dt = datetime.strptime(end_date, "%d-%m-%Y").replace(hour=23, minute=59, second=59)
-                date_filter["$lte"] = end_dt
-            query["timestamp"] = date_filter
-
         cursor = (
             self.db.collection
-            .find(query)
+            .find({})
             .sort("timestamp", -1)
             .skip(skip)
             .limit(limit)
         )
-        total = self.db.collection.count_documents(query)
+        total = self.db.collection.count_documents({})
 
         logs = []
         for log in cursor:

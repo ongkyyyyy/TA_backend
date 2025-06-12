@@ -9,16 +9,20 @@ function randomDelay(min = 200, max = 1000) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+async function sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+}
+
 async function humanScroll(page) {
     const scrollStep = 300 + Math.random() * 300;
-    const scrollDelay = randomDelay(100, 500);
+    const scrollDelay = randomDelay(100, 400);
     let totalHeight = 0;
     let distance = scrollStep;
 
     while (totalHeight < await page.evaluate('document.body.scrollHeight')) {
         await page.evaluate(`window.scrollBy(0, ${distance})`);
         totalHeight += distance;
-        await new Promise(resolve => setTimeout(resolve, scrollDelay));
+        await sleep(scrollDelay);
     }
 }
 
@@ -28,7 +32,7 @@ async function clickElement(page, selector) {
         const box = await element.boundingBox();
         if (box) {
             await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 15 });
-            await new Promise(resolve => setTimeout(resolve, randomDelay(200, 800)));
+            await sleep(randomDelay(200, 800));
             await element.click();
         }
     }
@@ -74,11 +78,11 @@ async function scrapeReviews(retryAttempt = 0) {
         });
 
         await page.goto(hotelUrl, { waitUntil: 'networkidle2' });
-        await new Promise(resolve => setTimeout(resolve, randomDelay(1500, 3000)));
+        await sleep(randomDelay(1000, 2000));
 
         await page.waitForSelector('[data-element-name="check-in-box"]', { timeout: 5000 });
         await clickElement(page, '[data-element-name="check-in-box"]');
-        await new Promise(resolve => setTimeout(resolve, randomDelay(1000, 2000)));
+        await sleep(randomDelay(800, 1200));
 
         await page.waitForSelector('[data-selenium="hotel-header-name"]');
         const hotelName = await page.evaluate(() => {
@@ -96,7 +100,7 @@ async function scrapeReviews(retryAttempt = 0) {
             }
         });
 
-        await new Promise(resolve => setTimeout(resolve, randomDelay(3000, 5000)));
+        await sleep(randomDelay(2000, 3000));
 
         let allReviews = [];
         let pageCounter = 1;
@@ -106,7 +110,7 @@ async function scrapeReviews(retryAttempt = 0) {
         while (true) {
             console.log(`Scraping page ${pageCounter}...`);
             await humanScroll(page);
-            await new Promise(resolve => setTimeout(resolve, randomDelay(3000, 6000)));
+            await sleep(randomDelay(1500, 2500));
 
             const reviews = await page.evaluate((hotelName) => {
                 return Array.from(document.querySelectorAll('div.Review-comment[data-element-name="review-comment"][role="group"][aria-label]'))
@@ -191,9 +195,9 @@ async function scrapeReviews(retryAttempt = 0) {
             }
 
             await humanScroll(page);
-            await new Promise(resolve => setTimeout(resolve, randomDelay(1000, 2000)));
+            await sleep(randomDelay(800, 1500));
             await nextPageButton.click();
-            await new Promise(resolve => setTimeout(resolve, randomDelay(3000, 5000)));
+            await sleep(randomDelay(2000, 3000));
             pageCounter++;
         }
 
@@ -204,7 +208,7 @@ async function scrapeReviews(retryAttempt = 0) {
         await browser.close();
         if (retryAttempt + 1 < MAX_RETRIES) {
             console.log("🔁 Retrying scrape...");
-            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryAttempt + 1) * 1000 + randomDelay(0, 1000)));
+            await sleep(Math.pow(2, retryAttempt + 1) * 1000 + randomDelay(0, 1000));
             return scrapeReviews(retryAttempt + 1);
         }
     }

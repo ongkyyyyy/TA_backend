@@ -115,7 +115,7 @@ class ReviewController:
             return jsonify({"error": f"{source} link is not available for this hotel"}), 400
 
         script_map = {
-            "traveloka": "scrape_reviews.js",
+            "traveloka": "traveloka_scrape_reviews.js",
             "ticketcom": "ticketcom_scrape_reviews.js",
             "agoda": "agoda_scrape_reviews.js",
             "tripcom": "tripcom_scrape_reviews.js",
@@ -197,9 +197,6 @@ class ReviewController:
                 "error": str(e),
                 "note": scrape_log_data["note"]
             }), 500
-
-    def fetch_reviews(self):
-        return jsonify({"reviews": self.get_all_reviews()})
     
     def get_all_reviews(self):
         page = int(request.args.get('page', 1))
@@ -324,3 +321,6 @@ class ReviewController:
         ]
 
         return list(self.reviews_collection.aggregate(pipeline))
+    
+    def fetch_reviews(self):
+        return jsonify({"reviews": self.get_all_reviews()})

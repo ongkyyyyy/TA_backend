@@ -6,7 +6,7 @@ hotels_db = Hotels()
 hotels_collection = hotels_db.collection
 
 SOURCE_MAP = {
-    "traveloka": ("scrape_reviews.js", "traveloka_link"),
+    "traveloka": ("traveloka_scrape_reviews.js", "traveloka_link"),
     "ticketcom": ("ticketcom_scrape_reviews.js", "ticketcom_link"),
     "agoda": ("agoda_scrape_reviews.js", "agoda_link"),
     "tripcom": ("tripcom_scrape_reviews.js", "tripcom_link"),
