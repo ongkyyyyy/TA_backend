@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const axios = require('axios');
+const { BACKEND_URL } = require('./config');
 
 puppeteer.use(StealthPlugin());
 
@@ -244,7 +245,7 @@ async function scrapeReviews() {
 async function sendReviews(reviews, hotelId) {
     try {
         if (reviews.length > 0) {
-            await axios.post('http://127.0.0.1:5000/reviews', {
+            await axios.post(`${BACKEND_URL}/reviews`, {
                 reviews,
                 hotel_id: hotelId,
                 ota: "ticket.com"
