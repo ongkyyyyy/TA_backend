@@ -1566,7 +1566,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MONGO_URI = os.environ.get(\"MONGODB_URI\")\nSECRET_KEY = os.environ.get(\"SECRET_KEY\")",
+        "peekOfCode": "MONGO_URI = \"mongodb+srv://williamongkywow:williamongkywow@clusterta.poz3g.mongodb.net/hotelPerformance\"\nSECRET_KEY = \"supersecretkey_987654321\"",
         "detail": "config",
         "documentation": {}
     },
@@ -1575,7 +1575,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "SECRET_KEY = os.environ.get(\"SECRET_KEY\")",
+        "peekOfCode": "SECRET_KEY = \"supersecretkey_987654321\"",
         "detail": "config",
         "documentation": {}
     }
