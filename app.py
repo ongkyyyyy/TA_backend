@@ -40,6 +40,10 @@ app.register_blueprint(user_bp)
 scrape_log_bp = create_scrape_log_blueprint(app)
 app.register_blueprint(scrape_log_bp)
 
+@app.route("/ping")
+def ping():
+    return "pong"
+
 if __name__ == "__main__":
     scheduler = BackgroundScheduler()
     scheduler.add_job(

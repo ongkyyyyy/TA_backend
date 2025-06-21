@@ -1472,6 +1472,15 @@
         "documentation": {}
     },
     {
+        "label": "ping",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def ping():\n    return \"pong\"\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(\n        run_scraping_for_all_hotels,\n        trigger='cron',\n        hour=1,\n        minute=0,\n        id='run_scraping_for_all_hotels',",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
         "label": "port",
         "kind": 5,
         "importPath": "app",
@@ -1539,7 +1548,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()",
+        "peekOfCode": "hotels_bp = create_hotel_blueprint(app)\napp.register_blueprint(hotels_bp)\ndiagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\n@app.route(\"/ping\")\ndef ping():",
         "detail": "app",
         "documentation": {}
     },
@@ -1548,7 +1557,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(\n        run_scraping_for_all_hotels,",
+        "peekOfCode": "diagram_bp = create_diagram_blueprint(app)\napp.register_blueprint(diagram_bp)\nuser_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\n@app.route(\"/ping\")\ndef ping():\n    return \"pong\"\nif __name__ == \"__main__\":",
         "detail": "app",
         "documentation": {}
     },
@@ -1557,7 +1566,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(\n        run_scraping_for_all_hotels,\n        trigger='cron',\n        hour=1,",
+        "peekOfCode": "user_bp = create_user_blueprint(app)\napp.register_blueprint(user_bp)\nscrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\n@app.route(\"/ping\")\ndef ping():\n    return \"pong\"\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(",
         "detail": "app",
         "documentation": {}
     },
@@ -1566,7 +1575,7 @@
         "kind": 5,
         "importPath": "app",
         "description": "app",
-        "peekOfCode": "scrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(\n        run_scraping_for_all_hotels,\n        trigger='cron',\n        hour=1,\n        minute=0,\n        id='run_scraping_for_all_hotels',",
+        "peekOfCode": "scrape_log_bp = create_scrape_log_blueprint(app)\napp.register_blueprint(scrape_log_bp)\n@app.route(\"/ping\")\ndef ping():\n    return \"pong\"\nif __name__ == \"__main__\":\n    scheduler = BackgroundScheduler()\n    scheduler.add_job(\n        run_scraping_for_all_hotels,\n        trigger='cron',",
         "detail": "app",
         "documentation": {}
     },
