@@ -1472,6 +1472,15 @@
         "documentation": {}
     },
     {
+        "label": "port",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "port = int(os.environ.get(\"PORT\", 8000))\napp = Flask(__name__)\napp.scrape_log_db = ScrapeLog()\nCORS(app, supports_credentials=True)\napp.config[\"MONGO_URI\"] = MONGO_URI\nrevenue_bp = create_revenue_blueprint(app)\napp.register_blueprint(revenue_bp)\nreviews_bp = create_review_blueprint(app)\napp.register_blueprint(reviews_bp)  \nsentiments_bp = create_sentiment_blueprint(app)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
         "label": "app",
         "kind": 5,
         "importPath": "app",
@@ -1566,7 +1575,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "MONGO_URI = \"mongodb+srv://williamongkywow:williamongkywow@clusterta.poz3g.mongodb.net/hotelPerformance\"\nSECRET_KEY = \"supersecretkey_987654321\"",
+        "peekOfCode": "MONGO_URI = os.environ.get(\"MONGO_URI\")\nSECRET_KEY = os.environ.get(\"SECRET_KEY\")",
         "detail": "config",
         "documentation": {}
     },
@@ -1575,7 +1584,7 @@
         "kind": 5,
         "importPath": "config",
         "description": "config",
-        "peekOfCode": "SECRET_KEY = \"supersecretkey_987654321\"",
+        "peekOfCode": "SECRET_KEY = os.environ.get(\"SECRET_KEY\")",
         "detail": "config",
         "documentation": {}
     }

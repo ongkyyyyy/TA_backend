@@ -11,6 +11,8 @@ from flask_cors import CORS # type: ignore
 from apscheduler.schedulers.background import BackgroundScheduler # type: ignore
 from scheduler.review_scraper_scheduler import run_scraping_for_all_hotels
 from models.scrape_log import ScrapeLog
+import os
+port = int(os.environ.get("PORT", 8000))
 
 app = Flask(__name__)
 app.scrape_log_db = ScrapeLog()
@@ -51,4 +53,4 @@ if __name__ == "__main__":
     )
     scheduler.start()
 
-    app.run(debug=False)
+    app.run(host="0.0.0.0", port=port)
