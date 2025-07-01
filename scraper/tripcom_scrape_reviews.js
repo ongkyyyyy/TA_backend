@@ -27,7 +27,9 @@ async function scrapeReviews() {
     });
 
     const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36');
+    await page.setUserAgent(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+    );
 
     page.on('dialog', async dialog => {
         console.log(`Dismissing popup: ${dialog.message()}`);
@@ -60,13 +62,15 @@ async function scrapeReviews() {
     try {
         await page.waitForFunction(() => {
             const buttons = Array.from(document.querySelectorAll('button'));
-            return buttons.some(btn => btn.textContent.includes('All reviews') || btn.textContent.includes('Semua ulasan'));
+            return buttons.some(btn => btn.textContent.includes('All reviews') 
+            || btn.textContent.includes('Semua ulasan'));
         }, { timeout: 8000 });
     
         await page.evaluate(() => {
             const buttons = Array.from(document.querySelectorAll('button'));
             const target = buttons.find(btn => 
-                btn.textContent.includes('All reviews') || btn.textContent.includes('Semua ulasan')
+                btn.textContent.includes('All reviews') 
+                || btn.textContent.includes('Semua ulasan')
             );
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth', block: 'center' });

@@ -114,11 +114,16 @@ async function scrapeReviews(retryAttempt = 0) {
             await sleep(randomDelay(1500, 2500));
 
             const reviews = await page.evaluate((hotelName) => {
-                return Array.from(document.querySelectorAll('div.Review-comment[data-element-name="review-comment"][role="group"][aria-label]'))
+                return Array.from(document.querySelectorAll(
+                    'div.Review-comment[data-element-name="review-comment"][role="group"][aria-label]'
+                ))
                     .filter(el => el.offsetParent !== null)
                     .map(review => {
-                        const reviewerContainer = review.querySelector('[data-info-type="reviewer-name"]');
-                        const usernameElem = reviewerContainer ? reviewerContainer.querySelector('strong') : null;
+                        const reviewerContainer = review.querySelector(
+                            '[data-info-type="reviewer-name"]'
+                        );
+                        const usernameElem = reviewerContainer ? reviewerContainer.querySelector('strong') 
+                        : null;
 
                         const ratingElem = Array.from(review.querySelectorAll('div'))
                             .find(div => div.className.includes('Review-comment-leftScore'));
@@ -127,7 +132,8 @@ async function scrapeReviews(retryAttempt = 0) {
 
                         const timestampElem = Array.from(review.querySelectorAll('span'))
                             .find(span => span.innerText && span.innerText.trim().startsWith('Diulas pada'));
-                        const timestampText = timestampElem ? timestampElem.innerText.replace('Diulas pada', '').trim() : 'Unknown Date';
+                        const timestampText = timestampElem ? timestampElem.innerText.replace('Diulas pada', '').trim() 
+                        : 'Unknown Date';
 
                         return {
                             username: usernameElem ? usernameElem.innerText.trim() : 'Anonymous',

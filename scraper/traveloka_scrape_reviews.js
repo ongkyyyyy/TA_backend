@@ -68,9 +68,12 @@ async function scrapeReviews(retryAttempt = 0) {
                     return null;
                 }
 
-                return Array.from(document.querySelectorAll('.css-1dbjc4n.r-14lw9ot.r-h1746q.r-kdyh1x.r-d045u9.r-1udh08x.r-d23pfw')).map(review => {
+                return Array.from(document.querySelectorAll(
+                    '.css-1dbjc4n.r-14lw9ot.r-h1746q.r-kdyh1x.r-d045u9.r-1udh08x.r-d23pfw'))
+                .map(review => {
                     const usernameElem = Array.from(review.querySelectorAll('div.css-901oao'))
-                    .find(el => el.innerText && !el.innerText.match(/Diulas\s+\d+\s+(minggu|hari)\s+lalu/) && el.innerText.length <= 10);
+                    .find(el => el.innerText && !el.innerText.match(/Diulas\s+\d+\s+(minggu|hari)\s+lalu/) 
+                    && el.innerText.length <= 10);
                     const ratingElem = review.querySelector('[data-testid="tvat-ratingScore"]');
                     const commentElem = review.querySelector('.css-901oao.css-cens5h');
                     const timestampElem = Array.from(review.querySelectorAll("div.css-901oao"))

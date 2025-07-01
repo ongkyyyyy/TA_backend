@@ -44,8 +44,11 @@ class RevenueController:
                 match_conditions.append({
                     "$expr": {
                         "$and": [
-                            {"$gte": [{"$dateFromString": {"dateString": "$date", "format": "%d-%m-%Y"}}, date_filter.get("$gte", datetime.min)]},
-                            {"$lte": [{"$dateFromString": {"dateString": "$date", "format": "%d-%m-%Y"}}, date_filter.get("$lte", datetime.max)]}
+                            {"$gte": [{"$dateFromString": {"dateString": "$date", "format"
+                                : "%d-%m-%Y"}}, date_filter.get("$gte", datetime.min)]},
+                            {"$lte": [{"$dateFromString": {"dateString"
+                                : "$date", "format": "%d-%m-%Y"}}
+                                    , date_filter.get("$lte", datetime.max)]}
                         ]
                     }
                 })
