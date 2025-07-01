@@ -120,7 +120,7 @@ class ReviewController:
             response = requests.get(
                 f"{SCRAPER_API}/api/{source}",
                 params={"url": hotel_url, "hotel_id": hotel_id},
-                timeout=120
+                timeout=300
             )
 
             if response.status_code != 200:
