@@ -127,8 +127,7 @@ class ReviewController:
                 return jsonify({"error": response.json().get("error", "Scraping failed")}), 500
 
             return jsonify({
-                "message": f"{source} scraping completed. Data has been sent to /reviews endpoint.",
-                "stdout": response.json().get("output", "")
+                "message": f"{source} scraping is running (async). Make sure to check the scrape log!.",
             }), 200
 
         except Exception as e:
