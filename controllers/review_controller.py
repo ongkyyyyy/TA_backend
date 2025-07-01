@@ -116,7 +116,7 @@ class ReviewController:
             return jsonify({"error": f"{source} link is not available for this hotel"}), 400
 
         try:
-            SCRAPER_API = "https://scraper-ashy-one.vercel.app"
+            SCRAPER_API = "https://scraper-production-0762.up.railway.app"
             response = requests.get(
                 f"{SCRAPER_API}/api/{source}",
                 params={"url": hotel_url, "hotel_id": hotel_id},
