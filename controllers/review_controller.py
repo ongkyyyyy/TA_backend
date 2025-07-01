@@ -11,6 +11,7 @@ from controllers.sentiments_controller import save_sentiment_analysis
 from langdetect import detect, LangDetectException # type: ignore
 import subprocess
 import re
+import requests # type: ignore
 
 def prepare_unicode_friendly_regex(text):
     safe_text = re.escape(text)
@@ -114,34 +115,20 @@ class ReviewController:
         if not hotel_url:
             return jsonify({"error": f"{source} link is not available for this hotel"}), 400
 
-        script_map = {
-            "traveloka": "traveloka_scrape_reviews.js",
-            "ticketcom": "ticketcom_scrape_reviews.js",
-            "agoda": "agoda_scrape_reviews.js",
-            "tripcom": "tripcom_scrape_reviews.js",
-        }
-
-        script_file = script_map.get(source)
-        backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        script_path = os.path.join(backend_dir, "scraper", script_file)
-
-        if not os.path.exists(script_path):
-            return jsonify({"error": f"Script not found at {script_path}"}), 500
-
         try:
-            result = subprocess.run(
-                ["node", script_path, hotel_url, hotel_id],
-                text=True,
-                capture_output=True,
-                encoding='utf-8',
-                errors='replace'
+            SCRAPER_API = "https://scraper-production-0762.up.railway.app"
+            response = requests.get(
+                f"{SCRAPER_API}/api/{source}",
+                params={"url": hotel_url, "hotel_id": hotel_id},
+                timeout=300
             )
-            if result.returncode != 0:
-                return jsonify({"error": result.stderr}), 500
+
+            if response.status_code != 200:
+                return jsonify({"error": response.json().get("error", "Scraping failed")}), 500
 
             return jsonify({
                 "message": f"{source} scraping completed. Data has been sent to /reviews endpoint.",
-                "stdout": result.stdout
+                "stdout": response.json().get("output", "")
             }), 200
 
         except Exception as e:
