@@ -155,7 +155,7 @@ class ReviewController:
             result = self.save_reviews(reviews, hotel_id)
             inserted_ids = result.get("inserted_ids", [])
 
-            scrape_log_data["status"] = "success"
+            scrape_log_data["status"] = "Success"
             scrape_log_data["total_reviews"] = len(inserted_ids)
 
             if inserted_ids:
@@ -173,7 +173,7 @@ class ReviewController:
             }), result["status"]
 
         except Exception as e:
-            scrape_log_data["status"] = "error"
+            scrape_log_data["status"] = "Error"
             scrape_log_data["note"] = f"Error occurred: {str(e)}"
 
             log_controller.create_scrape_log(scrape_log_data)
