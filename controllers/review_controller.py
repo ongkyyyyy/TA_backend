@@ -127,7 +127,9 @@ class ReviewController:
                 return jsonify({"error": response.json().get("error", "Scraping failed")}), 500
 
             return jsonify({
-                "message": f"{source} scraping is running (async). Make sure to check the scrape log!.",
+                "message": response.json().get("message", "Scraping finished."),
+                "count": response.json().get("count") or 0,
+                "hotel_name": hotel.get("name", "Unknown Hotel")
             }), 200
 
         except Exception as e:
