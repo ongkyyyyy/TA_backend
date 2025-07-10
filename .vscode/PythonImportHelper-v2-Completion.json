@@ -824,11 +824,38 @@
         "documentation": {}
     },
     {
+        "label": "parse_date_safe",
+        "kind": 2,
+        "importPath": "controllers.diagram_controller",
+        "description": "controllers.diagram_controller",
+        "peekOfCode": "def parse_date_safe(date_str, fmt=\"%d-%m-%Y\"):\n    try:\n        return datetime.strptime(date_str, fmt)\n    except Exception:\n        return None\ndef get_month_key(date_str):\n    dt = parse_date_safe(date_str)\n    return dt.strftime(\"%Y-%m\") if dt else None\ndef aggregate_revenue(revenues, year, current_year, current_month):\n    result = defaultdict(lambda: defaultdict(list))",
+        "detail": "controllers.diagram_controller",
+        "documentation": {}
+    },
+    {
         "label": "get_month_key",
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_month_key(date):\n    if isinstance(date, str):\n        date = parse(date)\n    return date.strftime('%Y-%m')\ndef calculate_growth(current, previous):\n    if previous == 0:\n        return 100.0 if current > 0 else 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")",
+        "peekOfCode": "def get_month_key(date_str):\n    dt = parse_date_safe(date_str)\n    return dt.strftime(\"%Y-%m\") if dt else None\ndef aggregate_revenue(revenues, year, current_year, current_month):\n    result = defaultdict(lambda: defaultdict(list))\n    for rev in revenues:\n        rev_date = parse_date_safe(rev.get(\"date\"))\n        if not rev_date:\n            continue\n        if year and rev_date.year != year:",
+        "detail": "controllers.diagram_controller",
+        "documentation": {}
+    },
+    {
+        "label": "aggregate_revenue",
+        "kind": 2,
+        "importPath": "controllers.diagram_controller",
+        "description": "controllers.diagram_controller",
+        "peekOfCode": "def aggregate_revenue(revenues, year, current_year, current_month):\n    result = defaultdict(lambda: defaultdict(list))\n    for rev in revenues:\n        rev_date = parse_date_safe(rev.get(\"date\"))\n        if not rev_date:\n            continue\n        if year and rev_date.year != year:\n            continue\n        if year == current_year and rev_date.month > current_month:\n            continue",
+        "detail": "controllers.diagram_controller",
+        "documentation": {}
+    },
+    {
+        "label": "aggregate_sentiment",
+        "kind": 2,
+        "importPath": "controllers.diagram_controller",
+        "description": "controllers.diagram_controller",
+        "peekOfCode": "def aggregate_sentiment(reviews, sentiments, year, current_year, current_month):\n    result = defaultdict(lambda: {\n        \"total\": 0, \"score_sum\": 0,\n        \"positive\": 0, \"negative\": 0, \"neutral\": 0\n    })\n    sentiment_map = {s[\"review_id\"]: s for s in sentiments}\n    for review in reviews:\n        review_date = parse_date_safe(review.get(\"timestamp\"))\n        if not review_date:\n            continue",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
@@ -837,7 +864,7 @@
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def calculate_growth(current, previous):\n    if previous == 0:\n        return 100.0 if current > 0 else 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month",
+        "peekOfCode": "def calculate_growth(current, previous):\n    if previous == 0:\n        return 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year, current_month = today.year, today.month\n    # Handle hotel ID",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
@@ -846,7 +873,7 @@
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year = today.year\n    current_month = today.month\n    if hotel_ids_param == \"All\":\n        hotel_ids = None\n    else:\n        try:",
+        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year, current_month = today.year, today.month\n    # Handle hotel ID\n    if hotel_ids_param == \"All\":\n        hotel_ids = None\n    else:\n        try:",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
@@ -855,7 +882,7 @@
         "kind": 5,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "db = Diagram()\ndef get_month_key(date):\n    if isinstance(date, str):\n        date = parse(date)\n    return date.strftime('%Y-%m')\ndef calculate_growth(current, previous):\n    if previous == 0:\n        return 100.0 if current > 0 else 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():",
+        "peekOfCode": "db = Diagram()\ndef parse_date_safe(date_str, fmt=\"%d-%m-%Y\"):\n    try:\n        return datetime.strptime(date_str, fmt)\n    except Exception:\n        return None\ndef get_month_key(date_str):\n    dt = parse_date_safe(date_str)\n    return dt.strftime(\"%Y-%m\") if dt else None\ndef aggregate_revenue(revenues, year, current_year, current_month):",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
