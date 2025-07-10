@@ -864,7 +864,7 @@
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def calculate_growth(current, previous):\n    if previous == 0:\n        return 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year, current_month = today.year, today.month\n    # Handle hotel ID",
+        "peekOfCode": "def calculate_growth(current, previous):\n    if previous == 0:\n        return 0.0\n    return round(((current - previous) / previous) * 100, 2)\ndef get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year, current_month = today.year, today.month\n    if hotel_ids_param == \"All\":",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },
@@ -873,7 +873,7 @@
         "kind": 2,
         "importPath": "controllers.diagram_controller",
         "description": "controllers.diagram_controller",
-        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year, current_month = today.year, today.month\n    # Handle hotel ID\n    if hotel_ids_param == \"All\":\n        hotel_ids = None\n    else:\n        try:",
+        "peekOfCode": "def get_revenue_sentiment_diagram():\n    hotel_ids_param = request.args.get(\"hotel_id\", \"All\")\n    year = request.args.get(\"year\", type=int)\n    today = datetime.today()\n    current_year, current_month = today.year, today.month\n    if hotel_ids_param == \"All\":\n        hotel_ids = None\n    else:\n        try:\n            hotel_ids = [ObjectId(hid.strip()) for hid in hotel_ids_param.split(\",\")]",
         "detail": "controllers.diagram_controller",
         "documentation": {}
     },

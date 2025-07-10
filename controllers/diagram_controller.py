@@ -99,7 +99,6 @@ def get_revenue_sentiment_diagram():
     today = datetime.today()
     current_year, current_month = today.year, today.month
 
-    # Handle hotel ID
     if hotel_ids_param == "All":
         hotel_ids = None
     else:
@@ -108,18 +107,15 @@ def get_revenue_sentiment_diagram():
         except Exception:
             return jsonify({"error": "Invalid hotel_id format."}), 400
 
-    # Get revenue data
     revenue_query = {"hotel_id": {"$in": hotel_ids}} if hotel_ids else {}
     revenues = db.revenues.find(revenue_query)
     monthly_revenue = aggregate_revenue(revenues, year, current_year, current_month)
 
-    # Get review and sentiment data
     review_query = {"hotel_id": {"$in": hotel_ids}} if hotel_ids else {}
     reviews = list(db.reviews.find(review_query))
     sentiments = list(db.sentiments.find({"review_id": {"$in": [r["_id"] for r in reviews]}}))
     monthly_sentiment = aggregate_sentiment(reviews, sentiments, year, current_year, current_month)
 
-    # Month keys and labels
     if year:
         month_limit = current_month if year == current_year else 12
         months_range = [f"{year}-{m:02d}" for m in range(1, month_limit + 1)]
@@ -130,7 +126,6 @@ def get_revenue_sentiment_diagram():
         month_labels = [calendar.month_abbr[int(m)] for m in months_range]
         key_fn = lambda m: m[-2:]
 
-    # Initialize diagram structure
     diagram_data = {
         "months": month_labels,
         "room_revenue": [], "restaurant_revenue": [], "other_revenue": [],
@@ -165,7 +160,6 @@ def get_revenue_sentiment_diagram():
         diagram_data["negative_ratio"].append(round(neg / total, 2) if total else 0)
         diagram_data["neutral_ratio"].append(round(neu / total, 2) if total else 0)
 
-    # Summary and insights
     grand_totals = diagram_data["grand_total_revenue"]
     sentiment_scores = diagram_data["sentiment_score"]
     review_volumes = diagram_data["review_volume"]
