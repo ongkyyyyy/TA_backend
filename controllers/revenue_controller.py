@@ -350,6 +350,7 @@ class RevenueController:
             flat_data = self.normalize_revenue_data(merged_data)
             processed_data = self.calculate_revenue(flat_data)
             processed_data["hotel_id"] = hotel_id
+            processed_data["date"] = flat_data.get("date") 
 
             result = self.db.collection.update_one(
                 {"_id": revenue_oid},
@@ -357,7 +358,11 @@ class RevenueController:
             )
 
             if result.modified_count == 0:
-                return jsonify({"success": False, "message": "No matching fields found for update"}), 400
+                return jsonify({
+                    "success": True,
+                    "message": "Revenue update submitted, but no fields were changed",
+                    "data": existing_doc
+                }), 200
 
             updated_revenue = self.db.collection.find_one({"_id": revenue_oid})
             if updated_revenue:
