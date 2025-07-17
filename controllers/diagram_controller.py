@@ -155,10 +155,9 @@ def get_revenue_sentiment_diagram():
         diagram_data["gross_revenue"].append(round(gross_total, 2))
         diagram_data["grand_total_revenue"].append(round(grand_total, 2))
 
-        # Revenue stream contribution analysis
-        diagram_data["room_revenue_ratio"].append(round(room_total / gross_total, 2) if gross_total else 0)
-        diagram_data["restaurant_revenue_ratio"].append(round(restaurant_total / gross_total, 2) if gross_total else 0)
-        diagram_data["other_revenue_ratio"].append(round(other_total / gross_total, 2) if gross_total else 0)
+        diagram_data["room_revenue_ratio"].append(round((room_total / gross_total) * 100, 2) if gross_total else 0)
+        diagram_data["restaurant_revenue_ratio"].append(round((restaurant_total / gross_total) * 100, 2) if gross_total else 0)
+        diagram_data["other_revenue_ratio"].append(round((other_total / gross_total) * 100, 2) if gross_total else 0)
 
         total = sent.get("total", 0)
         pos, neg, neu = sent.get("positive", 0), sent.get("negative", 0), sent.get("neutral", 0)
