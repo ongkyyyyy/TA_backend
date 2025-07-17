@@ -132,7 +132,8 @@ def get_revenue_sentiment_diagram():
         "nett_revenue": [], "gross_revenue": [], "grand_total_revenue": [],
         "sentiment_score": [], "composite_sentiment_index": [],
         "positive_sentiment": [], "negative_sentiment": [], "neutral_sentiment": [],
-        "review_volume": [], "positive_ratio": [], "negative_ratio": [], "neutral_ratio": []
+        "review_volume": [], "positive_ratio": [], "negative_ratio": [], "neutral_ratio": [],
+        "room_revenue_ratio": [], "restaurant_revenue_ratio": [], "other_revenue_ratio": []
     }
 
     for month_key in months_range:
@@ -140,10 +141,24 @@ def get_revenue_sentiment_diagram():
         rev_data = monthly_revenue.get(key, {})
         sent = monthly_sentiment.get(key, {})
 
-        for name in ["room_revenue", "restaurant_revenue", "other_revenue",
-                     "nett_revenue", "gross_revenue", "grand_total_revenue"]:
-            values = rev_data.get(name, [])
-            diagram_data[name].append(round(sum(values), 2) if values else 0)
+        room_total = sum(rev_data.get("room_revenue", [])) if rev_data.get("room_revenue") else 0
+        restaurant_total = sum(rev_data.get("restaurant_revenue", [])) if rev_data.get("restaurant_revenue") else 0
+        other_total = sum(rev_data.get("other_revenue", [])) if rev_data.get("other_revenue") else 0
+        nett_total = sum(rev_data.get("nett_revenue", [])) if rev_data.get("nett_revenue") else 0
+        gross_total = sum(rev_data.get("gross_revenue", [])) if rev_data.get("gross_revenue") else 0
+        grand_total = sum(rev_data.get("grand_total_revenue", [])) if rev_data.get("grand_total_revenue") else 0
+
+        diagram_data["room_revenue"].append(round(room_total, 2))
+        diagram_data["restaurant_revenue"].append(round(restaurant_total, 2))
+        diagram_data["other_revenue"].append(round(other_total, 2))
+        diagram_data["nett_revenue"].append(round(nett_total, 2))
+        diagram_data["gross_revenue"].append(round(gross_total, 2))
+        diagram_data["grand_total_revenue"].append(round(grand_total, 2))
+
+        # Revenue stream contribution analysis
+        diagram_data["room_revenue_ratio"].append(round(room_total / gross_total, 2) if gross_total else 0)
+        diagram_data["restaurant_revenue_ratio"].append(round(restaurant_total / gross_total, 2) if gross_total else 0)
+        diagram_data["other_revenue_ratio"].append(round(other_total / gross_total, 2) if gross_total else 0)
 
         total = sent.get("total", 0)
         pos, neg, neu = sent.get("positive", 0), sent.get("negative", 0), sent.get("neutral", 0)
